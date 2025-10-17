@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xác thực Email</title>
+  <style>
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    table { border-collapse: collapse !important; }
+    body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #f4f4f4; }
+    .button-a:hover { background: #0056b3 !important; }
+  </style>
+</head>
+<body style="margin: 0 !important; padding: 20px 0 !important;">
+
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+    <tr>
+      <td align="center" valign="top" style="padding: 20px;">
+        <table border="0" cellpadding="20" cellspacing="0" width="100%" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+
+          <tr>
+            <td align="center" style="font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; color: #333333; border-bottom: 1px solid #eeeeee;">
+              Xác thực địa chỉ Email
+            </td>
+          </tr>
+
+          <tr>
+            <td align="left" style="font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; color: #555555;">
+              <p>Xin chào,</p>
+              <p>Vui lòng nhấp vào nút bên dưới để xác thực tài khoản của bạn.</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center" style="border-radius: 5px;" bgcolor="#007bff">
+                    <a href="{{verificationLink}}" target="_blank" style="font-size: 16px; font-family: Arial, sans-serif; font-weight: bold; color: #ffffff; text-decoration: none; display: inline-block; padding: 15px 30px; border-radius: 5px;" class="button-a">
+                      Xác thực tài khoản
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="left" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; color: #888888;">
+              <p>Nếu gặp sự cố với nút trên, bạn có thể sao chép và dán liên kết này vào trình duyệt:</p>
+              <p style="word-break: break-all;"><a href="{{verificationLink}}" target="_blank" style="color: #007bff;">{{verificationLink}}</a></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="left" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; color: #888888; border-top: 1px solid #eeeeee; padding-top: 20px;">
+              <p>Lưu ý: Liên kết này sẽ hết hạn sau <strong>{{expirationTime}}</strong>.</p>
+              <p>Nếu bạn không đăng ký tài khoản, vui lòng bỏ qua email này.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
