@@ -1,5 +1,5 @@
 import { SignupRequest } from "./dto/signup-request";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import crypto from "crypto";
 import { JwtService } from "@nestjs/jwt";
@@ -17,7 +17,8 @@ import { ResetPasswordRequest } from "./dto/reset-password-request";
 import {
   ConflictAuthenticationMethodException,
   EmailExistedException,
-  InvalidCredentialException, InvalidJsonWebToken,
+  InvalidCredentialException,
+  InvalidJsonWebToken,
   InvalidTokenException,
   UserAlreadyVerifiedException,
   UserNotFoundException,
