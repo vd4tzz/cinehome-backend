@@ -1,5 +1,5 @@
 import { SignupRequest } from "./dto/signup-request";
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import crypto from "crypto";
 import { JwtService } from "@nestjs/jwt";
@@ -15,6 +15,7 @@ import { LoginRequest } from "./dto/login-request";
 import { LoginResponse } from "./dto/login-response";
 import { ResetPasswordRequest } from "./dto/reset-password-request";
 import {
+  ConflictAuthenticationMethodException,
   EmailExistedException,
   InvalidCredentialException,
   InvalidTokenException,
@@ -26,6 +27,8 @@ import { SendEmailVerificationRequest } from "./dto/send-email-verification-requ
 import { VerifyEmailRequest } from "./dto/verify-email-request";
 import { AuthRoleContext } from "./auth-role-context";
 import { Role, RoleName } from "../user/entity/role.entity";
+import { JwtPayload } from "./jwt-payload";
+import { RefreshJwtResponse } from "./dto/refresh-jwt-response";
 
 @Injectable()
 export class AuthService {
@@ -74,7 +77,6 @@ export class AuthService {
         oAuth2Provider: OAuth2Provider.NONE,
         roles: [this.authRole.getUserRole()],
       });
-      console.log(this.authRole.getUserRole());
       await userRepository.save(newUser);
 
       return new SignupResponse({
@@ -113,7 +115,7 @@ export class AuthService {
         }),
       );
 
-      const verificationLink = `${this.FRONT_END_URL}/auth/verify-email?userId=${user.id}&token=${rawToken}`;
+      const verificationLink = `${this.FRONT_END_URL}?userId=${user.id}&token=${rawToken}`;
       await this.mailService.sendVerification(user.email, verificationLink, this.VERIFIED_TOKEN_EXP / 60);
 
       return new SendEmailResponse({
@@ -188,6 +190,9 @@ export class AuthService {
       }
       if (!user.isVerified) {
         throw new UserNotVerifiedException();
+      }
+      if (user.oAuth2Provider != OAuth2Provider.NONE) {
+        throw new ConflictAuthenticationMethodException(`account is registered with ${user.oAuth2Provider} method`);
       }
 
       const isPasswordMatched = await bcrypt.compare(loginRequest.password, user.password);
@@ -283,7 +288,7 @@ export class AuthService {
     });
   }
 
-  async handleOauth2Callback(email: string) {
+  async handleOauth2Callback(email: string, oAuth2Provider: OAuth2Provider) {
     return await this.dataSource.transaction(async (manager) => {
       const userRepository = manager.getRepository(User);
 
@@ -294,15 +299,18 @@ export class AuthService {
       if (!user) {
         user = new User({
           email: email,
-          oAuth2Provider: OAuth2Provider.GOOGLE,
+          oAuth2Provider: oAuth2Provider,
           isVerified: true,
           roles: [this.authRole.getUserRole()],
         });
 
         await userRepository.save(user);
       } else {
-        if (user.oAuth2Provider != OAuth2Provider.NONE) {
-          throw new BadRequestException();
+        if (user.oAuth2Provider == OAuth2Provider.NONE) {
+          throw new ConflictAuthenticationMethodException("account is registered with traditional method");
+        }
+        if (user.oAuth2Provider != oAuth2Provider) {
+          throw new ConflictAuthenticationMethodException(`account is registered with ${user.oAuth2Provider} method`);
         }
       }
 
@@ -315,6 +323,26 @@ export class AuthService {
         refreshToken: this.signRefreshToken(jwtPayload),
         refreshTokenExpIn: this.JWT_REFRESH_EXP,
       });
+    });
+  }
+
+  async refreshJwt(refreshToken: string) {
+    let jwtPayloadIn: JwtPayload;
+    try {
+      jwtPayloadIn = await this.jwtService.verifyAsync<JwtPayload>(refreshToken, { secret: this.JWT_REFRESH_SECRET });
+    } catch (err) {
+      throw new UnauthorizedException(err);
+    }
+
+    const { sub, email, roles } = jwtPayloadIn;
+
+    const jwtPayloadOut = this.jwtPayload(sub!, email!, roles!);
+
+    return new RefreshJwtResponse({
+      userId: sub!,
+      email: email!,
+      accessToken: this.signAccessToken(jwtPayloadOut),
+      accessTokenExpIn: this.JWT_ACCESS_EXP,
     });
   }
 

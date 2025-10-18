@@ -15,6 +15,7 @@ export enum ErrorCode {
   USER_NOT_VERIFIED = "USER_NOT_VERIFIED",
   INVALID_CREDENTIAL = "INVALID_CREDENTIAL",
   INVALID_FORMAT = "INVALID_FORMAT",
+  CONFLICT_OAUTH2_PROVIDER = "CONFLICT_OAUTH2_PROVIDER",
 }
 
 export class ErrorResponse {
@@ -77,7 +78,7 @@ export class UserNotVerifiedException extends ForbiddenException {
   constructor() {
     super(
       new ErrorResponse({
-        message: "account is not verified",
+        message: "user is not verified",
         code: ErrorCode.USER_NOT_VERIFIED,
       }),
     );
@@ -90,6 +91,17 @@ export class InvalidCredentialException extends UnauthorizedException {
       new ErrorResponse({
         message: "invalid email or password",
         code: ErrorCode.INVALID_CREDENTIAL,
+      }),
+    );
+  }
+}
+
+export class ConflictAuthenticationMethodException extends ConflictException {
+  constructor(message?: string) {
+    super(
+      new ErrorResponse({
+        message: message ?? "account is registered with other method",
+        code: ErrorCode.CONFLICT_OAUTH2_PROVIDER,
       }),
     );
   }

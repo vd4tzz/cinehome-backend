@@ -4,8 +4,10 @@ import {
   Controller,
   Get,
   HttpCode,
-  Post, Req,
-  Res, UseGuards,
+  Post,
+  Req,
+  Res,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
@@ -14,17 +16,19 @@ import { SignupResponse } from "./dto/signup-response";
 import { ApiOkResponse, ApiResponse } from "@nestjs/swagger";
 import { SendEmailResponse } from "./dto/send-email-response";
 import { VerifyEmailResponse } from "./dto/verify-email-response";
-import { type Response } from "express";
+import express, { type Request, type Response } from "express";
 import { LoginRequest } from "./dto/login-request";
 import { LoginResponse } from "./dto/login-response";
 import { ResetPasswordRequest } from "./dto/reset-password-request";
 import { SendEmailVerificationRequest } from "./dto/send-email-verification-request";
 import { VerifyEmailRequest } from "./dto/verify-email-request";
 import { AuthGuard } from "@nestjs/passport";
+import { OAuth2Provider } from "../user/entity/user.entity";
 
 @Controller("auth")
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
+  private JWT_REFRESH_COOKIE = "REFRESH_TOKEN";
   constructor(private authService: AuthService) {}
 
   @ApiResponse({
@@ -71,10 +75,7 @@ export class AuthController {
   ): Promise<VerifyEmailResponse> {
     const verifyEmailResponse = await this.authService.verifyEmailToken(verifyEmailRequest);
 
-    response.cookie("refreshToken", verifyEmailResponse.refreshToken, {
-      httpOnly: true,
-      maxAge: verifyEmailResponse.refreshTokenExpIn * 1000,
-    });
+    this.setRefreshJwtCookie(response, verifyEmailResponse.refreshToken, verifyEmailResponse.refreshTokenExpIn);
 
     return verifyEmailResponse;
   }
@@ -88,10 +89,7 @@ export class AuthController {
   ): Promise<LoginResponse> {
     const loginResponse = await this.authService.login(loginRequest);
 
-    response.cookie("refreshToken", loginResponse.refreshToken, {
-      httpOnly: true,
-      maxAge: loginResponse.refreshTokenExpIn * 1000,
-    });
+    this.setRefreshJwtCookie(response, loginResponse.refreshToken, loginResponse.refreshTokenExpIn);
 
     return loginResponse;
   }
@@ -118,7 +116,26 @@ export class AuthController {
 
   @Get("google/callback")
   @UseGuards(AuthGuard("google"))
-  googleOAuth2Callback(@Req() req: any) {
-    return this.authService.handleOauth2Callback(req.user.email);
+  async googleOAuth2Callback(@Req() req: any, @Res({ passthrough: true }) response: express.Response) {
+    const loginResponse = await this.authService.handleOauth2Callback(req.user.email, OAuth2Provider.GOOGLE);
+    response.cookie("refreshToken", loginResponse.refreshToken, {
+      httpOnly: true,
+      maxAge: loginResponse.refreshTokenExpIn * 1000,
+    });
+    return loginResponse;
+  }
+
+  @Get("refresh")
+  async refreshJwt(@Req() request: Request) {
+    const refreshToken = (request.cookies as Record<string, string | undefined>)[this.JWT_REFRESH_COOKIE] ?? "";
+    return await this.authService.refreshJwt(refreshToken);
+  }
+
+  private setRefreshJwtCookie(response: Response, refreshJwt: string, refreshJwtExpIn: number) {
+    response.cookie(this.JWT_REFRESH_COOKIE, refreshJwt, {
+      httpOnly: true,
+      maxAge: refreshJwtExpIn * 1000,
+      path: "/auth/refresh",
+    });
   }
 }

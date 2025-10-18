@@ -5,9 +5,12 @@ import { BadRequestException } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ErrorCode } from "./common/exceptions";
 import { SeedService } from "./common/seed/seed.service";
+import  cookieParser from "cookie-parser";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
