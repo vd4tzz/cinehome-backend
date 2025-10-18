@@ -17,7 +17,7 @@ import { ResetPasswordRequest } from "./dto/reset-password-request";
 import {
   ConflictAuthenticationMethodException,
   EmailExistedException,
-  InvalidCredentialException,
+  InvalidCredentialException, InvalidJsonWebToken,
   InvalidTokenException,
   UserAlreadyVerifiedException,
   UserNotFoundException,
@@ -330,8 +330,8 @@ export class AuthService {
     let jwtPayloadIn: JwtPayload;
     try {
       jwtPayloadIn = await this.jwtService.verifyAsync<JwtPayload>(refreshToken, { secret: this.JWT_REFRESH_SECRET });
-    } catch (err) {
-      throw new UnauthorizedException(err);
+    } catch {
+      throw new InvalidJsonWebToken();
     }
 
     const { sub, email, roles } = jwtPayloadIn;

@@ -16,6 +16,7 @@ export enum ErrorCode {
   INVALID_CREDENTIAL = "INVALID_CREDENTIAL",
   INVALID_FORMAT = "INVALID_FORMAT",
   CONFLICT_OAUTH2_PROVIDER = "CONFLICT_OAUTH2_PROVIDER",
+  INVALID_JSON_WEB_TOKEN = "INVALID_JSON_WEB_TOKEN",
 }
 
 export class ErrorResponse {
@@ -102,6 +103,17 @@ export class ConflictAuthenticationMethodException extends ConflictException {
       new ErrorResponse({
         message: message ?? "account is registered with other method",
         code: ErrorCode.CONFLICT_OAUTH2_PROVIDER,
+      }),
+    );
+  }
+}
+
+export class InvalidJsonWebToken extends UnauthorizedException {
+  constructor() {
+    super(
+      new ErrorResponse({
+        message: "invalid json web token",
+        code: ErrorCode.INVALID_JSON_WEB_TOKEN,
       }),
     );
   }
