@@ -75,7 +75,7 @@ export class AuthService {
         password: hashedPassword,
         isVerified: false,
         oAuth2Provider: OAuth2Provider.NONE,
-        roles: [this.authRole.getUserRole()],
+        roles: [await this.authRole.getUserRole()],
       });
       await userRepository.save(newUser);
 
@@ -301,7 +301,7 @@ export class AuthService {
           email: email,
           oAuth2Provider: oAuth2Provider,
           isVerified: true,
-          roles: [this.authRole.getUserRole()],
+          roles: [await this.authRole.getUserRole()],
         });
 
         await userRepository.save(user);
