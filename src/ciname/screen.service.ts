@@ -2,10 +2,13 @@ import { DataSource } from "typeorm";
 import { CreateScreenRequest } from "./dto/create-screen-request";
 import { Cinema } from "./entity/cinema.entity";
 import { Screen } from "./entity/screen.entity";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateScreenResponse } from "./dto/create-screen-response";
 import { UpdateScreenRequest } from "./dto/update-screen-request";
 import { UpdateScreenResponse } from "./dto/update-screen-response";
+import { GetScreenResponse } from "./dto/get-screen-response";
+import { PageParam } from "../common/pagination/PageParam";
+import { Page } from "../common/pagination/Page";
 
 @Injectable()
 export class ScreenService {
@@ -56,6 +59,11 @@ export class ScreenService {
 
     if (!screen) throw new NotFoundException();
 
+    const nameExisted = await screenRepository.exists({ where: { name: updateScreenRequest.name } });
+    if (nameExisted) {
+      throw new BadRequestException();
+    }
+
     screen.name = updateScreenRequest.name;
     await screenRepository.save(screen);
 
@@ -64,5 +72,59 @@ export class ScreenService {
       name: screen.name,
       cinemaId: screen.cinema.id,
     };
+  }
+
+  async getScreenById(screenId: number): Promise<GetScreenResponse> {
+    const screenRepository = this.dataSource.getRepository(Screen);
+
+    const screen = await screenRepository.findOne({
+      where: { id: screenId },
+      relations: ["cinema"],
+    });
+    if (!screen) {
+      throw new BadRequestException();
+    }
+
+    return {
+      id: screen.id,
+      name: screen.name,
+      cinemaId: screen.cinema.id,
+    };
+  }
+
+  async getScreens(cinemaId: number, pageParam: PageParam): Promise<Page<GetScreenResponse>> {
+    const { page, size, order } = pageParam;
+
+    // const screenRepository = this.dataSource.getRepository(Screen);
+    // const [screens, total] = await screenRepository.findAndCount({
+    //   relations: ["cinema"],
+    //   where: {
+    //     cinema: { id: cinemaId },
+    //   },
+    //   skip: page * size,
+    //   take: size,
+    //   order: order,
+    // });
+
+    const query = this.dataSource
+      .getRepository(Screen)
+      .createQueryBuilder("screen")
+      .where("screen.cinema = :cinemaId", { cinemaId })
+      .skip(page * size)
+      .take(size);
+
+    Object.entries(order).forEach(([field, direction]) => {
+      query.addOrderBy(`${field}`, direction);
+    });
+
+    const [screens, total] = await query.getManyAndCount();
+
+    const dtos: GetScreenResponse[] = screens.map((screen) => ({
+      id: screen.id,
+      name: screen.name,
+      cinemaId: cinemaId,
+    }));
+
+    return new Page(dtos, pageParam, total);
   }
 }

@@ -16,8 +16,28 @@ SELECT inserted_user.id, inserted_role.id
 FROM inserted_user,
      inserted_role;
 
-INSERT INTO cinemas(name, street, province) values ('CineHome 1', 'Street 1', 'Province 1');
+
 INSERT INTO cinemas(name, street, province) VALUES ('CineHome 2', 'Street 2', 'Province 2');
 INSERT INTO cinemas(name, street, province) VALUES ('CineHome 3', 'Street 3', 'Province 3');
 INSERT INTO cinemas(name, street, province) VALUES ('CineHome 4', 'Street 4', 'Province 4');
 INSERT INTO cinemas(name, street, province) VALUES ('CineHome 5', 'Street 5', 'Province 5');
+
+
+WITH cinema_1 AS (
+INSERT INTO cinemas(name, street, province)
+VALUES ('CineHome 1', 'Street 1', 'Province 1')
+    RETURNING id
+    )
+INSERT INTO screens(name, cinema_id)
+SELECT screen_name, id
+FROM cinema_1,
+     (VALUES
+          ('SCREEN 01'),
+          ('SCREEN 02'),
+          ('SCREEN 03'),
+          ('SCREEN 04'),
+          ('SCREEN 05'),
+          ('SCREEN 06')
+     ) AS t(screen_name);
+
+
