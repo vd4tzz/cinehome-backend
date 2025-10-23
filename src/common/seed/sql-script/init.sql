@@ -15,3 +15,9 @@ INTO user_role(user_id, role_id)
 SELECT inserted_user.id, inserted_role.id
 FROM inserted_user,
      inserted_role;
+
+INSERT INTO cinemas(name, street, province) values ('CineHome 1', 'Street 1', 'Province 1');
+INSERT INTO cinemas(name, street, province) VALUES ('CineHome 2', 'Street 2', 'Province 2');
+INSERT INTO cinemas(name, street, province) VALUES ('CineHome 3', 'Street 3', 'Province 3');
+INSERT INTO cinemas(name, street, province) VALUES ('CineHome 4', 'Street 4', 'Province 4');
+INSERT INTO cinemas(name, street, province) VALUES ('CineHome 5', 'Street 5', 'Province 5');

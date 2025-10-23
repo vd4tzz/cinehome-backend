@@ -117,6 +117,7 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(AuthGuard("google"))
   async googleOAuth2Callback(@Req() req: any, @Res({ passthrough: true }) response: express.Response) {
+    // Todo: ép kiểu cho req.user.email
     const loginResponse = await this.authService.handleOauth2Callback(req.user.email, OAuth2Provider.GOOGLE);
     response.cookie("refreshToken", loginResponse.refreshToken, {
       httpOnly: true,

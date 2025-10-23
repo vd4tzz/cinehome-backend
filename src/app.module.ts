@@ -6,9 +6,10 @@ import { AuthModule } from "./auth/auth.module";
 import { DatabaseModule } from "./config/database/database.module";
 import { MailModule } from "./common/mail/mail.module";
 import { SeedModule } from "./common/seed/seed.module";
+import { CinemaModule } from "./ciname/cinema.module";
 
 @Module({
-  imports: [AuthModule, ConfigModule.forRoot(), DatabaseModule, MailModule, SeedModule],
+  imports: [AuthModule, CinemaModule, ConfigModule.forRoot(), DatabaseModule, MailModule, SeedModule],
   controllers: [AppController],
   providers: [AppService],
 })
