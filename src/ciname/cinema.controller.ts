@@ -18,7 +18,7 @@ import { GetCinemaResponse } from "./dto/get-cinema-response";
 import { PageParam } from "../common/pagination/PageParam";
 import { Page } from "../common/pagination/Page";
 import { ApiPaginatedResponse } from "../common/pagination/ApiPaginatedResponse";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiResponse } from "@nestjs/swagger";
 
 @Controller("api/cinemas")
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,12 +26,13 @@ export class CinemaController {
   constructor(private cinemaService: CinemaService) {}
 
   @Post()
-  @ApiResponse({ type: CreateCinemaResponse })
+  @ApiResponse({ type: CreateCinemaResponse, status: 201 })
   async createCinema(@Body() createCinemaRequest: CreateCinemaRequest): Promise<CreateCinemaResponse> {
     return this.cinemaService.createCinema(createCinemaRequest);
   }
 
   @Put(":id")
+  @ApiOkResponse({ type: UpdateCinemaResponse })
   async updateCinema(
     @Param("id") id: number,
     @Body() updateCinemaRequest: UpdateCinemaRequest,
@@ -40,7 +41,7 @@ export class CinemaController {
   }
 
   @Get(":id")
-  @ApiResponse({ type: GetCinemaResponse })
+  @ApiOkResponse({ type: GetCinemaResponse })
   async getCinemaById(@Param("id") id: number): Promise<GetCinemaResponse> {
     return await this.cinemaService.getCinemaById(id);
   }

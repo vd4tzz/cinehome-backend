@@ -1,16 +1,3 @@
-import { IsNotEmpty } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { CreateCinemaRequest } from "./create-cinema-request";
 
-export class UpdateCinemaRequest {
-  @IsNotEmpty()
-  @ApiProperty()
-  name: string;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  street: string;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  province: string;
-}
+export class UpdateCinemaRequest extends CreateCinemaRequest {}
