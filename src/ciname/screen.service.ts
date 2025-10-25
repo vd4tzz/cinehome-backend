@@ -1,14 +1,14 @@
 import { DataSource } from "typeorm";
-import { CreateScreenRequest } from "./dto/create-screen-request";
 import { Cinema } from "./entity/cinema.entity";
 import { Screen } from "./entity/screen.entity";
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { CreateScreenResponse } from "./dto/create-screen-response";
-import { UpdateScreenRequest } from "./dto/update-screen-request";
-import { UpdateScreenResponse } from "./dto/update-screen-response";
 import { GetScreenResponse } from "./dto/get-screen-response";
+import { UpdateScreenRequest } from "./dto/update-screen-request";
+import { CreateScreenRequest } from "./dto/create-screen-request";
+import { CreateScreenResponse } from "./dto/create-screen-response";
+import { UpdateScreenResponse } from "./dto/update-screen-response";
 import { PageParam } from "../common/pagination/PageParam";
 import { Page } from "../common/pagination/Page";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class ScreenService {
@@ -23,7 +23,7 @@ export class ScreenService {
       throw new NotFoundException();
     }
 
-    const screenExisted = await screenRepository.findOneBy({ name: createScreenRequest.name });
+    const screenExisted = await screenRepository.findOneBy({ id: cinemaId, name: createScreenRequest.name });
     if (screenExisted) {
       throw new NotFoundException();
     }

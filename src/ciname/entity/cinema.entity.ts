@@ -24,7 +24,7 @@ export class Cinema {
   @Column(() => Address, { prefix: false })
   address: Address;
 
-  @OneToMany(() => Screen, (screen) => screen.cinema)
+  @OneToMany(() => Screen, (screen) => screen.cinema, { onDelete: "CASCADE" })
   screens: Screen[];
 
   constructor(partial?: Partial<Cinema>) {

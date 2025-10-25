@@ -2,11 +2,16 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { CreateCinemaRequest } from "./dto/create-cinema-request";
@@ -18,39 +23,54 @@ import { GetCinemaResponse } from "./dto/get-cinema-response";
 import { PageParam } from "../common/pagination/PageParam";
 import { Page } from "../common/pagination/Page";
 import { ApiPaginatedResponse } from "../common/pagination/ApiPaginatedResponse";
-import { ApiOkResponse, ApiResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiResponse } from "@nestjs/swagger";
+import { RolesGuard } from "../auth/roles.guard";
+import { Roles } from "../auth/roles.decorator";
+import { RoleName } from "../user/entity/role.entity";
+import { CinemaOwnershipGuard } from "./cinema-ownership.guard";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { CheckCinemaOwnership } from "./check-cinema-ownership.decorator";
 
+@ApiBearerAuth("access-token")
 @Controller("api/cinemas")
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(JwtAuthGuard, RolesGuard, CinemaOwnershipGuard)
 export class CinemaController {
   constructor(private cinemaService: CinemaService) {}
 
-  @Post()
   @ApiResponse({ type: CreateCinemaResponse, status: 201 })
+  @Post()
+  @Roles(RoleName.SUPER_ADMIN)
+  @CheckCinemaOwnership(false)
   async createCinema(@Body() createCinemaRequest: CreateCinemaRequest): Promise<CreateCinemaResponse> {
     return this.cinemaService.createCinema(createCinemaRequest);
   }
 
-  @Put(":id")
   @ApiOkResponse({ type: UpdateCinemaResponse })
+  @Put(":cinemaId")
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   async updateCinema(
-    @Param("id") id: number,
+    @Param("cinemaId") cinemaId: number,
     @Body() updateCinemaRequest: UpdateCinemaRequest,
   ): Promise<UpdateCinemaResponse> {
-    return this.cinemaService.updateCinema(id, updateCinemaRequest);
+    return this.cinemaService.updateCinema(cinemaId, updateCinemaRequest);
   }
 
-  @Get(":id")
   @ApiOkResponse({ type: GetCinemaResponse })
-  async getCinemaById(@Param("id") id: number): Promise<GetCinemaResponse> {
-    return await this.cinemaService.getCinemaById(id);
+  @Get(":cinemaId")
+  async getCinemaById(@Param("cinemaId", ParseIntPipe) cinemaId: number): Promise<GetCinemaResponse> {
+    return await this.cinemaService.getCinemaById(cinemaId);
   }
 
-  @Get()
   @ApiPaginatedResponse(GetCinemaResponse)
+  @Get()
   async getCinemas(@Query() pageParam: PageParam): Promise<Page<GetCinemaResponse>> {
     return this.cinemaService.getCinemas(pageParam);
   }
 
-  // Todo deleteCinema
+  @Delete(":cinemaId")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteCinemaById(@Param("cinemaId") cinemaId: number): Promise<void> {
+    await this.cinemaService.deleteCinemaById(cinemaId);
+  }
 }

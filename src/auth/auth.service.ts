@@ -87,6 +87,8 @@ export class AuthService {
     });
   }
 
+  // Todo signupAdmin
+
   async sendEmailVerification(sendEmailVerificationRequest: SendEmailVerificationRequest): Promise<SendEmailResponse> {
     return await this.dataSource.transaction(async (manager) => {
       const userRepository = manager.getRepository(User);
@@ -179,38 +181,44 @@ export class AuthService {
   }
 
   async login(loginRequest: LoginRequest): Promise<LoginResponse> {
-    return await this.dataSource.transaction(async (manager) => {
-      const userRepository = manager.getRepository(User);
+    const userRepository = this.dataSource.getRepository(User);
 
-      const user = await userRepository.findOne({
-        where: { email: loginRequest.email },
-        relations: ["roles"],
-      });
-      if (!user) {
-        throw new InvalidCredentialException();
-      }
-      if (!user.isVerified) {
-        throw new UserNotVerifiedException();
-      }
-      if (user.oAuth2Provider != OAuth2Provider.NONE) {
-        throw new ConflictAuthenticationMethodException(`account is registered with ${user.oAuth2Provider} method`);
-      }
+    const user = await userRepository.findOne({
+      where: { email: loginRequest.email },
+      relations: {
+        roles: true,
+        admin: true,
+      },
+    });
+    if (!user) {
+      throw new InvalidCredentialException();
+    }
+    if (!user.isVerified) {
+      throw new UserNotVerifiedException();
+    }
+    if (user.oAuth2Provider != OAuth2Provider.NONE) {
+      throw new ConflictAuthenticationMethodException(`account is registered with ${user.oAuth2Provider} method`);
+    }
 
-      const isPasswordMatched = await bcrypt.compare(loginRequest.password, user.password);
-      if (!isPasswordMatched) {
-        throw new InvalidCredentialException();
-      }
+    const isPasswordMatched = await bcrypt.compare(loginRequest.password, user.password);
+    if (!isPasswordMatched) {
+      throw new InvalidCredentialException();
+    }
 
-      const jwtPayload = this.jwtPayload(user.id, user.email, this.extractUserRolesName(user.roles));
+    const jwtPayload = this.jwtPayload(
+      user.id,
+      user.email,
+      this.extractUserRolesName(user.roles),
+      user.admin?.cinemaId,
+    );
 
-      return new LoginResponse({
-        userId: user.id,
-        email: user.email,
-        accessToken: this.signAccessToken(jwtPayload),
-        accessTokenExpIn: this.JWT_ACCESS_EXP,
-        refreshToken: this.signRefreshToken(jwtPayload),
-        refreshTokenExpIn: this.JWT_REFRESH_EXP,
-      });
+    return new LoginResponse({
+      userId: user.id,
+      email: user.email,
+      accessToken: this.signAccessToken(jwtPayload),
+      accessTokenExpIn: this.JWT_ACCESS_EXP,
+      refreshToken: this.signRefreshToken(jwtPayload),
+      refreshTokenExpIn: this.JWT_REFRESH_EXP,
     });
   }
 
@@ -377,10 +385,11 @@ export class AuthService {
     return hashedRawToken === hashed;
   }
 
-  private jwtPayload(id: number, email: string, roles: RoleName[]) {
+  private jwtPayload(id: number, email: string, roles: RoleName[], cinemaId?: number) {
     return {
       sub: id,
       email: email,
+      cinemaId: cinemaId,
       roles: roles,
     };
   }

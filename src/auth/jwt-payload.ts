@@ -6,4 +6,5 @@ export interface JwtPayload {
   exp?: number;
   iat?: number;
   roles?: RoleName[];
+  cinemaId?: number;
 }

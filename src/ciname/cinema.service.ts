@@ -96,4 +96,12 @@ export class CinemaService {
 
     return new Page(dtos, pageParam, total);
   }
+
+  async deleteCinemaById(cinemaId: number): Promise<void> {
+    const cinemaRepository = this.dataSource.getRepository(Cinema);
+    const result = await cinemaRepository.delete(cinemaId);
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
+  }
 }

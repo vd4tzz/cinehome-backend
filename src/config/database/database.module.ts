@@ -17,6 +17,7 @@ import { SeatTypeSurcharge } from "../../ciname/entity/seat-type-surcharge.entit
 import { Audience } from "../../ciname/entity/audience.entity";
 import { AudienceSurcharge } from "../../ciname/entity/audience-surcharge.entity";
 import { FormatSurcharge } from "../../ciname/entity/format-surcharge.entity";
+import { UserAdmin } from "../../user/entity/user-admin.entity";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FormatSurcharge } from "../../ciname/entity/format-surcharge.entity";
         // entities: [__dirname + "/../**/*.entity{.ts,.js}"],
         entities: [
           User,
+          UserAdmin,
           Token,
           Role,
           Cinema,
@@ -52,6 +54,7 @@ import { FormatSurcharge } from "../../ciname/entity/format-surcharge.entity";
         synchronize: true,
         dropSchema: true, // xoa toan bo du lieu cu truoc khi sync
         logging: ["query", "error"],
+        logger: "formatted-console",
       }),
     }),
   ],

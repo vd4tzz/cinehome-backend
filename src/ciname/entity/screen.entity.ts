@@ -17,14 +17,14 @@ export class Screen {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Cinema, (cinema) => cinema.screens)
+  @ManyToOne(() => Cinema, (cinema) => cinema.screens, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
 
   @Column()
   name: string;
 
-  @ManyToMany(() => Format, (format) => format.screens)
+  @ManyToMany(() => Format, (format) => format.screens, { onDelete: "CASCADE" })
   @JoinTable({
     name: "screen_format",
     joinColumn: {

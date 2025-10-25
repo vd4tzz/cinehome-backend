@@ -5,6 +5,7 @@ import { Role, RoleName } from "../user/entity/role.entity";
 @Injectable()
 export class AuthRoleContext implements OnApplicationBootstrap {
   private userRole: Role;
+  private superAdminRole: Role;
 
   constructor(private dataSource: DataSource) {}
 
@@ -16,5 +17,13 @@ export class AuthRoleContext implements OnApplicationBootstrap {
 
     this.userRole = existed!;
     return this.userRole;
+  }
+
+  async getSuperAdminRole(): Promise<Role> {
+    const roleRepository = this.dataSource.getRepository(Role);
+    const existed = await roleRepository.findOneBy({ name: RoleName.SUPER_ADMIN });
+
+    this.superAdminRole = existed!;
+    return this.superAdminRole;
   }
 }

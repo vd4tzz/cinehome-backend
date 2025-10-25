@@ -4,12 +4,10 @@ import { ValidationPipe } from "@nestjs/common";
 import { BadRequestException } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ErrorCode } from "./common/exceptions";
-import { SeedService } from "./common/seed/seed.service";
-import  cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+  const app = await NestFactory.create(AppModule, { snapshot: true });
   app.use(cookieParser());
 
   app.useGlobalPipes(
@@ -29,10 +27,19 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle("Cats example")
-    .setDescription("The cats API description")
+    .setTitle("CineHome")
+    .setDescription("The CineHome API description")
     .setVersion("1.0")
-    .addTag("cats")
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        name: "Authorization",
+        description: "Enter JWT token",
+      },
+      "access-token", // key để reference sau này
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, documentFactory);

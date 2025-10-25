@@ -1,5 +1,6 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { Role } from "./role.entity";
+import { UserAdmin } from "./user-admin.entity";
 
 export enum OAuth2Provider {
   GOOGLE = "GOOGLE",
@@ -11,10 +12,10 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 255, unique: true })
   email: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255 })
   password: string;
 
   @Column({ name: "is_verified", type: "boolean" })
@@ -36,6 +37,9 @@ export class User {
     },
   })
   roles: Role[];
+
+  @OneToOne(() => UserAdmin, (admin) => admin.user)
+  admin: UserAdmin;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);
