@@ -8,30 +8,34 @@ import { UpdateCinemaResponse } from "./dto/update-cinema-response";
 import { GetCinemaResponse } from "./dto/get-cinema-response";
 import { PageParam } from "../common/pagination/PageParam";
 import { Page } from "../common/pagination/Page";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class CinemaService {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   async createCinema(createCinemaRequest: CreateCinemaRequest): Promise<CreateCinemaResponse> {
-    return await this.dataSource.transaction(async (manager) => {
-      const cinemaRepository = manager.getRepository(Cinema);
+    const cinemaRepository = this.dataSource.getRepository(Cinema);
 
-      const cinema = new Cinema({
-        name: createCinemaRequest.name,
-        address: {
-          street: createCinemaRequest.street,
-          province: createCinemaRequest.province,
-        },
-      });
-      await cinemaRepository.save(cinema);
+    const cinema = new Cinema({
+      name: createCinemaRequest.name,
+      address: {
+        street: createCinemaRequest.street,
+        province: createCinemaRequest.province,
+      },
+    });
+    await cinemaRepository.save(cinema);
 
-      return new CreateCinemaResponse({
-        id: cinema.id,
-        name: cinema.name,
-        street: cinema.address.street,
-        province: cinema.address.province,
-      });
+    this.eventEmitter.emit("cinema.created", { cinemaId: cinema.id });
+
+    return new CreateCinemaResponse({
+      id: cinema.id,
+      name: cinema.name,
+      street: cinema.address.street,
+      province: cinema.address.province,
     });
   }
 

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { RoleName } from "../user/entity/role.entity";
 import { Reflector } from "@nestjs/core";
-import { CHECK_CINEMA_OWNERSHIP } from "./check-cinema-ownership.decorator";
+import { CHECK_CINEMA_OWNERSHIP } from "./cinema-ownership.decorator";
 
 @Injectable()
 export class CinemaOwnershipGuard implements CanActivate {

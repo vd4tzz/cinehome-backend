@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Cinema } from "./cinema.entity";
 import { SeatType } from "./seat-type.entity";
 
@@ -17,4 +17,7 @@ export class SeatTypeSurcharge {
   @ManyToOne(() => SeatType)
   @JoinColumn({ name: "seat_type_id" })
   seatType: SeatType;
+
+  @Column({ type: "numeric" })
+  surcharge: string;
 }

@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
 } from "typeorm";
 import { Cinema } from "./cinema.entity";
 import { Seat } from "./seat.entity";
@@ -20,6 +21,9 @@ export class Screen {
   @ManyToOne(() => Cinema, (cinema) => cinema.screens, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
+
+  @RelationId((screen: Screen) => screen.cinema)
+  cinemaId: number;
 
   @Column()
   name: string;

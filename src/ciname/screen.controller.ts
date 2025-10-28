@@ -7,11 +7,11 @@ import { UpdateScreenResponse } from "./dto/update-screen-response";
 import { PageParam } from "../common/pagination/PageParam";
 import { RolesGuard } from "../auth/roles.guard";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { CinemaOwnershipGuard } from "./cinema-ownership.guard";
+import { CinemaOwnershipGuard } from "../auth/cinema-ownership.guard";
 import { Roles } from "../auth/roles.decorator";
 import { RoleName } from "../user/entity/role.entity";
 import { ApiBearerAuth } from "@nestjs/swagger";
-import { CheckCinemaOwnership } from "./check-cinema-ownership.decorator";
+import { CinemaOwnership } from "../auth/cinema-ownership.decorator";
 
 @ApiBearerAuth("access-token")
 @Controller("api/cinemas/:cinemaId/screens")
@@ -21,7 +21,7 @@ export class ScreenController {
 
   @Post()
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  @CheckCinemaOwnership()
+  @CinemaOwnership()
   async createScreen(
     @Param("cinemaId") cinemaId: number,
     @Body() createScreenRequest: CreateScreenRequest,
@@ -31,7 +31,7 @@ export class ScreenController {
 
   @Put(":screenId")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  @CheckCinemaOwnership()
+  @CinemaOwnership()
   async updateScreen(
     @Param("cinemaId") cinemaId: number,
     @Param("screenId") screenId: number,
@@ -42,14 +42,14 @@ export class ScreenController {
 
   @Get(":screenId")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  @CheckCinemaOwnership()
+  @CinemaOwnership()
   async getScreenById(@Param("screenId") screenId: number) {
     return this.screenService.getScreenById(screenId);
   }
 
   @Get()
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  @CheckCinemaOwnership()
+  @CinemaOwnership()
   async getScreens(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
     return this.screenService.getScreens(cinemaId, pageParam);
   }

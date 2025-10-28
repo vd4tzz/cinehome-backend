@@ -7,9 +7,18 @@ import { DatabaseModule } from "./config/database/database.module";
 import { MailModule } from "./common/mail/mail.module";
 import { SeedModule } from "./common/seed/seed.module";
 import { CinemaModule } from "./ciname/cinema.module";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 
 @Module({
-  imports: [AuthModule, CinemaModule, ConfigModule.forRoot(), DatabaseModule, MailModule, SeedModule],
+  imports: [
+    ConfigModule.forRoot(),
+    EventEmitterModule.forRoot(),
+    AuthModule,
+    CinemaModule,
+    DatabaseModule,
+    MailModule,
+    SeedModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

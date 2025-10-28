@@ -23,9 +23,12 @@ export class ScreenService {
       throw new NotFoundException();
     }
 
-    const screenExisted = await screenRepository.findOneBy({ id: cinemaId, name: createScreenRequest.name });
+    const screenExisted = await screenRepository.findOneBy({
+      cinema: { id: cinemaId },
+      name: createScreenRequest.name,
+    });
     if (screenExisted) {
-      throw new NotFoundException();
+      throw new BadRequestException();
     }
 
     const newScreen = new Screen({

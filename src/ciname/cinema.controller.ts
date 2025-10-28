@@ -27,9 +27,9 @@ import { ApiBearerAuth, ApiOkResponse, ApiResponse } from "@nestjs/swagger";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
 import { RoleName } from "../user/entity/role.entity";
-import { CinemaOwnershipGuard } from "./cinema-ownership.guard";
+import { CinemaOwnershipGuard } from "../auth/cinema-ownership.guard";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { CheckCinemaOwnership } from "./check-cinema-ownership.decorator";
+import { CinemaOwnership } from "../auth/cinema-ownership.decorator";
 
 @ApiBearerAuth("access-token")
 @Controller("api/cinemas")
@@ -41,7 +41,7 @@ export class CinemaController {
   @ApiResponse({ type: CreateCinemaResponse, status: 201 })
   @Post()
   @Roles(RoleName.SUPER_ADMIN)
-  @CheckCinemaOwnership(false)
+  @CinemaOwnership(false)
   async createCinema(@Body() createCinemaRequest: CreateCinemaRequest): Promise<CreateCinemaResponse> {
     return this.cinemaService.createCinema(createCinemaRequest);
   }

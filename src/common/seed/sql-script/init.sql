@@ -1,60 +1,140 @@
-DO $$
-DECLARE
-    uid INT;
-    admin_id INT;
-    role_user_id INT;
-    role_super_admin_id INT;
-    role_admin_id INT;
-    cinema_id INT;
-BEGIN
-    INSERT INTO roles(name) VALUES ('USER') RETURNING id INTO role_user_id;
-    INSERT INTO roles(name) VALUES ('SUPER_ADMIN') RETURNING id INTO role_super_admin_id;
-    INSERT INTO roles(name) VALUES ('ADMIN') RETURNING id INTO role_admin_id;
+DO
+$$
+    DECLARE
+        role_user_id        INT;
+        role_super_admin_id INT;
+        role_admin_id       INT;
+        super_admin_id      INT;
+        cinema1_id          INT;
+        cinema2_id          INT;
+        admin1_id           INT;
+        admin2_id           INT;
+    BEGIN
+        -- insert user
+        INSERT INTO users(email, password, is_verified, o_auth2_provider)
+        VALUES ('user1', '$2a$10$dH2wpbCXhNjMPZRsqtSNHOdkF3bWFFDEt5cUgdXNymVoQ.7ipFZIe', true, 'NONE');
 
-    -- Tạo user
-    INSERT INTO users (email, password, is_verified, o_auth2_provider)
-    VALUES ('prx@prx.com', '$2a$10$PwD282xnLj5lUl/GD33m6..kk6CwaBsxtJJhwOnKPfHuKwC13Vqoi', true, 'NONE')
-    RETURNING id INTO uid;
+        -- insert role: user, admin, super_admin
+        INSERT INTO roles(name) VALUES ('USER') RETURNING id INTO role_user_id;
+        INSERT INTO roles(name) VALUES ('SUPER_ADMIN') RETURNING id INTO role_super_admin_id;
+        INSERT INTO roles(name) VALUES ('ADMIN') RETURNING id INTO role_admin_id;
 
-    -- Gán roles
-    INSERT INTO user_role(user_id, role_id)
-    VALUES (uid, role_user_id), (uid, role_super_admin_id);
+        -- insert super_admin
+        INSERT INTO users (email, password, is_verified, o_auth2_provider)
+        VALUES ('superadmin', '$2a$10$MDU/JxUaimkesKwN4OhNSe5ZF/jeUxX8i4h8LnFfN0IWHuEe/JrtO', true, 'NONE')
+        RETURNING id INTO super_admin_id;
 
-    -- Thêm vào user_admin
-    INSERT INTO user_admin(user_id)
-    VALUES (uid);
+        INSERT INTO user_role(user_id, role_id)
+        VALUES (super_admin_id, role_super_admin_id);
 
-    --------------------------------------------------------------------------------------------------------------------
+        INSERT INTO user_admin(user_id, cinema_id)
+        VALUES (super_admin_id, null);
 
-    INSERT INTO cinemas(name, street, province)
-    VALUES ('CineHome 1', 'Street 1', 'Province 1')
-    RETURNING id INTO cinema_id;
-
-    INSERT INTO users (email, password, is_verified, o_auth2_provider)
-    VALUES ('admin1', '$2a$10$.VxZPIWe34LDSfaljLeYYe4vLJLAGY6/0ERfaP.Xbd2ds4HYh6y2y', true, 'NONE')
-    RETURNING id INTO admin_id;
-
-    INSERT INTO user_role(user_id, role_id)
-    VALUES (admin_id, role_admin_id);
-
-    INSERT INTO user_admin(user_id, cinema_id)
-    VALUES (admin_id, cinema_id);
-
-    INSERT INTO screens(name, cinema_id)
-    VALUES
-        ('SCREEN 01', cinema_id),
-        ('SCREEN 02', cinema_id),
-        ('SCREEN 03', cinema_id),
-        ('SCREEN 04', cinema_id),
-        ('SCREEN 05', cinema_id),
-        ('SCREEN 06', cinema_id);
-END $$;
+        -- insert cinemas
+        INSERT INTO cinemas (name, street, province)
+        VALUES ('cinema1', 'street1', 'province1')
+        RETURNING id INTO cinema1_id;
 
 
-INSERT INTO cinemas(name, street, province) VALUES ('CineHome 2', 'Street 2', 'Province 2');
-INSERT INTO cinemas(name, street, province) VALUES ('CineHome 3', 'Street 3', 'Province 3');
-INSERT INTO cinemas(name, street, province) VALUES ('CineHome 4', 'Street 4', 'Province 4');
-INSERT INTO cinemas(name, street, province) VALUES ('CineHome 5', 'Street 5', 'Province 5');
+        INSERT INTO cinemas (name, street, province)
+        VALUES ('cinema2', 'street2', 'province2')
+        RETURNING id INTO cinema2_id;
 
-INSERT INTO users(email, password, is_verified, o_auth2_provider)
-VALUES ('user1', '$2a$10$dH2wpbCXhNjMPZRsqtSNHOdkF3bWFFDEt5cUgdXNymVoQ.7ipFZIe', true, 'NONE');
+
+        INSERT INTO cinemas (name, street, province)
+        VALUES ('cinema3', 'street3', 'province3');
+
+
+        INSERT INTO cinemas (name, street, province)
+        VALUES ('cinema4', 'street4', 'province4');
+
+
+        INSERT INTO cinemas (name, street, province)
+        VALUES ('cinema5', 'street5', 'province5');
+
+        -- insert admin1 for cinema `cinema1_id`
+        INSERT INTO users (email, password, is_verified, o_auth2_provider)
+        VALUES ('admin1', '$2a$10$w6O/YXftW0jlYe8FAhl87O1hkQTt/k4YdFapKKLuQW7RrHawXLV/i', true, 'NONE')
+        RETURNING id INTO admin1_id;
+
+        INSERT INTO user_role (user_id, role_id)
+        VALUES (admin1_id, role_admin_id);
+
+        INSERT INTO user_admin (user_id, cinema_id)
+        VALUES (admin1_id, cinema1_id);
+
+        -- insert admin2 for cinema `cinema2_id`
+        INSERT INTO users (email, password, is_verified, o_auth2_provider)
+        VALUES ('admin2', '$2a$10$13Tr9qF1Yo72JxbPNSFTveiFq7TH23JZBDbqRVR5mWi7PtYVMhhwe', true, 'NONE')
+        RETURNING id INTO admin2_id;
+
+        INSERT INTO user_role (user_id, role_id)
+        VALUES (admin2_id, role_admin_id);
+
+        INSERT INTO user_admin (user_id, cinema_id)
+        VALUES (admin2_id, cinema2_id);
+
+        -- insert screens for cinema has id `cinema1_id`
+        INSERT INTO screens (name, cinema_id)
+        VALUES ('SCREEN01', cinema1_id),
+               ('SCREEN02', cinema1_id),
+               ('SCREEN03', cinema1_id),
+               ('SCREEN04', cinema1_id),
+               ('SCREEN05', cinema1_id),
+               ('SCREEN06', cinema1_id);
+
+        -- insert screens for cinema has id `cinema2_id`
+        INSERT INTO screens (name, cinema_id)
+        VALUES ('SCREEN01', cinema2_id),
+               ('SCREEN02', cinema2_id),
+               ('SCREEN03', cinema2_id),
+               ('SCREEN04', cinema2_id),
+               ('SCREEN05', cinema2_id);
+
+        -- insert seat_types
+        INSERT INTO seat_types (code, description)
+        VALUES ('SINGLE', '');
+
+        INSERT INTO seat_types (code, description)
+        VALUES ('COUPLE', '');
+
+
+        -- insert formats
+        INSERT INTO formats (code, description)
+        VALUES ('2D', '');
+
+        INSERT INTO formats (code, description)
+        VALUES ('3D', '');
+
+        INSERT INTO formats (code, description)
+        VALUES ('IMAX', '');
+
+        -- insert audiences
+        INSERT INTO audiences (type, description)
+        VALUES ('ADULT', '');
+
+        INSERT INTO audiences (type, description)
+        VALUES ('CHILD', '');
+
+        INSERT INTO audiences (type, description)
+        VALUES ('STUDENT', '');
+
+        -- insert day_types
+        INSERT INTO day_types (code, description)
+        VALUES ('WEEKDAY', '');
+
+        INSERT INTO day_types (code, description)
+        VALUES ('WEEKEND', '');
+
+        -- insert time_slots
+        INSERT INTO time_slots (code, description, start_time, end_time)
+        VALUES ('MORNING', '', '07:00:00', '11:00:00');
+
+        INSERT INTO time_slots (code, description, start_time, end_time)
+        VALUES ('AFTERNOON', '', '11:00:00', '17:00:00');
+
+        INSERT INTO time_slots (code, description, start_time, end_time)
+        VALUES ('EVENING', '', '17:00:00', '23:00:00');
+
+    END;
+$$;

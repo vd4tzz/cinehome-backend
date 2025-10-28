@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "./role.entity";
 import { UserAdmin } from "./user-admin.entity";
 
@@ -15,7 +15,7 @@ export class User {
   @Column({ type: "varchar", length: 255, unique: true })
   email: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 255, nullable: true })
   password: string;
 
   @Column({ name: "is_verified", type: "boolean" })

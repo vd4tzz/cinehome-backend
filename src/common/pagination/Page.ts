@@ -49,7 +49,7 @@ export class Page<T> {
       size,
       totalPage,
       hasNext: page + 1 < totalPage,
-      hasPrevious: page > 0,
+      hasPrevious: page > 0 && page <= totalPage,
       isFirst: page === 0,
       isLast: page + 1 === totalPage,
     };

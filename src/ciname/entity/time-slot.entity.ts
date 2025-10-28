@@ -11,9 +11,9 @@ export class TimeSlot {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ type: "time" })
+  @Column({ type: "time", name: "start_time" })
   startTime: string;
 
-  @Column({ type: "time" })
+  @Column({ type: "time", name: "end_time" })
   endTime: string;
 }
