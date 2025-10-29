@@ -86,7 +86,6 @@ export class CinemaCreatedHandler {
         surcharge: defaultSurcharge,
       }));
 
-      // === 4. Bulk insert tất cả cùng lúc (song song) ===
       await Promise.all([
         audienceSurchargeRepo.insert(audienceSurcharges),
         dayTypeSurchargeRepo.insert(dayTypeSurcharges),

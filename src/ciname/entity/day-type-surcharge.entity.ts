@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Cinema } from "./cinema.entity";
 import { DayType } from "./day-type.entity";
 
-@Entity("day_type_surcharges")
+@Entity("")
 export class DayTypeSurcharge {
   @PrimaryColumn({ name: "cinema_id" })
   cinemaId: number;
