@@ -1,6 +1,6 @@
 import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, RelationId } from "typeorm";
 import { User } from "./user.entity";
-import { Cinema } from "../../ciname/entity/cinema.entity";
+import { Cinema } from "../../cinema/entity/cinema.entity";
 
 @Entity("user_admin")
 export class UserAdmin {

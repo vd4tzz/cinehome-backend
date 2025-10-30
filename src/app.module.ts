@@ -6,7 +6,7 @@ import { AuthModule } from "./auth/auth.module";
 import { DatabaseModule } from "./config/database/database.module";
 import { MailModule } from "./common/mail/mail.module";
 import { SeedModule } from "./common/seed/seed.module";
-import { CinemaModule } from "./ciname/cinema.module";
+import { CinemaModule } from "./cinema/cinema.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 
 @Module({
