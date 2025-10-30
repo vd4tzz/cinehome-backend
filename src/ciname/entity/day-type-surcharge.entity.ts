@@ -10,11 +10,11 @@ export class DayTypeSurcharge {
   @PrimaryColumn({ name: "day_type_id" })
   dayTypeId: number;
 
-  @ManyToOne(() => Cinema)
+  @ManyToOne(() => Cinema, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
 
-  @ManyToOne(() => DayType)
+  @ManyToOne(() => DayType, { onDelete: "CASCADE" })
   @JoinColumn({ name: "day_type_id" })
   dayType: DayType;
 

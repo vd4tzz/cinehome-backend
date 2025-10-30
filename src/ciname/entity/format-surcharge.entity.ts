@@ -10,11 +10,11 @@ export class FormatSurcharge {
   @PrimaryColumn({ name: "format_id" })
   formatId: number;
 
-  @ManyToOne(() => Cinema)
+  @ManyToOne(() => Cinema, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
 
-  @ManyToOne(() => Format)
+  @ManyToOne(() => Format, { onDelete: "CASCADE" })
   @JoinColumn({ name: "format_id" })
   format: Format;
 

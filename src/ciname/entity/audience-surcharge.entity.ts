@@ -10,11 +10,11 @@ export class AudienceSurcharge {
   @PrimaryColumn({ name: "audience_id" })
   audienceId: number;
 
-  @ManyToOne(() => Cinema)
+  @ManyToOne(() => Cinema, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
 
-  @ManyToOne(() => Audience)
+  @ManyToOne(() => Audience, { onDelete: "CASCADE" })
   @JoinColumn({ name: "audience_id" })
   audience: Audience;
 

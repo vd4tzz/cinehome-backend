@@ -10,11 +10,11 @@ export class SeatTypeSurcharge {
   @PrimaryColumn({ name: "seat_type_id" })
   seatTypeId: number;
 
-  @ManyToOne(() => Cinema)
+  @ManyToOne(() => Cinema, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
 
-  @ManyToOne(() => SeatType)
+  @ManyToOne(() => SeatType, { onDelete: "CASCADE" })
   @JoinColumn({ name: "seat_type_id" })
   seatType: SeatType;
 

@@ -10,11 +10,11 @@ export class TimeSlotSurcharge {
   @PrimaryColumn({ name: "time_slot_id" })
   timeSlotId: number;
 
-  @ManyToOne(() => Cinema)
+  @ManyToOne(() => Cinema, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
 
-  @ManyToOne(() => TimeSlot)
+  @ManyToOne(() => TimeSlot, { onDelete: "CASCADE" })
   @JoinColumn({ name: "time_slot_id" })
   timeSlot: TimeSlot;
 

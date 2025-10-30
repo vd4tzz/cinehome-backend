@@ -7,7 +7,7 @@ export class Seat {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Screen, (screen) => screen.seats)
+  @ManyToOne(() => Screen, (screen) => screen.seats, { onDelete: "CASCADE" })
   @JoinColumn({ name: "screen_id" })
   screen: Screen;
 
@@ -20,7 +20,7 @@ export class Seat {
   @Column({ name: "column_order" })
   columnOrder: number;
 
-  @OneToOne(() => SeatType)
+  @OneToOne(() => SeatType, { onDelete: "CASCADE" })
   @JoinColumn({ name: "seat_type_id" })
   type: SeatType;
 }
