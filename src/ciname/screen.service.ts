@@ -14,14 +14,17 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 export class ScreenService {
   constructor(private dataSource: DataSource) {}
 
+  /**
+   * To create a Screen, the name with the associated ID must not already exist.
+   */
   async createScreen(cinemaId: number, createScreenRequest: CreateScreenRequest): Promise<CreateScreenResponse> {
-    const cinemaRepository = this.dataSource.getRepository(Cinema);
+    // const cinemaRepository = this.dataSource.getRepository(Cinema);
     const screenRepository = this.dataSource.getRepository(Screen);
 
-    const cinema = await cinemaRepository.findOneBy({ id: cinemaId });
-    if (!cinema) {
-      throw new NotFoundException();
-    }
+    // const cinema = await cinemaRepository.findOneBy({ id: cinemaId });
+    // if (!cinema) {
+    //   throw new NotFoundException();
+    // }
 
     const screenExisted = await screenRepository.findOneBy({
       cinema: { id: cinemaId },
@@ -33,7 +36,7 @@ export class ScreenService {
 
     const newScreen = new Screen({
       name: createScreenRequest.name,
-      cinema: cinema,
+      cinema: { id: cinemaId } as Cinema,
     });
 
     await screenRepository.save(newScreen);
@@ -41,7 +44,7 @@ export class ScreenService {
     return {
       id: newScreen.id,
       name: newScreen.name,
-      cinemaId: newScreen.cinema.id,
+      cinemaId: newScreen.cinemaId,
     };
   }
 
@@ -131,7 +134,7 @@ export class ScreenService {
     return new Page(dtos, pageParam, total);
   }
 
-  async deleteScreen(cinemaId: number, screenId: number) {
+  async deleteScreen(cinemaId: number, screenId: number): Promise<void> {
     const screenRepository = this.dataSource.getRepository(Screen);
     const deletedResult = await screenRepository.delete({
       id: screenId,
