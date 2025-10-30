@@ -58,8 +58,8 @@ export class ScreenController {
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
   async deleteScreen(
-    @Param("screenId", ParseIntPipe) screenId: number,
     @Param("cinemaId", ParseIntPipe) cinemaId: number,
+    @Param("screenId", ParseIntPipe) screenId: number,
   ): Promise<void> {
     return this.screenService.deleteScreen(cinemaId, screenId);
   }
