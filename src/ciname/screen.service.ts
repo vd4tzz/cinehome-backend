@@ -133,7 +133,12 @@ export class ScreenService {
 
   async deleteScreen(cinemaId: number, screenId: number) {
     const screenRepository = this.dataSource.getRepository(Screen);
-    const deletedResult = await screenRepository.delete({ id: screenId, cinemaId: cinemaId });
+    const deletedResult = await screenRepository.delete({
+      id: screenId,
+      cinema: {
+        id: cinemaId,
+      },
+    });
     if (deletedResult.affected === 0) {
       throw new NotFoundException();
     }

@@ -54,13 +54,13 @@ export class ScreenController {
     return this.screenService.getScreens(cinemaId, pageParam);
   }
 
-  @Delete()
+  @Delete(":screenId")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
   async deleteScreen(
     @Param("screenId", ParseIntPipe) screenId: number,
     @Param("cinemaId", ParseIntPipe) cinemaId: number,
-  ) {
+  ): Promise<void> {
     return this.screenService.deleteScreen(cinemaId, screenId);
   }
 }
