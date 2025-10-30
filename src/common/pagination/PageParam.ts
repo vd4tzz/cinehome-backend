@@ -42,4 +42,8 @@ export class PageParam {
     });
     return order;
   }
+
+  get skip(): number {
+    return this.page * this.size;
+  }
 }
