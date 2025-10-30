@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { ScreenService } from "./screen.service";
 import { CreateScreenRequest } from "./dto/create-screen-request";
 import { CreateScreenResponse } from "./dto/create-screen-response";
@@ -52,5 +52,15 @@ export class ScreenController {
   @CinemaOwnership()
   async getScreens(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
     return this.screenService.getScreens(cinemaId, pageParam);
+  }
+
+  @Delete()
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
+  @CinemaOwnership()
+  async deleteScreen(
+    @Param("screenId", ParseIntPipe) screenId: number,
+    @Param("cinemaId", ParseIntPipe) cinemaId: number,
+  ) {
+    return this.screenService.deleteScreen(cinemaId, screenId);
   }
 }

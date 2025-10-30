@@ -130,4 +130,12 @@ export class ScreenService {
 
     return new Page(dtos, pageParam, total);
   }
+
+  async deleteScreen(cinemaId: number, screenId: number) {
+    const screenRepository = this.dataSource.getRepository(Screen);
+    const deletedResult = await screenRepository.delete({ id: screenId, cinemaId: cinemaId });
+    if (deletedResult.affected === 0) {
+      throw new NotFoundException();
+    }
+  }
 }
