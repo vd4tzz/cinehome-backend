@@ -27,6 +27,9 @@ export class Cinema {
   @OneToMany(() => Screen, (screen) => screen.cinema, { onDelete: "CASCADE" })
   screens: Screen[];
 
+  @Column({ default: false })
+  completed: boolean;
+
   constructor(partial?: Partial<Cinema>) {
     if (partial) {
       Object.assign(this, partial);
