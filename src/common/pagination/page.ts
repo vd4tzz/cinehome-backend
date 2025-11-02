@@ -1,4 +1,4 @@
-import { PageParam } from "./PageParam";
+import { PageParam } from "./page-param";
 import { ApiProperty } from "@nestjs/swagger";
 
 class PageMetadata {

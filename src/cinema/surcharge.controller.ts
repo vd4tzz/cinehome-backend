@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { SurchargeService } from "./surcharge.service";
-import { PageParam } from "../common/pagination/PageParam";
+import { PageParam } from "../common/pagination/page-param";
 import { UpdateAudienceSurchargeRequest } from "./dto/update-audience-surcharge-request";
 import { UpdateDayTypeSurchargeRequest } from "./dto/update-day-type-surcharge-request";
 import { UpdateSeatTypeSurchargeRequest } from "./dto/update-seat-type-surcharge-request";

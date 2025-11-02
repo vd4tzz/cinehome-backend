@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { PageParam } from "./PageParam";
+import { PageParam } from "./page-param";
 import { Request } from "express";
 
 export const PageQuery = (...allowedSortFields: string[]) => {

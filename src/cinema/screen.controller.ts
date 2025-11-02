@@ -4,7 +4,7 @@ import { CreateScreenRequest } from "./dto/create-screen-request";
 import { CreateScreenResponse } from "./dto/create-screen-response";
 import { UpdateScreenRequest } from "./dto/update-screen-request";
 import { UpdateScreenResponse } from "./dto/update-screen-response";
-import { PageParam } from "../common/pagination/PageParam";
+import { PageParam } from "../common/pagination/page-param";
 import { RolesGuard } from "../auth/roles.guard";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CinemaOwnershipGuard } from "../auth/cinema-ownership.guard";

@@ -6,8 +6,8 @@ import { Cinema } from "./entity/cinema.entity";
 import { UpdateCinemaRequest } from "./dto/update-cinema-request";
 import { UpdateCinemaResponse } from "./dto/update-cinema-response";
 import { GetCinemaResponse } from "./dto/get-cinema-response";
-import { PageParam } from "../common/pagination/PageParam";
-import { Page } from "../common/pagination/Page";
+import { PageParam } from "../common/pagination/page-param";
+import { Page } from "../common/pagination/page";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()

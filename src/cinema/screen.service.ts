@@ -6,8 +6,8 @@ import { UpdateScreenRequest } from "./dto/update-screen-request";
 import { CreateScreenRequest } from "./dto/create-screen-request";
 import { CreateScreenResponse } from "./dto/create-screen-response";
 import { UpdateScreenResponse } from "./dto/update-screen-response";
-import { PageParam } from "../common/pagination/PageParam";
-import { Page } from "../common/pagination/Page";
+import { PageParam } from "../common/pagination/page-param";
+import { Page } from "../common/pagination/page";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
