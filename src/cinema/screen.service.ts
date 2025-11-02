@@ -14,17 +14,18 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 export class ScreenService {
   constructor(private dataSource: DataSource) {}
 
-  /**
-   * To create a Screen, the name with the associated ID must not already exist.
-   */
   async createScreen(cinemaId: number, createScreenRequest: CreateScreenRequest): Promise<CreateScreenResponse> {
-    // const cinemaRepository = this.dataSource.getRepository(Cinema);
+    /**
+     * To create a Screen, the name with the associated cinemaId must not yet exist.
+     */
+
+    const cinemaRepository = this.dataSource.getRepository(Cinema);
     const screenRepository = this.dataSource.getRepository(Screen);
 
-    // const cinema = await cinemaRepository.findOneBy({ id: cinemaId });
-    // if (!cinema) {
-    //   throw new NotFoundException();
-    // }
+    const cinema = await cinemaRepository.findOneBy({ id: cinemaId });
+    if (!cinema) {
+      throw new NotFoundException();
+    }
 
     const screenExisted = await screenRepository.findOneBy({
       cinema: { id: cinemaId },
@@ -65,7 +66,12 @@ export class ScreenService {
 
     if (!screen) throw new NotFoundException();
 
-    const nameExisted = await screenRepository.exists({ where: { name: updateScreenRequest.name } });
+    const nameExisted = await screenRepository.exists({
+      where: {
+        name: updateScreenRequest.name,
+        cinema: { id: cinemaId },
+      },
+    });
     if (nameExisted) {
       throw new BadRequestException();
     }

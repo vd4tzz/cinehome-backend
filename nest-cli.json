@@ -9,6 +9,10 @@
       {
         "include": "common/mail/templates/**/*",
         "outDir": "dist/src/"
+      },
+      {
+        "include": "**/*.sql",
+        "outDir": "dist/src/"
       }
     ]
   }

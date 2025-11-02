@@ -5,6 +5,8 @@ import { AuthUser } from "./auth/auth.user";
 import { RoleName } from "./user/entity/role.entity";
 import { Roles } from "./auth/roles.decorator";
 import { RolesGuard } from "./auth/roles.guard";
+import { PageQuery } from "./common/pagination/page-query.decorator";
+import { PageParam } from "./common/pagination/PageParam";
 
 @Controller()
 export class AppController {
@@ -16,10 +18,8 @@ export class AppController {
   }
 
   @Get("test")
-  @UseGuards(AuthGuard("jwt"), RolesGuard)
-  @Roles(RoleName.USER)
-  test(@Req() req: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return req.user as AuthUser;
+  test(@PageQuery() pageParam: PageParam) {
+    console.log(pageParam);
+    console.log(pageParam.order);
   }
 }

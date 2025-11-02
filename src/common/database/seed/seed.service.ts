@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import * as fs from "node:fs";
+import * as path from "node:path";
 
 @Injectable()
 export class SeedService {
@@ -11,7 +12,8 @@ export class SeedService {
   }
 
   async init() {
-    const sqlScript = fs.readFileSync("src/common/seed/sql-script/init.sql", "utf-8");
+    const filePath = path.join(__dirname, "./sql-script/init.sql");
+    const sqlScript = fs.readFileSync(filePath, "utf-8");
     await this.dataSource.query(sqlScript);
   }
 }

@@ -1,14 +1,18 @@
-import { Expose, Transform } from "class-transformer";
+import { Transform } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class PageParam {
+  private sortByValidated: boolean = false;
+  static DEFAULT_PAGE_NUMBER: number = 0;
+  static DEFAULT_SIZE_NUMBER: number = 10;
+
   @ApiPropertyOptional()
   @Transform(({ value }) => (value !== undefined ? Number(value) : 0))
-  page: number;
+  page: number = PageParam.DEFAULT_SIZE_NUMBER;
 
   @ApiPropertyOptional()
   @Transform(({ value }) => (value !== undefined ? Number(value) : 10))
-  size: number;
+  size: number = PageParam.DEFAULT_PAGE_NUMBER;
 
   @ApiPropertyOptional({ type: String })
   @Transform(({ value }) => {
@@ -34,7 +38,6 @@ export class PageParam {
   })
   private sortDir: string[];
 
-  @Expose()
   get order(): Record<string, "ASC" | "DESC"> {
     const order: Record<string, "ASC" | "DESC"> = {};
     this.sortBy?.forEach((field, i) => {
@@ -45,5 +48,26 @@ export class PageParam {
 
   get skip(): number {
     return this.page * this.size;
+  }
+
+  validateSortBy(allowedSortFields: string[]): PageParam {
+    const valid = new PageParam();
+    valid.page = this.page;
+    valid.size = this.size;
+    valid.sortDir = this.sortDir;
+
+    if (allowedSortFields === undefined || allowedSortFields.length === 0) {
+      valid.sortBy = this.sortBy;
+    } else {
+      valid.sortBy = this.sortBy.filter((f) => allowedSortFields.includes(f));
+    }
+
+    valid.sortByValidated = true;
+
+    return valid;
+  }
+
+  get isSortByValidated(): boolean {
+    return this.sortByValidated;
   }
 }
