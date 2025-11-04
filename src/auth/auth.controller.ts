@@ -123,20 +123,18 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(GoogleGuard)
   async googleOAuth2Callback(@Req() req: Request, @Res() response: Response) {
-    const stateParam = req.query.state as string;
-    if (!stateParam) {
-      return response;
-    }
-
-    let stateObj: StateObject;
+    let successRedirectUrl: string;
+    let failRedirectUrl: string;
     try {
-      stateObj = JSON.parse(decodeURIComponent(stateParam)) as StateObject;
-    } catch {
-      return response;
-    }
+      const stateParam = req.query.state as string;
+      const stateObj = JSON.parse(decodeURIComponent(stateParam)) as StateObject;
 
-    const successRedirectUrl = new URL(stateObj.successUrl).toString();
-    const failRedirectUrl = new URL(stateObj.failUrl).toString();
+      successRedirectUrl = new URL(stateObj.successUrl).toString();
+      failRedirectUrl = new URL(stateObj.failUrl).toString();
+    } catch {
+      response.status(400).send("LOI");
+      return;
+    }
 
     let isOAuthSuccess = true;
     try {
