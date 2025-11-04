@@ -22,10 +22,14 @@ import { LoginResponse } from "./dto/login-response";
 import { ResetPasswordRequest } from "./dto/reset-password-request";
 import { SendEmailVerificationRequest } from "./dto/send-email-verification-request";
 import { VerifyEmailRequest } from "./dto/verify-email-request";
-import { AuthGuard } from "@nestjs/passport";
 import { OAuth2Provider } from "../user/entity/user.entity";
 import { AuthUser } from "./auth.user";
 import { GoogleGuard } from "./google.guard";
+
+interface StateObject {
+  successUrl: string;
+  failUrl: string;
+}
 
 @Controller("api/auth")
 @UseInterceptors(ClassSerializerInterceptor)
@@ -119,19 +123,32 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(GoogleGuard)
   async googleOAuth2Callback(@Req() req: Request, @Res() response: Response) {
-    const email = (req.user as AuthUser).email;
-    const loginResponse = await this.authService.handleOauth2Callback(email, OAuth2Provider.GOOGLE);
-    this.setRefreshJwtCookie(response, loginResponse.refreshToken, loginResponse.refreshTokenExpIn);
-
-    const state = req.query.state as string;
-    let redirectUrl: string;
-    try {
-      redirectUrl = decodeURIComponent(state);
-    } catch {
-      redirectUrl = "";
+    const stateParam = req.query.state as string;
+    if (!stateParam) {
+      return response;
     }
 
-    return redirectUrl !== "" ? response.redirect(redirectUrl) : response;
+    let stateObj: StateObject;
+    try {
+      stateObj = JSON.parse(decodeURIComponent(stateParam)) as StateObject;
+    } catch {
+      return response;
+    }
+
+    const successRedirectUrl = new URL(stateObj.successUrl).toString();
+    const failRedirectUrl = new URL(stateObj.failUrl).toString();
+
+    let isOAuthSuccess = true;
+    try {
+      const email = (req.user as AuthUser).email;
+      const loginResponse = await this.authService.handleOauth2Callback(email, OAuth2Provider.GOOGLE);
+      this.setRefreshJwtCookie(response, loginResponse.refreshToken, loginResponse.refreshTokenExpIn);
+    } catch {
+      // ConflictAuthenticationMethodException
+      isOAuthSuccess = false;
+    }
+
+    return response.redirect(isOAuthSuccess ? successRedirectUrl : failRedirectUrl);
   }
 
   @Get("refresh")
