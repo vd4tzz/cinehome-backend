@@ -352,6 +352,8 @@ export class AuthService {
       email: email!,
       accessToken: this.signAccessToken(jwtPayloadOut),
       accessTokenExpIn: this.JWT_ACCESS_EXP,
+      refreshToken: this.signRefreshToken(jwtPayloadOut),
+      refreshTokenExpIn: this.JWT_REFRESH_EXP,
     });
   }
 

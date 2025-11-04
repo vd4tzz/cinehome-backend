@@ -16,7 +16,7 @@ import { SignupResponse } from "./dto/signup-response";
 import { ApiOkResponse, ApiResponse } from "@nestjs/swagger";
 import { SendEmailResponse } from "./dto/send-email-response";
 import { VerifyEmailResponse } from "./dto/verify-email-response";
-import express, { type Request, type Response } from "express";
+import { type Request, type Response } from "express";
 import { LoginRequest } from "./dto/login-request";
 import { LoginResponse } from "./dto/login-response";
 import { ResetPasswordRequest } from "./dto/reset-password-request";
@@ -24,8 +24,10 @@ import { SendEmailVerificationRequest } from "./dto/send-email-verification-requ
 import { VerifyEmailRequest } from "./dto/verify-email-request";
 import { AuthGuard } from "@nestjs/passport";
 import { OAuth2Provider } from "../user/entity/user.entity";
+import { AuthUser } from "./auth.user";
+import { GoogleGuard } from "./google.guard";
 
-@Controller("auth")
+@Controller("api/auth")
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   private JWT_REFRESH_COOKIE = "REFRESH_TOKEN";
@@ -109,34 +111,50 @@ export class AuthController {
   }
 
   @Get("google")
-  @UseGuards(AuthGuard("google"))
+  @UseGuards(GoogleGuard)
   googleOAuth2() {
     console.log("google oauth2");
   }
 
   @Get("google/callback")
-  @UseGuards(AuthGuard("google"))
-  async googleOAuth2Callback(@Req() req: any, @Res({ passthrough: true }) response: express.Response) {
-    // Todo: ép kiểu cho req.user.email
-    const loginResponse = await this.authService.handleOauth2Callback(req.user.email, OAuth2Provider.GOOGLE);
-    response.cookie("refreshToken", loginResponse.refreshToken, {
-      httpOnly: true,
-      maxAge: loginResponse.refreshTokenExpIn * 1000,
-    });
-    return loginResponse;
+  @UseGuards(GoogleGuard)
+  async googleOAuth2Callback(@Req() req: Request, @Res() response: Response) {
+    const email = (req.user as AuthUser).email;
+    const loginResponse = await this.authService.handleOauth2Callback(email, OAuth2Provider.GOOGLE);
+    this.setRefreshJwtCookie(response, loginResponse.refreshToken, loginResponse.refreshTokenExpIn);
+
+    const state = req.query.state as string;
+    let redirectUrl: string;
+    try {
+      redirectUrl = decodeURIComponent(state);
+    } catch {
+      redirectUrl = "";
+    }
+
+    return redirectUrl !== "" ? response.redirect(redirectUrl) : response;
   }
 
   @Get("refresh")
-  async refreshJwt(@Req() request: Request) {
+  async refreshJwt(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
     const refreshToken = (request.cookies as Record<string, string | undefined>)[this.JWT_REFRESH_COOKIE] ?? "";
-    return await this.authService.refreshJwt(refreshToken);
+    const res = await this.authService.refreshJwt(refreshToken);
+
+    this.setRefreshJwtCookie(response, res.refreshToken, res.refreshTokenExpIn);
+
+    return res;
+  }
+
+  @Get("logout")
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie(this.JWT_REFRESH_COOKIE);
   }
 
   private setRefreshJwtCookie(response: Response, refreshJwt: string, refreshJwtExpIn: number) {
     response.cookie(this.JWT_REFRESH_COOKIE, refreshJwt, {
       httpOnly: true,
       maxAge: refreshJwtExpIn * 1000,
-      path: "/auth/refresh",
+      path: "/",
+      // sameSite: "lax",
     });
   }
 }

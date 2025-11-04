@@ -8,6 +8,7 @@ import { MailModule } from "../common/mail/mail.module";
 import { JwtStrategy } from "./jwt.strategy";
 import { AuthRoleContext } from "./auth-role-context";
 import { GoogleStrategy } from "./google.strategy";
+import { GoogleGuard } from "./google.guard";
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { GoogleStrategy } from "./google.strategy";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, AuthRoleContext],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, GoogleGuard, AuthRoleContext],
   exports: [JwtModule, AuthRoleContext],
 })
 export class AuthModule {}

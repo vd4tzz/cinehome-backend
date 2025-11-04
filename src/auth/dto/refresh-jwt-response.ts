@@ -13,6 +13,12 @@ export class RefreshJwtResponse {
   @ApiProperty()
   accessTokenExpIn: number;
 
+  @ApiProperty()
+  refreshToken: string;
+
+  @ApiProperty()
+  refreshTokenExpIn: number;
+
   constructor(partial: Partial<RefreshJwtResponse>) {
     Object.assign(this, partial);
   }

@@ -10,6 +10,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { snapshot: true });
   app.use(cookieParser());
 
+  app.enableCors({
+    origin: "http://localhost:5173", // Cho phép React/Vue/... gọi đến
+    credentials: true, // Cho phép gửi cookie/token qua
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
@@ -43,9 +49,6 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, documentFactory);
-
-  // const seedService = app.get(SeedService);
-  // await seedService.init();
 
   await app.listen(process.env.PORT ?? 3000);
 }
