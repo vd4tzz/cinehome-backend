@@ -8,11 +8,11 @@ export class PageParam {
 
   @ApiPropertyOptional()
   @Transform(({ value }) => (value !== undefined ? Number(value) : 0))
-  page: number = PageParam.DEFAULT_SIZE_NUMBER;
+  page: number = PageParam.DEFAULT_PAGE_NUMBER;
 
   @ApiPropertyOptional()
   @Transform(({ value }) => (value !== undefined ? Number(value) : 10))
-  size: number = PageParam.DEFAULT_PAGE_NUMBER;
+  size: number = PageParam.DEFAULT_SIZE_NUMBER;
 
   @ApiPropertyOptional({ type: String })
   @Transform(({ value }) => {

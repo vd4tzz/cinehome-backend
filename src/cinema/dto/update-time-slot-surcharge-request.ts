@@ -11,10 +11,10 @@ export class TimeSlotSurchargeDto {
   @IsNumber()
   timeSlotId: number;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  timeSlotCode: string;
+  // @ApiProperty()
+  // @IsString()
+  // @IsNotEmpty()
+  // timeSlotCode: string;
 
   @ApiProperty()
   @IsString()

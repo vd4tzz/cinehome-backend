@@ -81,7 +81,7 @@ export class AuthService {
       await userRepository.save(newUser);
 
       return new SignupResponse({
-        id: newUser.id,
+        userId: newUser.id,
         email: newUser.email,
       });
     });
@@ -94,7 +94,7 @@ export class AuthService {
       const userRepository = manager.getRepository(User);
       const tokenRepository = manager.getRepository(Token);
 
-      const { userId } = sendEmailVerificationRequest;
+      const { userId, url } = sendEmailVerificationRequest;
 
       const user = await userRepository.findOneBy({ id: userId });
       if (!user) {
@@ -118,7 +118,7 @@ export class AuthService {
         }),
       );
 
-      const verificationLink = `${this.FRONT_END_URL}?userId=${user.id}&token=${rawToken}`;
+      const verificationLink = `${url}?userId=${user.id}&token=${rawToken}`;
       await this.mailService.sendVerification(user.email, verificationLink, this.VERIFIED_TOKEN_EXP / 60);
 
       return new SendEmailResponse({

@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class SignupResponse {
   @ApiProperty()
-  id: number;
+  userId: number;
 
   @ApiProperty()
   email: string;

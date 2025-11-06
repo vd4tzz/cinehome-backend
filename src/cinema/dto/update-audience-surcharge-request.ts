@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsString, IsNotEmpty, IsArray, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
+import { GetAudienceSurchargeResponse } from "./get-audience-surcharge-response";
 
 export class AudienceSurchargeDto {
   @ApiProperty()

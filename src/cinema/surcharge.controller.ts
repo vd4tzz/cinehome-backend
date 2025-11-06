@@ -34,90 +34,90 @@ export class SurchargeController {
   @Get("/audience-surcharges")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
-  async getAudienceSurcharge(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
-    return this.surchargeService.getAudienceSurcharge(cinemaId, pageParam);
+  async getAudienceSurcharge(@Param("cinemaId") cinemaId: number) {
+    return this.surchargeService.getAudienceSurcharge(cinemaId);
   }
 
-  @Patch("/audiences-surcharges")
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch("/audience-surcharges")
+  // @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
   async updateAudienceSurcharge(
     @Param("cinemaId", ParseIntPipe) cinemaId: number,
     @Body() updateAudienceSurchargeRequest: UpdateAudienceSurchargeRequest,
   ) {
-    await this.surchargeService.updateAudienceSurcharge(cinemaId, updateAudienceSurchargeRequest);
+    return await this.surchargeService.updateAudienceSurcharge(cinemaId, updateAudienceSurchargeRequest);
   }
 
   @Get("day-type-surcharges")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
-  async getDayTypeSurcharge(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
-    return this.surchargeService.getDayTypeSurcharge(cinemaId, pageParam);
+  async getDayTypeSurcharge(@Param("cinemaId") cinemaId: number) {
+    return this.surchargeService.getDayTypeSurcharge(cinemaId);
   }
 
   @Patch("day-type-surcharges")
-  @HttpCode(HttpStatus.NO_CONTENT)
+  // @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
   async updateDayTypeSurcharge(
     @Param("cinemaId", ParseIntPipe) cinemaId: number,
     @Body() updateDayTypeSurchargeRequest: UpdateDayTypeSurchargeRequest,
   ) {
-    await this.surchargeService.updateDayTypeSurcharge(cinemaId, updateDayTypeSurchargeRequest);
+    return await this.surchargeService.updateDayTypeSurcharge(cinemaId, updateDayTypeSurchargeRequest);
   }
 
   @Get("format-surcharges")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
-  async getFormatSurcharge(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
-    return await this.surchargeService.getFormatSurcharge(cinemaId, pageParam);
+  async getFormatSurcharge(@Param("cinemaId") cinemaId: number) {
+    return await this.surchargeService.getFormatSurcharge(cinemaId);
   }
 
   @Patch("format-surcharges")
-  @HttpCode(HttpStatus.NO_CONTENT)
+  // @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
   async updateFormatSurcharge(
     @Param("cinemaId", ParseIntPipe) cinemaId: number,
     @Body() updateFormatSurchargeRequest: UpdateFormatSurchargeRequest,
   ) {
-    await this.surchargeService.updateFormatSurcharge(cinemaId, updateFormatSurchargeRequest);
+    return await this.surchargeService.updateFormatSurcharge(cinemaId, updateFormatSurchargeRequest);
   }
 
   @Get("seat-type-surcharges")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
-  async getSeatTypeSurcharge(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
-    return await this.surchargeService.getSeatTypeSurcharge(cinemaId, pageParam);
+  async getSeatTypeSurcharge(@Param("cinemaId") cinemaId: number) {
+    return await this.surchargeService.getSeatTypeSurcharge(cinemaId);
   }
 
   @Patch("seat-type-surcharges")
-  @HttpCode(HttpStatus.NO_CONTENT)
+  // @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
   async updateSeatTypeSurcharge(
     @Param("cinemaId", ParseIntPipe) cinemaId: number,
     @Body() updateSeatTypeSurchargeRequest: UpdateSeatTypeSurchargeRequest,
   ) {
-    await this.surchargeService.updateSeatTypeSurcharge(cinemaId, updateSeatTypeSurchargeRequest);
+    return await this.surchargeService.updateSeatTypeSurcharge(cinemaId, updateSeatTypeSurchargeRequest);
   }
 
   @Get("time-slot-surcharges")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
-  async getTimeSlotSurcharge(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
-    return await this.surchargeService.getTimeSlotSurcharge(cinemaId, pageParam);
+  async getTimeSlotSurcharge(@Param("cinemaId") cinemaId: number) {
+    return await this.surchargeService.getTimeSlotSurcharge(cinemaId);
   }
 
   @Patch("time-slot-surcharges")
-  @HttpCode(HttpStatus.NO_CONTENT)
+  // @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
   @CinemaOwnership()
   async updateTimeSlotSurcharge(
     @Param("cinemaId", ParseIntPipe) cinemaId: number,
     @Body() updateTimeSlotSurchargeRequest: UpdateTimeSlotSurchargeRequest,
   ) {
-    await this.surchargeService.updateTimeSlotSurcharge(cinemaId, updateTimeSlotSurchargeRequest);
+    return await this.surchargeService.updateTimeSlotSurcharge(cinemaId, updateTimeSlotSurchargeRequest);
   }
 }

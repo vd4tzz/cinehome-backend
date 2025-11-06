@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { DataSource, In } from "typeorm";
-import { Page } from "../common/pagination/page";
 import { PageParam } from "../common/pagination/page-param";
 import { AudienceSurcharge } from "./entity/audience-surcharge.entity";
 import { GetAudienceSurchargeResponse } from "./dto/get-audience-surcharge-response";
@@ -22,35 +21,34 @@ import { UpdateTimeSlotSurchargeRequest } from "./dto/update-time-slot-surcharge
 export class SurchargeService {
   constructor(private dataSource: DataSource) {}
 
-  async getAudienceSurcharge(cinemaId: number, pageParam: PageParam): Promise<Page<GetAudienceSurchargeResponse>> {
-    const { page, size, order } = pageParam;
+  async getAudienceSurcharge(cinemaId: number): Promise<GetAudienceSurchargeResponse> {
     const audienceSurchargeRepository = this.dataSource.getRepository(AudienceSurcharge);
-    const [audienceSurcharges, total] = await audienceSurchargeRepository.findAndCount({
+    const audienceSurcharges = await audienceSurchargeRepository.find({
       where: { cinemaId: cinemaId },
-      skip: page * size,
-      take: size,
-      order: order,
       relations: {
         audience: true,
       },
     });
 
-    const dtos: GetAudienceSurchargeResponse[] = audienceSurcharges.map((surcharge) => ({
+    const dtos = audienceSurcharges.map((surcharge) => ({
       cinemaId: surcharge.cinemaId,
       audienceId: surcharge.audienceId,
       audienceType: surcharge.audience.type,
       surcharge: surcharge.surcharge,
     }));
 
-    return new Page(dtos, pageParam, total);
+    // return new Page(dtos, pageParam, total);
+    return {
+      audienceSurcharges: dtos,
+    };
   }
 
   async updateAudienceSurcharge(cinemaId: number, updateAudienceSurchargeRequest: UpdateAudienceSurchargeRequest) {
-    return this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const audienceSurchargeRepository = manager.getRepository(AudienceSurcharge);
       const { audienceSurcharges } = updateAudienceSurchargeRequest;
 
-      // ensure all belong to same cinema
+      // ensure all belong to the same cinema
       const allSameCinema = audienceSurcharges.every((dto) => dto.cinemaId === cinemaId);
       if (!allSameCinema) {
         throw new BadRequestException();
@@ -93,33 +91,33 @@ export class SurchargeService {
 
       await audienceSurchargeRepository.save(updatedEntities);
     });
+
+    return this.getAudienceSurcharge(cinemaId);
   }
 
-  async getDayTypeSurcharge(cinemaId: number, pageParam: PageParam): Promise<Page<GetDayTypeSurchargeResponse>> {
-    const { size, order, skip } = pageParam;
+  async getDayTypeSurcharge(cinemaId: number): Promise<GetDayTypeSurchargeResponse> {
     const dayTypeSurchargeRepository = this.dataSource.getRepository(DayTypeSurcharge);
-    const [dayTypeSurcharges, total] = await dayTypeSurchargeRepository.findAndCount({
+    const dayTypeSurcharges = await dayTypeSurchargeRepository.find({
       where: { cinemaId: cinemaId },
-      skip: skip,
-      take: size,
-      order: order,
       relations: {
         dayType: true,
       },
     });
 
-    const dtos: GetDayTypeSurchargeResponse[] = dayTypeSurcharges.map((surcharge) => ({
+    const dtos = dayTypeSurcharges.map((surcharge) => ({
       cinemaId: surcharge.cinemaId,
       dayTypeId: surcharge.dayTypeId,
       dayTypeCode: surcharge.dayType.code,
       surcharge: surcharge.surcharge,
     }));
 
-    return new Page(dtos, pageParam, total);
+    return {
+      dayTypeSurcharges: dtos,
+    };
   }
 
   async updateDayTypeSurcharge(cinemaId: number, updateDayTypeSurchargeRequest: UpdateDayTypeSurchargeRequest) {
-    return this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const dayTypeSurchargeRepository = manager.getRepository(DayTypeSurcharge);
       const { dayTypeSurcharges } = updateDayTypeSurchargeRequest;
 
@@ -166,33 +164,33 @@ export class SurchargeService {
 
       await dayTypeSurchargeRepository.save(updatedEntities);
     });
+
+    return this.getDayTypeSurcharge(cinemaId);
   }
 
-  async getFormatSurcharge(cinemaId: number, pageParam: PageParam): Promise<Page<GetFormatSurchargeResponse>> {
-    const { size, order, skip } = pageParam;
+  async getFormatSurcharge(cinemaId: number): Promise<GetFormatSurchargeResponse> {
     const formatSurchargeRepository = this.dataSource.getRepository(FormatSurcharge);
-    const [formatSurcharges, total] = await formatSurchargeRepository.findAndCount({
+    const formatSurcharges = await formatSurchargeRepository.find({
       where: { cinemaId: cinemaId },
-      skip: skip,
-      take: size,
-      order: order,
       relations: {
         format: true,
       },
     });
 
-    const dtos: GetFormatSurchargeResponse[] = formatSurcharges.map((formatSurcharge) => ({
+    const dtos = formatSurcharges.map((formatSurcharge) => ({
       cinemaId: formatSurcharge.cinemaId,
       formatId: formatSurcharge.formatId,
       formatCode: formatSurcharge.format.code,
       surcharge: formatSurcharge.surcharge,
     }));
 
-    return new Page(dtos, pageParam, total);
+    return {
+      formatSurcharges: dtos,
+    };
   }
 
   async updateFormatSurcharge(cinemaId: number, updateFormatSurchargeRequest: UpdateFormatSurchargeRequest) {
-    return this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const formatSurchargeRepository = manager.getRepository(FormatSurcharge);
       const { formatSurcharges } = updateFormatSurchargeRequest;
 
@@ -239,33 +237,33 @@ export class SurchargeService {
 
       await formatSurchargeRepository.save(updatedEntities);
     });
+
+    return this.getFormatSurcharge(cinemaId);
   }
 
-  async getSeatTypeSurcharge(cinemaId: number, pageParam: PageParam): Promise<Page<GetSeatTypeSurchargeResponse>> {
-    const { size, order, skip } = pageParam;
+  async getSeatTypeSurcharge(cinemaId: number): Promise<GetSeatTypeSurchargeResponse> {
     const seatTypeSurchargeRepository = this.dataSource.getRepository(SeatTypeSurcharge);
-    const [seatTypeSurcharges, total] = await seatTypeSurchargeRepository.findAndCount({
+    const seatTypeSurcharges = await seatTypeSurchargeRepository.find({
       where: { cinemaId: cinemaId },
-      skip: skip,
-      take: size,
-      order: order,
       relations: {
         seatType: true,
       },
     });
 
-    const dtos: GetSeatTypeSurchargeResponse[] = seatTypeSurcharges.map((seatTypeSurcharge) => ({
+    const dtos = seatTypeSurcharges.map((seatTypeSurcharge) => ({
       cinemaId: seatTypeSurcharge.cinemaId,
       seatTypeId: seatTypeSurcharge.seatTypeId,
       seatTypeCode: seatTypeSurcharge.seatType.code,
       surcharge: seatTypeSurcharge.surcharge,
     }));
 
-    return new Page(dtos, pageParam, total);
+    return {
+      seatTypeSurcharges: dtos,
+    };
   }
 
   async updateSeatTypeSurcharge(cinemaId: number, updateSeatTypeSurchargeRequest: UpdateSeatTypeSurchargeRequest) {
-    return this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const seatTypeSurchargeRepository = manager.getRepository(SeatTypeSurcharge);
       const { seatTypeSurcharges } = updateSeatTypeSurchargeRequest;
 
@@ -312,23 +310,21 @@ export class SurchargeService {
 
       await seatTypeSurchargeRepository.save(updatedEntities);
     });
+
+    return this.getSeatTypeSurcharge(cinemaId);
   }
 
-  async getTimeSlotSurcharge(cinemaId: number, pageParam: PageParam): Promise<Page<GetTimeSlotSurchargeResponse>> {
-    const { size, order, skip } = pageParam;
+  async getTimeSlotSurcharge(cinemaId: number): Promise<GetTimeSlotSurchargeResponse> {
     const timeSlotSurchargeRepository = this.dataSource.getRepository(TimeSlotSurcharge);
 
-    const [timeSlotSurcharges, total] = await timeSlotSurchargeRepository.findAndCount({
+    const timeSlotSurcharges = await timeSlotSurchargeRepository.find({
       where: { cinemaId },
-      skip,
-      take: size,
-      order,
       relations: {
         timeSlot: true,
       },
     });
 
-    const dtos: GetTimeSlotSurchargeResponse[] = timeSlotSurcharges.map((timeSlotSurcharge) => ({
+    const dtos = timeSlotSurcharges.map((timeSlotSurcharge) => ({
       cinemaId: timeSlotSurcharge.cinemaId,
       timeSlotId: timeSlotSurcharge.timeSlotId,
       startTime: timeSlotSurcharge.timeSlot.startTime,
@@ -336,11 +332,13 @@ export class SurchargeService {
       surcharge: timeSlotSurcharge.surcharge,
     }));
 
-    return new Page(dtos, pageParam, total);
+    return {
+      timeSlotSurcharges: dtos,
+    };
   }
 
   async updateTimeSlotSurcharge(cinemaId: number, updateTimeSlotSurchargeRequest: UpdateTimeSlotSurchargeRequest) {
-    return this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const timeSlotSurchargeRepository = manager.getRepository(TimeSlotSurcharge);
       const { timeSlotSurcharges } = updateTimeSlotSurchargeRequest;
 
@@ -387,5 +385,7 @@ export class SurchargeService {
 
       await timeSlotSurchargeRepository.save(updatedEntities);
     });
+
+    return this.getTimeSlotSurcharge(cinemaId);
   }
 }
