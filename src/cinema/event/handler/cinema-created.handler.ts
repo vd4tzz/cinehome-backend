@@ -18,7 +18,7 @@ export class CinemaCreatedHandler {
   constructor(private dataSource: DataSource) {}
 
   @OnEvent("cinema.created")
-  async handleCinemaCreatedHandler(event: CinemaCreatedEvent) {
+  async handleCinemaCreated(event: CinemaCreatedEvent) {
     const { cinemaId } = event;
 
     return this.dataSource.transaction(async (manager) => {
