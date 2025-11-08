@@ -8,6 +8,7 @@ import { MailModule } from "./common/mail/mail.module";
 import { SeedModule } from "./common/database/seed/seed.module";
 import { CinemaModule } from "./cinema/cinema.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
+import { MovieModule } from "./movie/movie.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
     EventEmitterModule.forRoot(),
     AuthModule,
     CinemaModule,
+    MovieModule,
     DatabaseModule,
     MailModule,
     SeedModule,

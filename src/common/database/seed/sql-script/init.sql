@@ -199,7 +199,14 @@ DO $$
         INSERT INTO time_slot_surcharge (cinema_id, time_slot_id, surcharge)
         VALUES
             (cinema1_id, time_slot_morning_id, 0),
-            (cinema1_id, time_slot_afternoon_id, 10000),
-            (cinema1_id, time_slot_evening_id, 20000);
+            (cinema1_id, time_slot_afternoon_id, 0),
+            (cinema1_id, time_slot_evening_id, 0);
+
+        --
+        INSERT INTO genres (name)
+        VALUES
+            ('Kinh dị'),
+            ('Hành động'),
+            ('Lãng mạn');
     END;
 $$;
