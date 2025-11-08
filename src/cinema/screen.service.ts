@@ -14,6 +14,10 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 export class ScreenService {
   constructor(private dataSource: DataSource) {}
 
+  //Todo:
+  // - với các api xóa, sửa:
+  //  + cần kiểm tra showtime, đảm bảo không có startTime >= current
+
   async createScreen(cinemaId: number, createScreenRequest: CreateScreenRequest): Promise<CreateScreenResponse> {
     /**
      * To create a Screen, the name with the associated cinemaId must not yet exist.

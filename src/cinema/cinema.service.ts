@@ -17,6 +17,11 @@ export class CinemaService {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  //Todo:
+  // - đổi hard delete thành soft delete
+  // - với các api xóa, sửa:
+  //  + cần kiểm tra showtime, đảm bảo không có startTime >= current
+
   async createCinema(createCinemaRequest: CreateCinemaRequest): Promise<CreateCinemaResponse> {
     const cinemaRepository = this.dataSource.getRepository(Cinema);
 
