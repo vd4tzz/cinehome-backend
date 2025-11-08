@@ -17,43 +17,4 @@ import { ApiBearerAuth } from "@nestjs/swagger";
 export class ScreenController {
   constructor(private screenService: ScreenService) {}
 
-  @Post()
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async createScreen(
-    @Param("cinemaId") cinemaId: number,
-    @Body() createScreenRequest: CreateScreenRequest,
-  ): Promise<CreateScreenResponse> {
-    return this.screenService.createScreen(cinemaId, createScreenRequest);
-  }
-
-  @Put(":screenId")
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async updateScreen(
-    @Param("cinemaId") cinemaId: number,
-    @Param("screenId") screenId: number,
-    @Body() updateScreenRequest: UpdateScreenRequest,
-  ): Promise<UpdateScreenResponse> {
-    return this.screenService.updateScreen(cinemaId, screenId, updateScreenRequest);
-  }
-
-  @Get(":screenId")
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async getScreenById(@Param("screenId") screenId: number) {
-    return this.screenService.getScreenById(screenId);
-  }
-
-  @Get()
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async getScreens(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
-    return this.screenService.getScreens(cinemaId, pageParam);
-  }
-
-  @Delete(":screenId")
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async deleteScreen(
-    @Param("cinemaId", ParseIntPipe) cinemaId: number,
-    @Param("screenId", ParseIntPipe) screenId: number,
-  ): Promise<void> {
-    return this.screenService.deleteScreen(cinemaId, screenId);
-  }
 }
