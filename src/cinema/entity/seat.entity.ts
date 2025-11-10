@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Screen } from "./screen.entity";
 import { SeatType } from "./seat-type.entity";
 
@@ -20,7 +20,7 @@ export class Seat {
   @Column({ name: "column_order" })
   columnOrder: number;
 
-  @OneToOne(() => SeatType, { onDelete: "CASCADE" })
+  @ManyToOne(() => SeatType, { onDelete: "CASCADE" })
   @JoinColumn({ name: "seat_type_id" })
   type: SeatType;
 }

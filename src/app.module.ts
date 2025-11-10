@@ -14,12 +14,12 @@ import { MovieModule } from "./movie/movie.module";
   imports: [
     ConfigModule.forRoot(),
     EventEmitterModule.forRoot(),
+    SeedModule,
     AuthModule,
     CinemaModule,
     MovieModule,
     DatabaseModule,
     MailModule,
-    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],

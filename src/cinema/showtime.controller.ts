@@ -1,0 +1,16 @@
+import { ShowtimeService } from "./showtime.service";
+import { Body, Controller, Param, ParseIntPipe, Patch } from "@nestjs/common";
+import { CancelShowtimeRequest } from "./dto/CancelShowtimeRequest";
+
+@Controller("api/showtimes")
+export class ShowtimeController {
+  constructor(private showtimeService: ShowtimeService) {}
+
+  @Patch(":showtimeId")
+  async cancelShowtime(
+    @Param("showtimeId", ParseIntPipe) showtimeId: number,
+    @Body() cancelShowtimeRequest: CancelShowtimeRequest,
+  ) {
+    return this.showtimeService.cancelShowtime(showtimeId, cancelShowtimeRequest);
+  }
+}

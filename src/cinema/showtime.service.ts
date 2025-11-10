@@ -19,12 +19,12 @@ export class ShowtimeService {
     private eventEmitter2: EventEmitter2,
   ) {}
 
-  async createShowtime(createShowtimeRequest: CreateShowtimeRequest) {
+  async createShowtime(screenId: number, createShowtimeRequest: CreateShowtimeRequest) {
     const showtimeRepository = this.dataSource.getRepository(Showtime);
     const movieRepository = this.dataSource.getRepository(Movie);
     const screenRepository = this.dataSource.getRepository(Screen);
 
-    const { screenId, movieId } = createShowtimeRequest;
+    const { movieId } = createShowtimeRequest;
 
     const movie = await movieRepository.findOneBy({ id: movieId });
     const screen = await screenRepository.findOneBy({ id: screenId });
@@ -72,6 +72,10 @@ export class ShowtimeService {
       throw new NotFoundException();
     }
 
+    if (showtime.state == ShowtimeState.CANCELED) {
+      throw new BadRequestException();
+    }
+
     showtime.state = ShowtimeState.CANCELED;
     showtime.description = cancelShowtimeRequest.description;
     await showtimeRepository.save(showtime);
@@ -88,7 +92,41 @@ export class ShowtimeService {
     } as CancelShowtimeResponse;
   }
 
-  async getShowtimes(showtimeQuery: ShowtimeQuery) {
+  async getShowtimes(screenId: number, showtimeQuery: ShowtimeQuery) {
+    const { page, size, startTimeFrom, startTimeTo, state } = showtimeQuery;
 
+    const qb = this.dataSource.getRepository(Showtime).createQueryBuilder("showtime");
+
+    qb.andWhere("showtime.screen_id = :screenId", { screenId });
+
+    if (startTimeFrom) {
+      qb.andWhere("showtime.startTime >= :startTimeFrom", { startTimeFrom: new Date(startTimeFrom) });
+    }
+
+    if (startTimeTo) {
+      qb.andWhere("showtime.startTime <= :startTimeTo", { startTimeTo: new Date(startTimeTo) });
+    }
+
+    if (state) {
+      qb.andWhere("showtime.state = :state", { state });
+    }
+
+    qb.orderBy("showtime.id", "DESC");
+
+    qb.skip(page * size).take(size);
+
+    const [showtimes, total] = await qb.getManyAndCount();
+
+    const dtos = showtimes.map((showtime) => ({
+      id: showtime.id,
+      movieId: showtime.movieId,
+      screenId: showtime.screenId,
+      startTime: showtime.startTime.toISOString(),
+      endTime: showtime.endTime.toISOString(),
+      state: showtime.state,
+      description: showtime.description,
+    }));
+
+    return new Page(dtos, showtimeQuery, total);
   }
 }

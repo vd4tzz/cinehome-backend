@@ -8,7 +8,7 @@ import { UpdateMovieImagesRequest } from "./dto/UpdateMovieImagesRequest";
 import { StorageService } from "../common/storage/storage.service";
 import { MovieQuery } from "./dto/query/MovieQuery";
 import { Page } from "../common/pagination/page";
-import { UpdateMovieStatusResponse } from "./UpdateMovieStatusResponse";
+import { UpdateMovieStatusResponse } from "./dto/UpdateMovieStatusResponse";
 
 @Injectable()
 export class MovieService {

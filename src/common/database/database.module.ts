@@ -20,6 +20,7 @@ import { FormatSurcharge } from "../../cinema/entity/format-surcharge.entity";
 import { UserAdmin } from "../../user/entity/user-admin.entity";
 import { Movie } from "../../movie/entity/movie.entity";
 import { Genre } from "../../movie/entity/genre.entity";
+import { Showtime } from "../../cinema/entity/showtime.entity";
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { Genre } from "../../movie/entity/genre.entity";
           FormatSurcharge,
           Movie,
           Genre,
+          Showtime,
         ],
         synchronize: true,
         dropSchema: true, // xoa toan bo du lieu cu truoc khi sync

@@ -27,9 +27,7 @@ import { ApiBearerAuth, ApiOkResponse, ApiResponse } from "@nestjs/swagger";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
 import { RoleName } from "../user/entity/role.entity";
-import { CinemaOwnershipGuard } from "../auth/cinema-ownership.guard";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { CinemaOwnership } from "../auth/cinema-ownership.decorator";
 import { CreateScreenRequest } from "./dto/create-screen-request";
 import { CreateScreenResponse } from "./dto/create-screen-response";
 import { ScreenService } from "./screen.service";
@@ -39,7 +37,7 @@ import { UpdateScreenResponse } from "./dto/update-screen-response";
 @ApiBearerAuth("access-token")
 @Controller("api/cinemas")
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(JwtAuthGuard, RolesGuard, CinemaOwnershipGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CinemaController {
   constructor(
     private cinemaService: CinemaService,
@@ -49,7 +47,6 @@ export class CinemaController {
   @ApiResponse({ type: CreateCinemaResponse, status: 201 })
   @Post()
   @Roles(RoleName.SUPER_ADMIN)
-  @CinemaOwnership(false)
   async createCinema(@Body() createCinemaRequest: CreateCinemaRequest): Promise<CreateCinemaResponse> {
     return this.cinemaService.createCinema(createCinemaRequest);
   }
