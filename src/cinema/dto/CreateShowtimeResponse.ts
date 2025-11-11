@@ -5,4 +5,5 @@ export class CreateShowtimeResponse {
   startTime: string;
   endTime: string;
   description: string;
+  basePrice: string;
 }

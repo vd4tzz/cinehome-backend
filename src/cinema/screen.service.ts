@@ -109,18 +109,7 @@ export class ScreenService {
   }
 
   async getScreens(cinemaId: number, pageParam: PageParam): Promise<Page<GetScreenResponse>> {
-    const { page, size, order } = pageParam;
-
-    // const screenRepository = this.dataSource.getRepository(Screen);
-    // const [screens, total] = await screenRepository.findAndCount({
-    //   relations: ["cinema"],
-    //   where: {
-    //     cinema: { id: cinemaId },
-    //   },
-    //   skip: page * size,
-    //   take: size,
-    //   order: order,
-    // });
+    const { page, size } = pageParam;
 
     const query = this.dataSource
       .getRepository(Screen)
@@ -128,10 +117,6 @@ export class ScreenService {
       .where("screen.cinema = :cinemaId", { cinemaId })
       .skip(page * size)
       .take(size);
-
-    Object.entries(order).forEach(([field, direction]) => {
-      query.addOrderBy(`${field}`, direction);
-    });
 
     const [screens, total] = await query.getManyAndCount();
 

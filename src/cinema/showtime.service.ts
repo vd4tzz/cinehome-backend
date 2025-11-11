@@ -24,7 +24,7 @@ export class ShowtimeService {
     const movieRepository = this.dataSource.getRepository(Movie);
     const screenRepository = this.dataSource.getRepository(Screen);
 
-    const { movieId } = createShowtimeRequest;
+    const { movieId, basePrice } = createShowtimeRequest;
 
     const movie = await movieRepository.findOneBy({ id: movieId });
     const screen = await screenRepository.findOneBy({ id: screenId });
@@ -51,6 +51,7 @@ export class ShowtimeService {
       startTime: startTime,
       endTime: endTime,
       state: ShowtimeState.ACTIVE,
+      basePrice: basePrice,
     });
 
     await showtimeRepository.save(showtime);
@@ -62,6 +63,7 @@ export class ShowtimeService {
       startTime: showtime.startTime.toISOString(),
       endTime: showtime.endTime.toISOString(),
       description: showtime.description,
+      basePrice: showtime.basePrice,
     } as CreateShowtimeResponse;
   }
 
@@ -89,6 +91,7 @@ export class ShowtimeService {
       startTime: showtime.startTime.toISOString(),
       endTime: showtime.endTime.toISOString(),
       description: showtime.description,
+      basePrice: showtime.basePrice,
     } as CancelShowtimeResponse;
   }
 
@@ -125,6 +128,7 @@ export class ShowtimeService {
       endTime: showtime.endTime.toISOString(),
       state: showtime.state,
       description: showtime.description,
+      basePrice: showtime.basePrice,
     }));
 
     return new Page(dtos, showtimeQuery, total);

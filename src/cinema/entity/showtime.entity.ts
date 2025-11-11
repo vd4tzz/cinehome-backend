@@ -38,6 +38,9 @@ export class Showtime {
   @Column({ nullable: true })
   description: string;
 
+  @Column({ name: "base_price", type: "numeric" })
+  basePrice: string;
+
   constructor(partial: Partial<Showtime>) {
     Object.assign(this, partial);
   }

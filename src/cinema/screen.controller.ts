@@ -1,10 +1,12 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
 import { ShowtimeService } from "./showtime.service";
 import { CreateShowtimeRequest } from "./dto/CreateShowtimeRequest";
 import { ShowtimeQuery } from "../movie/dto/query/showtime-query";
-import { CreateSeatMapOfScreenRequest } from "./dto/create-seat-map-of-screen-request";
+import { CreateSeatMapRequest } from "./dto/create-seat-map-request";
 import { SeatService } from "./seat.service";
+import { CreateSeatMapResponse } from "./dto/create-seat-map-response";
+import { GetSeatMapResponse } from "./dto/get-seat-map-response";
 
 @ApiBearerAuth("access-token")
 @Controller("api/screens")
@@ -20,7 +22,6 @@ export class ScreenController {
     @Param("screenId", ParseIntPipe) screenId: number,
     @Body() createShowtimeRequest: CreateShowtimeRequest,
   ) {
-    console.log(createShowtimeRequest);
     return this.showtimeService.createShowtime(screenId, createShowtimeRequest);
   }
 
@@ -29,14 +30,16 @@ export class ScreenController {
     return this.showtimeService.getShowtimes(screenId, showtimeQuery);
   }
 
+  @ApiResponse({ type: CreateSeatMapResponse, status: 201 })
   @Post(":screenId/seats")
   async createSeatMapOfScreen(
     @Param("screenId", ParseIntPipe) screenId: number,
-    @Body() createSeatMapOfScreenRequest: CreateSeatMapOfScreenRequest,
+    @Body() createSeatMapOfScreenRequest: CreateSeatMapRequest,
   ) {
-    return this.seatService.createSeatMapOfScreen(screenId, createSeatMapOfScreenRequest);
+    return this.seatService.createSeatMap(screenId, createSeatMapOfScreenRequest);
   }
 
+  @ApiResponse({ type: GetSeatMapResponse, status: 200 })
   @Get(":screenId/seats")
   async getSeatMapOfScreen(@Param("screenId", ParseIntPipe) screenId: number) {
     return this.seatService.getSeatMap(screenId);

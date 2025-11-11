@@ -1,9 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException, OnApplicationBootstrap } from "@nestjs/common";
 import { DataSource } from "typeorm";
-import { CreateSeatMapOfScreenRequest } from "./dto/create-seat-map-of-screen-request";
+import { CreateSeatMapRequest } from "./dto/create-seat-map-request";
 import { Screen } from "./entity/screen.entity";
 import { SeatType, SeatTypeCode } from "./entity/seat-type.entity";
 import { Seat } from "./entity/seat.entity";
+import { CreateSeatMapResponse } from "./dto/create-seat-map-response";
+import { GetSeatMapResponse } from "./dto/get-seat-map-response";
 
 @Injectable()
 export class SeatService implements OnApplicationBootstrap {
@@ -17,7 +19,7 @@ export class SeatService implements OnApplicationBootstrap {
 
     const singleSeatType = await seatTypeRepository.findOneBy({ code: SeatTypeCode.SINGLE });
     if (!singleSeatType) {
-      throw new Error("Error at seatService");
+      throw new Error();
     }
     this.SINGLE_SEAT_TYPE = singleSeatType;
 
@@ -28,8 +30,8 @@ export class SeatService implements OnApplicationBootstrap {
     this.COUPLE_SEAT_TYPE = coupleSeatType;
   }
 
-  async createSeatMapOfScreen(screenId: number, request: CreateSeatMapOfScreenRequest) {
-    await this.dataSource.transaction(async (manager) => {
+  async createSeatMap(screenId: number, request: CreateSeatMapRequest) {
+    return await this.dataSource.transaction(async (manager) => {
       const screenRepository = manager.getRepository(Screen);
       const seatRepository = manager.getRepository(Seat);
 
@@ -52,34 +54,46 @@ export class SeatService implements OnApplicationBootstrap {
       });
 
       const previousSeatMap = await seatRepository.findBy({ screen: { id: screenId } });
-      if (previousSeatMap.length !== 0) await seatRepository.delete(previousSeatMap);
+      if (previousSeatMap.length !== 0) {
+        await seatRepository.delete(previousSeatMap);
+      }
+
       await seatRepository.save(seats);
 
-      return seats.map((seat) => ({
+      const dtos = seats.map((seat) => ({
         id: seat.id,
         row: seat.row,
         label: seat.label,
         columnOrder: seat.columnOrder,
-        type: seat.type,
+        seatType: seat.type.code,
       }));
+
+      return new CreateSeatMapResponse({
+        seatMap: dtos,
+      });
     });
   }
 
   async getSeatMap(screenId: number) {
     const seatRepository = this.dataSource.getRepository(Seat);
-    const seats = await seatRepository.findBy({ screen: { id: screenId } });
+    const seats = await seatRepository.find({
+      where: { screen: { id: screenId } },
+      relations: {
+        type: true,
+      },
+    });
 
     const dtos = seats.map((seat) => ({
       id: seat.id,
       row: seat.row,
       label: seat.label,
       columnOrder: seat.columnOrder,
-      type: seat.type,
+      seatType: seat.type.code,
     }));
 
-    return {
+    return new GetSeatMapResponse({
       seatMap: dtos,
-    };
+    });
   }
 
   private getSeatType(seatTypeCode: SeatTypeCode) {
