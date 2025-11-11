@@ -15,6 +15,7 @@ import { CreateMovieRequest } from "./dto/CreateMovieRequest";
 import { MovieService } from "./movie.service";
 import { UpdateMovieImagesRequest } from "./dto/UpdateMovieImagesRequest";
 import { MovieQuery } from "./dto/query/MovieQuery";
+import { PageQuery } from "../common/pagination/page-query";
 
 @Controller("api/movies")
 export class MovieController {
@@ -53,5 +54,15 @@ export class MovieController {
   @Delete(":movieId")
   async deleteMovieById(@Param("movieId", ParseIntPipe) movieId: number) {
     return this.movieService.deleteMovieById(movieId);
+  }
+
+  @Get("upcoming")
+  async getUpComingMovies(@Query() pageQuery: PageQuery) {
+    return this.movieService.getUpComingMovies(pageQuery);
+  }
+
+  @Get("showing")
+  async getShowingMovies(@Query() pageQuery: PageQuery) {
+    return this.movieService.getShowingMovies(pageQuery);
   }
 }

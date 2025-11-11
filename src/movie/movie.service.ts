@@ -1,4 +1,4 @@
-import { DataSource, ILike, In } from "typeorm";
+import { DataSource, ILike, In, MoreThan } from "typeorm";
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { CreateMovieRequest } from "./dto/CreateMovieRequest";
 import { Movie, MovieState } from "./entity/movie.entity";
@@ -9,6 +9,7 @@ import { StorageService } from "../common/storage/storage.service";
 import { MovieQuery } from "./dto/query/MovieQuery";
 import { Page } from "../common/pagination/page";
 import { UpdateMovieStatusResponse } from "./dto/UpdateMovieStatusResponse";
+import { PageQuery } from "../common/pagination/page-query";
 
 @Injectable()
 export class MovieService {
@@ -225,5 +226,126 @@ export class MovieService {
     movie.isDeleted = true;
 
     await movieRepository.save(movie);
+  }
+
+  async getUpComingMovies(pageQuery: PageQuery) {
+    const movieRepository = this.dataSource.getRepository(Movie);
+
+    const { page, size } = pageQuery;
+
+    const today = new Date().toISOString().split("T")[0];
+
+    // Lấy tất cả phim có releaseDate trong tương lai
+    const [movies, total] = await movieRepository.findAndCount({
+      where: {
+        releaseDate: MoreThan(today),
+        isDeleted: false,
+      },
+      relations: {
+        genres: true,
+      },
+      skip: page * size,
+      take: size,
+    });
+
+    const dtos = movies.map((movie) => ({
+      id: movie.id,
+      vietnameseTitle: movie.vietnameseTitle,
+      originalTitle: movie.originalTitle,
+      releaseDate: movie.releaseDate,
+      state: movie.state,
+      posterUrl: movie.posterUrl,
+      backdropUrl: movie.backdropUrl,
+      overview: movie.overview,
+      duration: movie.duration,
+      ageRating: movie.ageRating,
+      director: movie.director,
+      actors: movie.actors,
+      genres: movie.genres.map((genre) => ({
+        id: genre.id,
+        name: genre.name,
+      })),
+    }));
+
+    return new Page(dtos, pageQuery, total);
+  }
+
+  async getShowingMovies(pageQuery: PageQuery) {
+    const { page, size } = pageQuery;
+
+    const movieRepository = this.dataSource.getRepository(Movie);
+
+    const now = new Date();
+    const today = new Date().toISOString().split("T")[0];
+
+    // get total
+    const totalQuery = movieRepository
+      .createQueryBuilder("movie")
+      .where("movie.releaseDate <= :today", { today })
+      .andWhere("movie.isDeleted = :isDeleted", { isDeleted: false })
+      .innerJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
+      .andWhere("showtime.startTime >= :now", { now })
+      .select("movie.id")
+      .groupBy("movie.id");
+
+    const totalCount = await totalQuery.getCount();
+
+    if (totalCount === 0) {
+      return new Page([], pageQuery, 0);
+    }
+
+    /*
+     * Điều kiện để một bộ phim được xem là "đang chiếu" (considered showing):
+     * 1. Ngày phát hành phải nhỏ hơn hoặc bằng ngày hiện tại (releaseDate <= current).
+     * 2. Phải có ít nhất một lịch chiếu có ngày bắt đầu (startDate) lớn hơn hoặc bằng ngày hiện tại (startDate >= current).
+     */
+
+    const idQuery = movieRepository
+      .createQueryBuilder("movie")
+      .where("movie.releaseDate <= :today", { today })
+      .andWhere("movie.isDeleted = :isDeleted", { isDeleted: false })
+      .innerJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
+      .andWhere("showtime.startTime >= :now", { now })
+      .select("movie.id", "id")
+      .groupBy("movie.id")
+      .orderBy("movie.releaseDate", "DESC")
+      .skip(page * size)
+      .take(size);
+
+    const rawMovieIds: { id: number }[] = await idQuery.getRawMany();
+    const showingIds = rawMovieIds.map((e) => e.id);
+
+    if (showingIds.length === 0) {
+      return new Page([], pageQuery, 0);
+    }
+
+    const showingMovies = await movieRepository.find({
+      where: {
+        id: In(showingIds),
+      },
+      relations: {
+        genres: true,
+      },
+      order: {
+        releaseDate: "DESC",
+      },
+    });
+
+    const dtos = showingMovies.map((movie) => ({
+      id: movie.id,
+      vietnameseTitle: movie.vietnameseTitle,
+      originalTitle: movie.originalTitle,
+      releaseDate: movie.releaseDate,
+      posterUrl: movie.posterUrl,
+      backdropUrl: movie.backdropUrl,
+      overview: movie.overview,
+      duration: movie.duration,
+      ageRating: movie.ageRating,
+      director: movie.director,
+      actors: movie.actors,
+      genres: movie.genres ? movie.genres.map((g) => ({ id: g.id, name: g.name })) : [],
+    }));
+
+    return new Page(dtos, pageQuery, totalCount);
   }
 }

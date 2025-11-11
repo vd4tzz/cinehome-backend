@@ -1,5 +1,6 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Genre } from "./genre.entity";
+import { Showtime } from "../../cinema/entity/showtime.entity";
 
 export enum MovieState {
   DRAFT = "DRAFT",
@@ -64,6 +65,9 @@ export class Movie {
 
   @Column({ default: false })
   isDeleted: boolean;
+
+  @OneToMany(() => Showtime, (showtime) => showtime.movie)
+  showtimes: Showtime[];
 
   constructor(partial: Partial<Movie>) {
     Object.assign(this, partial);
