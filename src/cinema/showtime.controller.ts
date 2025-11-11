@@ -8,7 +8,7 @@ import { CancelShowtimeResponse } from "./dto/CancelShowtimeResponse";
 export class ShowtimeController {
   constructor(private showtimeService: ShowtimeService) {}
 
-  @ApiResponse({ type: CancelShowtimeResponse, status: 200})
+  @ApiResponse({ type: CancelShowtimeResponse, status: 200 })
   @Patch(":showtimeId")
   async cancelShowtime(
     @Param("showtimeId", ParseIntPipe) showtimeId: number,
