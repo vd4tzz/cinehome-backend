@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { DataSource, In } from "typeorm";
-import { PageParam } from "../common/pagination/page-param";
+import { PageQuery } from "../common/pagination/page-query";
 import { AudienceSurcharge } from "./entity/audience-surcharge.entity";
 import { GetAudienceSurchargeResponse } from "./dto/get-audience-surcharge-response";
 import { DayTypeSurcharge } from "./entity/day-type-surcharge.entity";

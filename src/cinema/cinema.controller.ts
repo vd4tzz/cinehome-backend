@@ -20,7 +20,7 @@ import { CinemaService } from "./cinema.service";
 import { UpdateCinemaRequest } from "./dto/update-cinema-request";
 import { UpdateCinemaResponse } from "./dto/update-cinema-response";
 import { GetCinemaResponse } from "./dto/get-cinema-response";
-import { PageParam } from "../common/pagination/page-param";
+import { PageQuery } from "../common/pagination/page-query";
 import { Page } from "../common/pagination/page";
 import { ApiPaginatedResponse } from "../common/pagination/ApiPaginatedResponse";
 import { ApiBearerAuth, ApiOkResponse, ApiResponse } from "@nestjs/swagger";
@@ -69,7 +69,7 @@ export class CinemaController {
 
   @ApiPaginatedResponse(GetCinemaResponse)
   @Get()
-  async getCinemas(@Query() pageParam: PageParam): Promise<Page<GetCinemaResponse>> {
+  async getCinemas(@Query() pageParam: PageQuery): Promise<Page<GetCinemaResponse>> {
     return this.cinemaService.getCinemas(pageParam);
   }
 
@@ -106,7 +106,7 @@ export class CinemaController {
 
   @Get(":cinemaId/screens")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async getScreens(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageParam) {
+  async getScreens(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageQuery) {
     return this.screenService.getScreens(cinemaId, pageParam);
   }
 

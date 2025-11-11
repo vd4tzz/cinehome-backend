@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
-import { PageParam } from "../common/pagination/page-param";
+import { PageQuery } from "../common/pagination/page-query";
 import { User } from "./entity/user.entity";
 import { Page } from "../common/pagination/page";
 
@@ -8,7 +8,7 @@ import { Page } from "../common/pagination/page";
 export class UserService {
   constructor(private dataSource: DataSource) {}
 
-  async getAdminsByCinemaId(cinemaId: number, pageParam: PageParam) {
+  async getAdminsByCinemaId(cinemaId: number, pageParam: PageQuery) {
     const userRepository = this.dataSource.getRepository(User);
 
     const userAdmins = await userRepository.find({

@@ -6,7 +6,7 @@ import { UpdateScreenRequest } from "./dto/update-screen-request";
 import { CreateScreenRequest } from "./dto/create-screen-request";
 import { CreateScreenResponse } from "./dto/create-screen-response";
 import { UpdateScreenResponse } from "./dto/update-screen-response";
-import { PageParam } from "../common/pagination/page-param";
+import { PageQuery } from "../common/pagination/page-query";
 import { Page } from "../common/pagination/page";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
@@ -108,7 +108,7 @@ export class ScreenService {
     };
   }
 
-  async getScreens(cinemaId: number, pageParam: PageParam): Promise<Page<GetScreenResponse>> {
+  async getScreens(cinemaId: number, pageParam: PageQuery): Promise<Page<GetScreenResponse>> {
     const { page, size } = pageParam;
 
     const query = this.dataSource

@@ -1,5 +1,5 @@
-import { PageParam } from "../../../common/pagination/page-param";
+import { PageQuery } from "../../../common/pagination/page-query";
 
-export class MovieQuery extends PageParam {
+export class MovieQuery extends PageQuery {
   title: string;
 }

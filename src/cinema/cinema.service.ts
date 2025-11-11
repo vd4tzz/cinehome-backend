@@ -6,7 +6,7 @@ import { Cinema } from "./entity/cinema.entity";
 import { UpdateCinemaRequest } from "./dto/update-cinema-request";
 import { UpdateCinemaResponse } from "./dto/update-cinema-response";
 import { GetCinemaResponse } from "./dto/get-cinema-response";
-import { PageParam } from "../common/pagination/page-param";
+import { PageQuery } from "../common/pagination/page-query";
 import { Page } from "../common/pagination/page";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 
@@ -86,7 +86,7 @@ export class CinemaService {
     };
   }
 
-  async getCinemas(pageParam: PageParam): Promise<Page<GetCinemaResponse>> {
+  async getCinemas(pageParam: PageQuery): Promise<Page<GetCinemaResponse>> {
     const { page, size, order } = pageParam;
 
     const cinemaRepository = this.dataSource.getRepository(Cinema);

@@ -33,8 +33,14 @@ export class ShowtimeService {
       throw new NotFoundException();
     }
 
+    const current = new Date();
     const startTime = new Date(createShowtimeRequest.startTime);
     const endTime = new Date(startTime.getTime() + movie.duration * 60 * 1000);
+
+    // Đảm bảo startTime phải là thời gian trong tương lai
+    if (startTime <= current) {
+      throw new BadRequestException();
+    }
 
     const overlap = await showtimeRepository
       .createQueryBuilder("s")
