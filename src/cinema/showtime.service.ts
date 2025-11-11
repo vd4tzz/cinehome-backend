@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { Showtime, ShowtimeState } from "./entity/showtime.entity";
-import { CreateShowtimeRequest } from "./dto/CreateShowtimeRequest";
+import { CreateShowtimeRequest } from "./dto/create-showtime-request";
 import { Movie } from "../movie/entity/movie.entity";
 import { Screen } from "./entity/screen.entity";
 import { CreateShowtimeResponse } from "./dto/CreateShowtimeResponse";
