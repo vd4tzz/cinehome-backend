@@ -1,4 +1,4 @@
-import { PageParam } from "./page-param";
+import { PageQuery } from "./page-query";
 import { ApiProperty } from "@nestjs/swagger";
 
 class PageMetadata {
@@ -38,7 +38,7 @@ export class Page<T> {
   })
   readonly metadata: PageMetadata;
 
-  constructor(data: T[], pageParam: PageParam, totalItem: number) {
+  constructor(data: T[], pageParam: PageQuery, totalItem: number) {
     const { page, size } = pageParam;
     const totalPage = Math.ceil(totalItem / size);
 

@@ -1,18 +1,18 @@
 import { Transform } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
-export class PageParam {
+export class PageQuery {
   private sortByValidated: boolean = false;
   static DEFAULT_PAGE_NUMBER: number = 0;
   static DEFAULT_SIZE_NUMBER: number = 10;
 
   @ApiPropertyOptional()
   @Transform(({ value }) => (value !== undefined ? Number(value) : 0))
-  page: number = PageParam.DEFAULT_PAGE_NUMBER;
+  page: number = PageQuery.DEFAULT_PAGE_NUMBER;
 
   @ApiPropertyOptional()
   @Transform(({ value }) => (value !== undefined ? Number(value) : 10))
-  size: number = PageParam.DEFAULT_SIZE_NUMBER;
+  size: number = PageQuery.DEFAULT_SIZE_NUMBER;
 
   @ApiPropertyOptional({ type: String })
   @Transform(({ value }) => {
@@ -50,8 +50,8 @@ export class PageParam {
     return this.page * this.size;
   }
 
-  validateSortBy(allowedSortFields: string[]): PageParam {
-    const valid = new PageParam();
+  validateSortBy(allowedSortFields: string[]): PageQuery {
+    const valid = new PageQuery();
     valid.page = this.page;
     valid.size = this.size;
     valid.sortDir = this.sortDir;
