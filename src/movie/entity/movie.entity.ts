@@ -33,10 +33,10 @@ export class Movie {
   @Column()
   duration: number;
 
-  @Column({ name: "age_rating" })
+  @Column({ name: "age_rating", nullable: true })
   ageRating: string;
 
-  @Column()
+  @Column({ nullable: true })
   director: string;
 
   @Column({ nullable: true })

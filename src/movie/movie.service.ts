@@ -181,8 +181,8 @@ export class MovieService {
         id: "DESC",
       },
       where: [
-        { isDeleted: false, vietnameseTitle: ILike(`%${title}%`) },
-        { isDeleted: false, originalTitle: ILike(`%${title}%`) },
+        { isDeleted: false, vietnameseTitle: ILike(`%${title ?? ""}%`) },
+        { isDeleted: false, originalTitle: ILike(`%${title ?? ""}%`) },
       ],
       relations: {
         genres: true,
