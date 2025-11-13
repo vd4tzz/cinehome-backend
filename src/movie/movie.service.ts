@@ -1,4 +1,4 @@
-import { DataSource, ILike, In, MoreThan } from "typeorm";
+import { Brackets, DataSource, ILike, In, MoreThan } from "typeorm";
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { CreateMovieRequest } from "./dto/CreateMovieRequest";
 import { Movie, MovieState } from "./entity/movie.entity";
@@ -278,13 +278,23 @@ export class MovieService {
     const now = new Date();
     const today = new Date().toISOString().split("T")[0];
 
+    const oneMonthBefore = new Date();
+    oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
+    const lastMonth = oneMonthBefore.toISOString().split("T")[0];
+
     // get total
     const totalQuery = movieRepository
       .createQueryBuilder("movie")
       .where("movie.releaseDate <= :today", { today })
       .andWhere("movie.isDeleted = :isDeleted", { isDeleted: false })
-      .innerJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
-      .andWhere("showtime.startTime >= :now", { now })
+      .leftJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
+      // .andWhere("showtime.startTime >= :now", { now })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where("showtime.startTime >= :now", { now })
+            .orWhere("movie.releaseDate >= :lastMonth", { lastMonth: lastMonth, });
+        }),
+      )
       .select("movie.id")
       .groupBy("movie.id");
 
@@ -295,43 +305,57 @@ export class MovieService {
     }
 
     /*
-     * Điều kiện để một bộ phim được xem là "đang chiếu" (considered showing):
-     * 1. Ngày phát hành phải nhỏ hơn hoặc bằng ngày hiện tại (releaseDate <= current).
-     * 2. Phải có ít nhất một lịch chiếu có ngày bắt đầu (startDate) lớn hơn hoặc bằng ngày hiện tại (startDate >= current).
+     * Điều kiện để một bộ phim được xem là "đang chiếu":
+     * (releaseDate <= current) and ((showtime >= current) or (releaseDate >= lastMonth))
      */
-
     const idQuery = movieRepository
       .createQueryBuilder("movie")
       .where("movie.releaseDate <= :today", { today })
       .andWhere("movie.isDeleted = :isDeleted", { isDeleted: false })
-      .innerJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
-      .andWhere("showtime.startTime >= :now", { now })
+      .leftJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where("showtime.startTime >= :now", { now })
+            .orWhere("movie.releaseDate >= :lastMonth", { lastMonth: lastMonth, });
+        }),
+      )
       .select("movie.id", "id")
+      .addSelect("COUNT(showtime.id)", "showtimeCount")
       .groupBy("movie.id")
-      .orderBy("movie.releaseDate", "DESC")
-      .skip(page * size)
-      .take(size);
+      .orderBy("CASE WHEN COUNT(showtime.id) > 0 THEN 0 ELSE 1 END", "ASC")
+      .addOrderBy("movie.releaseDate", "DESC")
+      .offset(page * size)
+      .limit(size);
 
     const rawMovieIds: { id: number }[] = await idQuery.getRawMany();
-    const showingIds = rawMovieIds.map((e) => e.id);
+    const showingMovieIds = rawMovieIds.map((e) => e.id);
 
-    if (showingIds.length === 0) {
+    if (showingMovieIds.length === 0) {
       return new Page([], pageQuery, 0);
     }
 
     const showingMovies = await movieRepository.find({
       where: {
-        id: In(showingIds),
+        id: In(showingMovieIds),
       },
       relations: {
         genres: true,
       },
-      order: {
-        releaseDate: "DESC",
-      },
     });
 
-    const dtos = showingMovies.map((movie) => ({
+    const movieMap = showingMovies.reduce(
+      (map, movie) => {
+        map[movie.id] = movie;
+        return map;
+      },
+      {} as Record<string, Movie>,
+    );
+
+    const sortedShowingMovies: Movie[] = showingMovieIds
+      .map((movieId) => movieMap[movieId])
+      .filter(Boolean);
+
+    const dtos = sortedShowingMovies.map((movie) => ({
       id: movie.id,
       vietnameseTitle: movie.vietnameseTitle,
       originalTitle: movie.originalTitle,
