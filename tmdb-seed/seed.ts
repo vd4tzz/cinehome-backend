@@ -15,14 +15,27 @@ const options = {
 };
 
 async function fetchNowPlayingMovies() {
-  const res = await fetch("https://api.themoviedb.org/3/movie/now_playing?language=vi-VN&page=1&region=VN", options);
+  const res = await fetch(
+    "https://api.themoviedb.org/3/movie/now_playing?language=vi-VN&page=1&region=VN",
+    options
+  );
   const data = await res.json();
 
   const movies = await Promise.all(
     data.results.map(async (film: any) => {
-      // Lấy credits để tìm director + top actors
-      const creditsRes = await fetch(`https://api.themoviedb.org/3/movie/${film.id}/credits?language=vi-VN`, options);
+      // Lấy credits (đạo diễn + diễn viên)
+      const creditsRes = await fetch(
+        `https://api.themoviedb.org/3/movie/${film.id}/credits?language=vi-VN`,
+        options
+      );
       const creditsData = await creditsRes.json();
+
+      // Lấy chi tiết phim để có runtime (thời lượng)
+      const detailRes = await fetch(
+        `https://api.themoviedb.org/3/movie/${film.id}?language=vi-VN`,
+        options
+      );
+      const detailData = await detailRes.json();
 
       const directorObj = creditsData.crew.find((c: any) => c.job === "Director");
       const topActors = creditsData.cast.slice(0, 5).map((c: any) => c.name);
@@ -32,18 +45,23 @@ async function fetchNowPlayingMovies() {
         vietnameseTitle: film.title,
         overview: film.overview,
         releaseDate: film.release_date,
-        duration: 100,
-        posterUrl: film.poster_path ? "https://image.tmdb.org/t/p/original" + film.poster_path : null,
-        backdropUrl: film.backdrop_path ? "https://image.tmdb.org/t/p/original" + film.backdrop_path : null,
+        duration: detailData.runtime ?? null, // ✅ thời lượng thật
+        posterUrl: film.poster_path
+          ? "https://image.tmdb.org/t/p/original" + film.poster_path
+          : null,
+        backdropUrl: film.backdrop_path
+          ? "https://image.tmdb.org/t/p/original" + film.backdrop_path
+          : null,
         director: directorObj ? directorObj.name : "",
         actors: topActors,
         genreIds: film.genre_ids,
       };
-    }),
+    })
   );
 
   return movies;
 }
+
 
 async function seedMovies() {
   await AppDataSource.initialize();
