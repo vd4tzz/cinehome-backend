@@ -10,7 +10,7 @@ export class CreateMovieRequest {
   originalTitle?: string;
 
   @IsString()
-  @IsNotEmpty()
+  // @IsNotEmpty()
   overview: string;
 
   // @IsString()

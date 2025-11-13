@@ -203,26 +203,6 @@ DO $$
             (cinema1_id, time_slot_evening_id, 0);
 
         --
---         INSERT INTO genres (name)
---         VALUES ('Phim Hành Động'),
---                ('Phim Phiêu Lưu'),
---                ('Phim Hoạt Hình'),
---                ('Phim Hài'),
---                ('Phim Hình Sự'),
---                ('Phim Tài Liệu'),
---                ('Phim Chính Kịch'),
---                ('Phim Gia Đình'),
---                ('Phim Giả Tượng'),
---                ('Phim Lịch Sử'),
---                ('Phim Kinh Dị'),
---                ('Phim Nhạc'),
---                ('Phim Bí Ẩn'),
---                ('Phim Lãng Mạn'),
---                ('Phim Khoa Học Viễn Tưởng'),
---                ('Chương Trình Truyền Hình'),
---                ('Phim Gây Cấn'),
---                ('Phim Chiến Tranh'),
---                ('Phim Miền Tây');
 
         INSERT INTO genres (id, name)
         VALUES (28, 'Phim Hành Động'),
@@ -365,307 +345,307 @@ DO $$
 
 
 -- Insert movies
-        INSERT INTO movies (original_title, vietnamese_title, overview, release_date, duration,
-                            poster_url, backdrop_url, director, actors)
-        VALUES ('Black Phone 2', 'Điện Thoại Đen 2',
-                'Bốn năm trước, Finn khi mới 13 tuổi đã giết chết kẻ bắt cóc mình...', '2025-10-31', 100,
-                'https://image.tmdb.org/t/p/original/6TkmCylovIEHbZF9jLiUhdeM9BF.jpg',
-                'https://image.tmdb.org/t/p/original/oe2TOWykcLSGq67XPH4Bb0N1oU3.jpg',
-                'Scott Derrickson',
-                '[
-                  "Ethan Hawke",
-                  "Mason Thames",
-                  "Madeleine McGraw",
-                  "Demián Bichir",
-                  "Miguel Mora"
-                ]'::jsonb),
-
-               ('Predator: Badlands', 'Quái Thú Vô Hình: Vùng Đất Chết Chóc',
-                'Trong tương lai, tại một hành tinh hẻo lánh...', '2025-11-07', 100,
-                'https://image.tmdb.org/t/p/original/6aPy2tMgQLVz2IcifrL1Z2Q9u1t.jpg',
-                'https://image.tmdb.org/t/p/original/82lM4GJ9uuNvNDOEpxFy77uv4Ak.jpg',
-                'Dan Trachtenberg',
-                '[
-                  "Elle Fanning",
-                  "Dimitrius Schuster-Koloamatangi",
-                  "Rohinal Nayaran",
-                  "Michael Homick",
-                  "Stefan Grube"
-                ]'::jsonb),
-
-               ('Good Fortune', 'Vận May', 'Gabriel, một thiên thần thừa lòng tốt nhưng thiếu kỹ năng...', '2025-10-17',
-                100,
-                'https://image.tmdb.org/t/p/original/gLfJe9CDEhROt3npmOA6roBHmzZ.jpg',
-                'https://image.tmdb.org/t/p/original/q2V1q2Xxwqg3uXQKufpdCtrnAdn.jpg',
-                'Aziz Ansari',
-                '[
-                  "Keanu Reeves",
-                  "Aziz Ansari",
-                  "Seth Rogen",
-                  "Keke Palmer",
-                  "Sandra Oh"
-                ]'::jsonb),
-
-               ('TRON: Ares', 'Trò Chơi Ảo Giác: Ares', 'Một chương trình trí tuệ nhân tạo siêu việt...', '2025-10-09',
-                100,
-                'https://image.tmdb.org/t/p/original/lj7imLGAzI3zKvbJtPH01aYW9lU.jpg',
-                'https://image.tmdb.org/t/p/original/2OvpmWYrsv8eMyV3AAqhoMnzMF.jpg',
-                'Joachim Rønning',
-                '[
-                  "Jared Leto",
-                  "Greta Lee",
-                  "Evan Peters",
-                  "Gillian Anderson",
-                  "Jodie Turner-Smith"
-                ]'::jsonb),
-
-               ('Good Boy', 'Chó Cưng Đừng Sợ', 'Một ngôi nhà cũ, một khởi đầu tưởng như bình yên...', '2025-10-24',
-                100,
-                'https://image.tmdb.org/t/p/original/6W3VeKTpuSK34pQ6z62eisFwg7u.jpg',
-                'https://image.tmdb.org/t/p/original/y47aBf7GFdcwtdmCxEis14hPZS4.jpg',
-                'Ben Leonberg',
-                '[
-                  "Indy",
-                  "Shane Jensen",
-                  "Larry Fessenden",
-                  "Arielle Friedman",
-                  "Stuart Rudin"
-                ]'::jsonb),
-
-               ('ゴジラ-1.0', 'Godzilla Minus One', 'Ở Nhật Bản thời hậu chiến, một cựu phi công...', '2025-11-07', 100,
-                'https://image.tmdb.org/t/p/original/buvBq2zLP7CcJth8tjrI4znvfEO.jpg',
-                'https://image.tmdb.org/t/p/original/1FMnXfgPFJFWhPrCZBgXwHbwmye.jpg',
-                'Takashi Yamazaki',
-                '[
-                  "神木隆之介",
-                  "浜辺美波",
-                  "山田裕貴",
-                  "青木崇高",
-                  "吉岡秀隆"
-                ]'::jsonb),
-
-               ('劇場版総集編 呪術廻戦 懐玉・玉折', 'Chú Thuật Hồi Chiến: Hoài Ngọc / Ngọc Chiết - The Movie',
-                'PHIM ĐIỆN ẢNH...', '2025-10-10', 100,
-                'https://image.tmdb.org/t/p/original/7n15cgWGVEqffcUJmYlTeltO1uP.jpg',
-                'https://image.tmdb.org/t/p/original/w8j0HVX7xasNVGAva2T3W4ncoN4.jpg',
-                '御所園翔太',
-                '[
-                  "中村悠一",
-                  "櫻井孝宏",
-                  "永瀬アンナ",
-                  "子安武人",
-                  "遠藤綾"
-                ]'::jsonb),
-
-               ('Anniversary', 'Bí Mật Sau Bữa Tiệc', '', '2025-10-31', 100,
-                'https://image.tmdb.org/t/p/original/tCLn5DyGjRwZiSX4ABCxpZS4QvM.jpg',
-                'https://image.tmdb.org/t/p/original/dXAiXPMadVuIsvEGf4fPi7OfO4f.jpg',
-                'Jan Komasa',
-                '[
-                  "Diane Lane",
-                  "Kyle Chandler",
-                  "Madeline Brewer",
-                  "Zoey Deutch",
-                  "Mckenna Grace"
-                ]'::jsonb),
-
-               ('얼굴', 'Nhân Diện', 'Im Dong-hwan, chàng trai chưa từng biết mặt mẹ mình...', '2025-10-03', 100,
-                'https://image.tmdb.org/t/p/original/horybPDulhrSqAVXRyac4zjFAx5.jpg',
-                'https://image.tmdb.org/t/p/original/wduUhYLGaYSD2mSu7YHd09l1N6j.jpg',
-                '연상호',
-                '[
-                  "박정민",
-                  "권해효",
-                  "신현빈",
-                  "한지현",
-                  "임성재"
-                ]'::jsonb),
-
-               ('Kitab Sijjin & Illiyyin', 'Lọ Lem Chơi Ngải', '', '2025-11-07', 100,
-                'https://image.tmdb.org/t/p/original/ow9R2JE4AG9PwRm9KJIDGw6r9ce.jpg',
-                'https://image.tmdb.org/t/p/original/8O5dKufZ97eVOvEgt1C3Q6T8Lme.jpg',
-                'Hadrah Daeng Ratu',
-                '[
-                  "Yunita Siregar",
-                  "Dinda Kanyadewi",
-                  "Tarra Budiman",
-                  "Djenar Maesa Ayu",
-                  "Kawai Labiba"
-                ]'::jsonb),
-
-               ('風立ちぬ', 'Gió Vẫn Thổi', 'Nhà làm phim hoạt hình Miyazaki Hayao...', '2025-10-17', 100,
-                'https://image.tmdb.org/t/p/original/b6DNmz3sZCPv18s2uzvpmFFvMS8.jpg',
-                'https://image.tmdb.org/t/p/original/938lqhAQaO3hmLg44VbUR7OqlMs.jpg',
-                '宮崎駿',
-                '[
-                  "庵野秀明",
-                  "西島秀俊",
-                  "瀧本美織",
-                  "西村雅彥",
-                  "Stephen Alpert"
-                ]'::jsonb),
-
-               ('나혼자 프린스', 'Tay Anh Giữ Một Vì Sao', 'Siêu sao Kang Jun Woo – “Hoàng tử Châu Á” –...', '2025-10-03',
-                100,
-                'https://image.tmdb.org/t/p/original/1mqJZHJ4KQNduyWsc3EFzfRj6Kg.jpg',
-                'https://image.tmdb.org/t/p/originalnull',
-                '김성훈',
-                '[
-                  "이광수",
-                  "Hoàng Hà",
-                  "Duy Khánh Zhou Zhou",
-                  "Cù Thị Trà",
-                  "음문석"
-                ]'::jsonb),
-
-               ('他年她日', 'Năm Của Anh, Ngày Của Em', 'Khi thế giới bị chia cắt thành hai chiều...', '2025-10-17',
-                100,
-                'https://image.tmdb.org/t/p/original/7CSO29w9RYLY9R6TVLTkGy0oMIm.jpg',
-                'https://image.tmdb.org/t/p/original/n3mqsvKiqElRQ4KjDQ0NADQPVP5.jpg',
-                'Benny Kung',
-                '[
-                  "Hứa Quang Hán",
-                  "袁澧林",
-                  "Jack Tan",
-                  "董瑋",
-                  "陳輝虹"
-                ]'::jsonb),
-
-               ('Sihir Pelakor', 'Xà Thuật Tiểu Tam', 'Vita – một nữ sinh trung học –...', '2025-10-24', 100,
-                'https://image.tmdb.org/t/p/original/n4YGTt7Oju3MM91QxaArXMFOOu8.jpg',
-                'https://image.tmdb.org/t/p/original/nvUBmJrwEaIYgPuXI5cukEucPXp.jpg',
-                'Bobby Prasetyo',
-                '[
-                  "Anodya Shula Neona Ayu",
-                  "Marcella Zalianty",
-                  "Al Fathir Muchtar",
-                  "Asmara Abigail",
-                  "Jared Ali"
-                ]'::jsonb),
-
-               ('ธี่หยด 3', 'TEE YOD: QUỶ ĂN TẠNG PHẦN 3', 'Yak và gia đình phải đối mặt với nỗi kinh hoàng mới...',
-                '2025-10-10', 100,
-                'https://image.tmdb.org/t/p/original/kcmymlJPZ3mDQbKht20XRGBogd2.jpg',
-                'https://image.tmdb.org/t/p/original/qZKxxIGL1wsjpJ7U38WrMwolcjr.jpg',
-                'Narint Yuvaboon',
-                '[
-                  "ณเดชน์ คูกิมิยะ",
-                  "องอาจ เจียมเจริญพรกุล",
-                  "กาจบัณฑิต ใจดี",
-                  "พีระกฤตย์ พชรบุณยเกียรติ",
-                  "เจลีลชา คัปปุน"
-                ]'::jsonb),
-
-               ('지드래곤 인 시네마 [위버맨쉬]', '지드래곤 인 시네마 [위버맨쉬]', '', '2025-11-11', 100,
-                'https://image.tmdb.org/t/p/original/55lQvgGiL9DBsGgk8QsNWugKxvw.jpg',
-                'https://image.tmdb.org/t/p/original/smPhK3Ytb7x7VjMOm9zdN7Rbpev.jpg',
-                '변진호',
-                '[
-                  "지드래곤",
-                  "태양",
-                  "대성",
-                  "CL"
-                ]'::jsonb),
-
-               ('연의 편지', 'Những Lá Thư Của Yeon', '', '2025-10-10', 100,
-                'https://image.tmdb.org/t/p/original/y1WnHAqau3QxPPy4S1Spepa0ZXN.jpg',
-                'https://image.tmdb.org/t/p/original/thsAU92Ei2Nbm38ZdkvHI8xLaSc.jpg',
-                '김용환',
-                '[
-                  "이수현",
-                  "김민주",
-                  "민승우",
-                  "남도형"
-                ]'::jsonb),
-
-               ('Мальчик-дельфин 2', 'Cậu Bé Cá Heo: Bí Mật 7 Đại Dương', '', '2025-10-03', 100,
-                'https://image.tmdb.org/t/p/original/rhgCJq2bgKhGQbxwSkKeYLlHdO8.jpg',
-                'https://image.tmdb.org/t/p/originalnull',
-                'Яна Кузьмина',
-                '[
-                  "Полина Авдеенко",
-                  "Юлия Рудина",
-                  "Юлия Зоркина",
-                  "Александр Васильев",
-                  "Борис Хасанов"
-                ]'::jsonb),
-
-               ('Cải Mã', 'Cải Mã', '', '2025-10-31', 100,
-                'https://image.tmdb.org/t/p/original/qxQEzKp5WI5Ra9joAt4KVv4LdM7.jpg',
-                'https://image.tmdb.org/t/p/originalnull',
-                'Thắng Vũ',
-                '[
-                  "Kim Hải",
-                  "Rima Thanh Vy",
-                  "Hoàng Mèo",
-                  "Kiều Trinh",
-                  "Lương Anh Vũ"
-                ]'::jsonb),
-
-               ('Cục Vàng Của Ngoại', 'Cục Vàng Của Ngoại', 'Lấy cảm hứng từ những ký ức tuổi thơ ngọt ngào...',
-                '2025-10-17', 100,
-                'https://image.tmdb.org/t/p/original/jv2bu10yEL3UgBqdULUahMDemh.jpg',
-                'https://image.tmdb.org/t/p/original/mQEtRC3l1b1yq0NWRpEvPmOFnu5.jpg',
-                'Khương Ngọc',
-                '[
-                  "Hồng Đào",
-                  "Hữu Châu",
-                  "Việt Hương",
-                  "Lê Khánh",
-                  "Băng Di"
-                ]'::jsonb);
-
--- Insert movie_genre (tự động lấy id movie theo thứ tự insert)
-        INSERT INTO movie_genre (movie_id, genre_id)
-        VALUES (1, 27),
-               (1, 53),
-               (2, 28),
-               (2, 878),
-               (2, 12),
-               (3, 35),
-               (3, 14),
-               (4, 878),
-               (4, 12),
-               (4, 28),
-               (5, 27),
-               (5, 53),
-               (6, 878),
-               (6, 27),
-               (6, 28),
-               (7, 16),
-               (7, 28),
-               (7, 14),
-               (8, 53),
-               (8, 18),
-               (9, 9648),
-               (9, 53),
-               (10, 27),
-               (10, 53),
-               (11, 18),
-               (11, 16),
-               (11, 10749),
-               (11, 10752),
-               (11, 36),
-               (12, 10749),
-               (12, 35),
-               (13, 14),
-               (13, 10749),
-               (13, 878),
-               (14, 27),
-               (14, 53),
-               (15, 27),
-               (15, 28),
-               (15, 53),
-               (16, 99),
-               (16, 10402),
-               (17, 16),
-               (17, 18),
-               (17, 9648),
-               (17, 12),
-               (18, 16),
-               (19, 27),
-               (20, 10751),
-               (20, 18);
+--         INSERT INTO movies (original_title, vietnamese_title, overview, release_date, duration,
+--                             poster_url, backdrop_url, director, actors)
+--         VALUES ('Black Phone 2', 'Điện Thoại Đen 2',
+--                 'Bốn năm trước, Finn khi mới 13 tuổi đã giết chết kẻ bắt cóc mình...', '2025-10-31', 100,
+--                 'https://image.tmdb.org/t/p/original/6TkmCylovIEHbZF9jLiUhdeM9BF.jpg',
+--                 'https://image.tmdb.org/t/p/original/oe2TOWykcLSGq67XPH4Bb0N1oU3.jpg',
+--                 'Scott Derrickson',
+--                 '[
+--                   "Ethan Hawke",
+--                   "Mason Thames",
+--                   "Madeleine McGraw",
+--                   "Demián Bichir",
+--                   "Miguel Mora"
+--                 ]'::jsonb),
+--
+--                ('Predator: Badlands', 'Quái Thú Vô Hình: Vùng Đất Chết Chóc',
+--                 'Trong tương lai, tại một hành tinh hẻo lánh...', '2025-11-07', 100,
+--                 'https://image.tmdb.org/t/p/original/6aPy2tMgQLVz2IcifrL1Z2Q9u1t.jpg',
+--                 'https://image.tmdb.org/t/p/original/82lM4GJ9uuNvNDOEpxFy77uv4Ak.jpg',
+--                 'Dan Trachtenberg',
+--                 '[
+--                   "Elle Fanning",
+--                   "Dimitrius Schuster-Koloamatangi",
+--                   "Rohinal Nayaran",
+--                   "Michael Homick",
+--                   "Stefan Grube"
+--                 ]'::jsonb),
+--
+--                ('Good Fortune', 'Vận May', 'Gabriel, một thiên thần thừa lòng tốt nhưng thiếu kỹ năng...', '2025-10-17',
+--                 100,
+--                 'https://image.tmdb.org/t/p/original/gLfJe9CDEhROt3npmOA6roBHmzZ.jpg',
+--                 'https://image.tmdb.org/t/p/original/q2V1q2Xxwqg3uXQKufpdCtrnAdn.jpg',
+--                 'Aziz Ansari',
+--                 '[
+--                   "Keanu Reeves",
+--                   "Aziz Ansari",
+--                   "Seth Rogen",
+--                   "Keke Palmer",
+--                   "Sandra Oh"
+--                 ]'::jsonb),
+--
+--                ('TRON: Ares', 'Trò Chơi Ảo Giác: Ares', 'Một chương trình trí tuệ nhân tạo siêu việt...', '2025-10-09',
+--                 100,
+--                 'https://image.tmdb.org/t/p/original/lj7imLGAzI3zKvbJtPH01aYW9lU.jpg',
+--                 'https://image.tmdb.org/t/p/original/2OvpmWYrsv8eMyV3AAqhoMnzMF.jpg',
+--                 'Joachim Rønning',
+--                 '[
+--                   "Jared Leto",
+--                   "Greta Lee",
+--                   "Evan Peters",
+--                   "Gillian Anderson",
+--                   "Jodie Turner-Smith"
+--                 ]'::jsonb),
+--
+--                ('Good Boy', 'Chó Cưng Đừng Sợ', 'Một ngôi nhà cũ, một khởi đầu tưởng như bình yên...', '2025-10-24',
+--                 100,
+--                 'https://image.tmdb.org/t/p/original/6W3VeKTpuSK34pQ6z62eisFwg7u.jpg',
+--                 'https://image.tmdb.org/t/p/original/y47aBf7GFdcwtdmCxEis14hPZS4.jpg',
+--                 'Ben Leonberg',
+--                 '[
+--                   "Indy",
+--                   "Shane Jensen",
+--                   "Larry Fessenden",
+--                   "Arielle Friedman",
+--                   "Stuart Rudin"
+--                 ]'::jsonb),
+--
+--                ('ゴジラ-1.0', 'Godzilla Minus One', 'Ở Nhật Bản thời hậu chiến, một cựu phi công...', '2025-11-07', 100,
+--                 'https://image.tmdb.org/t/p/original/buvBq2zLP7CcJth8tjrI4znvfEO.jpg',
+--                 'https://image.tmdb.org/t/p/original/1FMnXfgPFJFWhPrCZBgXwHbwmye.jpg',
+--                 'Takashi Yamazaki',
+--                 '[
+--                   "神木隆之介",
+--                   "浜辺美波",
+--                   "山田裕貴",
+--                   "青木崇高",
+--                   "吉岡秀隆"
+--                 ]'::jsonb),
+--
+--                ('劇場版総集編 呪術廻戦 懐玉・玉折', 'Chú Thuật Hồi Chiến: Hoài Ngọc / Ngọc Chiết - The Movie',
+--                 'PHIM ĐIỆN ẢNH...', '2025-10-10', 100,
+--                 'https://image.tmdb.org/t/p/original/7n15cgWGVEqffcUJmYlTeltO1uP.jpg',
+--                 'https://image.tmdb.org/t/p/original/w8j0HVX7xasNVGAva2T3W4ncoN4.jpg',
+--                 '御所園翔太',
+--                 '[
+--                   "中村悠一",
+--                   "櫻井孝宏",
+--                   "永瀬アンナ",
+--                   "子安武人",
+--                   "遠藤綾"
+--                 ]'::jsonb),
+--
+--                ('Anniversary', 'Bí Mật Sau Bữa Tiệc', '', '2025-10-31', 100,
+--                 'https://image.tmdb.org/t/p/original/tCLn5DyGjRwZiSX4ABCxpZS4QvM.jpg',
+--                 'https://image.tmdb.org/t/p/original/dXAiXPMadVuIsvEGf4fPi7OfO4f.jpg',
+--                 'Jan Komasa',
+--                 '[
+--                   "Diane Lane",
+--                   "Kyle Chandler",
+--                   "Madeline Brewer",
+--                   "Zoey Deutch",
+--                   "Mckenna Grace"
+--                 ]'::jsonb),
+--
+--                ('얼굴', 'Nhân Diện', 'Im Dong-hwan, chàng trai chưa từng biết mặt mẹ mình...', '2025-10-03', 100,
+--                 'https://image.tmdb.org/t/p/original/horybPDulhrSqAVXRyac4zjFAx5.jpg',
+--                 'https://image.tmdb.org/t/p/original/wduUhYLGaYSD2mSu7YHd09l1N6j.jpg',
+--                 '연상호',
+--                 '[
+--                   "박정민",
+--                   "권해효",
+--                   "신현빈",
+--                   "한지현",
+--                   "임성재"
+--                 ]'::jsonb),
+--
+--                ('Kitab Sijjin & Illiyyin', 'Lọ Lem Chơi Ngải', '', '2025-11-07', 100,
+--                 'https://image.tmdb.org/t/p/original/ow9R2JE4AG9PwRm9KJIDGw6r9ce.jpg',
+--                 'https://image.tmdb.org/t/p/original/8O5dKufZ97eVOvEgt1C3Q6T8Lme.jpg',
+--                 'Hadrah Daeng Ratu',
+--                 '[
+--                   "Yunita Siregar",
+--                   "Dinda Kanyadewi",
+--                   "Tarra Budiman",
+--                   "Djenar Maesa Ayu",
+--                   "Kawai Labiba"
+--                 ]'::jsonb),
+--
+--                ('風立ちぬ', 'Gió Vẫn Thổi', 'Nhà làm phim hoạt hình Miyazaki Hayao...', '2025-10-17', 100,
+--                 'https://image.tmdb.org/t/p/original/b6DNmz3sZCPv18s2uzvpmFFvMS8.jpg',
+--                 'https://image.tmdb.org/t/p/original/938lqhAQaO3hmLg44VbUR7OqlMs.jpg',
+--                 '宮崎駿',
+--                 '[
+--                   "庵野秀明",
+--                   "西島秀俊",
+--                   "瀧本美織",
+--                   "西村雅彥",
+--                   "Stephen Alpert"
+--                 ]'::jsonb),
+--
+--                ('나혼자 프린스', 'Tay Anh Giữ Một Vì Sao', 'Siêu sao Kang Jun Woo – “Hoàng tử Châu Á” –...', '2025-10-03',
+--                 100,
+--                 'https://image.tmdb.org/t/p/original/1mqJZHJ4KQNduyWsc3EFzfRj6Kg.jpg',
+--                 'https://image.tmdb.org/t/p/originalnull',
+--                 '김성훈',
+--                 '[
+--                   "이광수",
+--                   "Hoàng Hà",
+--                   "Duy Khánh Zhou Zhou",
+--                   "Cù Thị Trà",
+--                   "음문석"
+--                 ]'::jsonb),
+--
+--                ('他年她日', 'Năm Của Anh, Ngày Của Em', 'Khi thế giới bị chia cắt thành hai chiều...', '2025-10-17',
+--                 100,
+--                 'https://image.tmdb.org/t/p/original/7CSO29w9RYLY9R6TVLTkGy0oMIm.jpg',
+--                 'https://image.tmdb.org/t/p/original/n3mqsvKiqElRQ4KjDQ0NADQPVP5.jpg',
+--                 'Benny Kung',
+--                 '[
+--                   "Hứa Quang Hán",
+--                   "袁澧林",
+--                   "Jack Tan",
+--                   "董瑋",
+--                   "陳輝虹"
+--                 ]'::jsonb),
+--
+--                ('Sihir Pelakor', 'Xà Thuật Tiểu Tam', 'Vita – một nữ sinh trung học –...', '2025-10-24', 100,
+--                 'https://image.tmdb.org/t/p/original/n4YGTt7Oju3MM91QxaArXMFOOu8.jpg',
+--                 'https://image.tmdb.org/t/p/original/nvUBmJrwEaIYgPuXI5cukEucPXp.jpg',
+--                 'Bobby Prasetyo',
+--                 '[
+--                   "Anodya Shula Neona Ayu",
+--                   "Marcella Zalianty",
+--                   "Al Fathir Muchtar",
+--                   "Asmara Abigail",
+--                   "Jared Ali"
+--                 ]'::jsonb),
+--
+--                ('ธี่หยด 3', 'TEE YOD: QUỶ ĂN TẠNG PHẦN 3', 'Yak và gia đình phải đối mặt với nỗi kinh hoàng mới...',
+--                 '2025-10-10', 100,
+--                 'https://image.tmdb.org/t/p/original/kcmymlJPZ3mDQbKht20XRGBogd2.jpg',
+--                 'https://image.tmdb.org/t/p/original/qZKxxIGL1wsjpJ7U38WrMwolcjr.jpg',
+--                 'Narint Yuvaboon',
+--                 '[
+--                   "ณเดชน์ คูกิมิยะ",
+--                   "องอาจ เจียมเจริญพรกุล",
+--                   "กาจบัณฑิต ใจดี",
+--                   "พีระกฤตย์ พชรบุณยเกียรติ",
+--                   "เจลีลชา คัปปุน"
+--                 ]'::jsonb),
+--
+--                ('지드래곤 인 시네마 [위버맨쉬]', '지드래곤 인 시네마 [위버맨쉬]', '', '2025-11-11', 100,
+--                 'https://image.tmdb.org/t/p/original/55lQvgGiL9DBsGgk8QsNWugKxvw.jpg',
+--                 'https://image.tmdb.org/t/p/original/smPhK3Ytb7x7VjMOm9zdN7Rbpev.jpg',
+--                 '변진호',
+--                 '[
+--                   "지드래곤",
+--                   "태양",
+--                   "대성",
+--                   "CL"
+--                 ]'::jsonb),
+--
+--                ('연의 편지', 'Những Lá Thư Của Yeon', '', '2025-10-10', 100,
+--                 'https://image.tmdb.org/t/p/original/y1WnHAqau3QxPPy4S1Spepa0ZXN.jpg',
+--                 'https://image.tmdb.org/t/p/original/thsAU92Ei2Nbm38ZdkvHI8xLaSc.jpg',
+--                 '김용환',
+--                 '[
+--                   "이수현",
+--                   "김민주",
+--                   "민승우",
+--                   "남도형"
+--                 ]'::jsonb),
+--
+--                ('Мальчик-дельфин 2', 'Cậu Bé Cá Heo: Bí Mật 7 Đại Dương', '', '2025-10-03', 100,
+--                 'https://image.tmdb.org/t/p/original/rhgCJq2bgKhGQbxwSkKeYLlHdO8.jpg',
+--                 'https://image.tmdb.org/t/p/originalnull',
+--                 'Яна Кузьмина',
+--                 '[
+--                   "Полина Авдеенко",
+--                   "Юлия Рудина",
+--                   "Юлия Зоркина",
+--                   "Александр Васильев",
+--                   "Борис Хасанов"
+--                 ]'::jsonb),
+--
+--                ('Cải Mã', 'Cải Mã', '', '2025-10-31', 100,
+--                 'https://image.tmdb.org/t/p/original/qxQEzKp5WI5Ra9joAt4KVv4LdM7.jpg',
+--                 'https://image.tmdb.org/t/p/originalnull',
+--                 'Thắng Vũ',
+--                 '[
+--                   "Kim Hải",
+--                   "Rima Thanh Vy",
+--                   "Hoàng Mèo",
+--                   "Kiều Trinh",
+--                   "Lương Anh Vũ"
+--                 ]'::jsonb),
+--
+--                ('Cục Vàng Của Ngoại', 'Cục Vàng Của Ngoại', 'Lấy cảm hứng từ những ký ức tuổi thơ ngọt ngào...',
+--                 '2025-10-17', 100,
+--                 'https://image.tmdb.org/t/p/original/jv2bu10yEL3UgBqdULUahMDemh.jpg',
+--                 'https://image.tmdb.org/t/p/original/mQEtRC3l1b1yq0NWRpEvPmOFnu5.jpg',
+--                 'Khương Ngọc',
+--                 '[
+--                   "Hồng Đào",
+--                   "Hữu Châu",
+--                   "Việt Hương",
+--                   "Lê Khánh",
+--                   "Băng Di"
+--                 ]'::jsonb);
+--
+-- -- Insert movie_genre (tự động lấy id movie theo thứ tự insert)
+--         INSERT INTO movie_genre (movie_id, genre_id)
+--         VALUES (1, 27),
+--                (1, 53),
+--                (2, 28),
+--                (2, 878),
+--                (2, 12),
+--                (3, 35),
+--                (3, 14),
+--                (4, 878),
+--                (4, 12),
+--                (4, 28),
+--                (5, 27),
+--                (5, 53),
+--                (6, 878),
+--                (6, 27),
+--                (6, 28),
+--                (7, 16),
+--                (7, 28),
+--                (7, 14),
+--                (8, 53),
+--                (8, 18),
+--                (9, 9648),
+--                (9, 53),
+--                (10, 27),
+--                (10, 53),
+--                (11, 18),
+--                (11, 16),
+--                (11, 10749),
+--                (11, 10752),
+--                (11, 36),
+--                (12, 10749),
+--                (12, 35),
+--                (13, 14),
+--                (13, 10749),
+--                (13, 878),
+--                (14, 27),
+--                (14, 53),
+--                (15, 27),
+--                (15, 28),
+--                (15, 53),
+--                (16, 99),
+--                (16, 10402),
+--                (17, 16),
+--                (17, 18),
+--                (17, 9648),
+--                (17, 12),
+--                (18, 16),
+--                (19, 27),
+--                (20, 10751),
+--                (20, 18);
 
     END;
 $$;

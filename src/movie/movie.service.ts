@@ -26,11 +26,11 @@ export class MovieService {
       const { vietnameseTitle, originalTitle, releaseDate, overview, duration, ageRating, director, actors, genreIds } =
         createMovieRequest;
 
-      const now = new Date();
-      const movieReleaseDate = new Date(releaseDate);
-      if (now >= movieReleaseDate) {
-        throw new BadRequestException();
-      }
+      // const now = new Date();
+      // const movieReleaseDate = new Date(releaseDate);
+      // if (now >= movieReleaseDate) {
+      //   throw new BadRequestException();
+      // }
 
       const genres = await genreRepository.findBy({
         id: In(genreIds),

@@ -13,6 +13,10 @@
       {
         "include": "**/*.sql",
         "outDir": "dist/src/"
+      },
+      {
+        "include": "**/*.hbs",
+        "outDir": "dist/src/"
       }
     ]
   }

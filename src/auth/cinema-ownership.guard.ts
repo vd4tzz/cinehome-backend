@@ -9,10 +9,7 @@ export class CinemaOwnershipGuard implements CanActivate {
   /* eslint-disable */
   canActivate(context: ExecutionContext): boolean {
     const handler = context.getHandler();
-    const shouldCheck = this.reflector.get<boolean>(
-      CHECK_CINEMA_OWNERSHIP,
-      handler,
-    );
+    const shouldCheck = this.reflector.get<boolean>(CHECK_CINEMA_OWNERSHIP, handler);
 
     // if handler is marked that not should check,
     // then return true to pass CinemaOwnershipGuard Guard

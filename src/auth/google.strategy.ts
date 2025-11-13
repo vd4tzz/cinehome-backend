@@ -17,8 +17,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   /* eslint-disable */
   validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): any {
     const user = {
-      email: profile.emails[0].value
-    }
+      email: profile.emails[0].value,
+    };
     done(null, user);
   }
   /* eslint-enable */
