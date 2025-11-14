@@ -54,6 +54,7 @@ async function fetchNowPlayingMovies() {
           : null,
         director: directorObj ? directorObj.name : "",
         actors: topActors,
+        country: detailData.origin_country.join(","),
         genreIds: film.genre_ids,
       };
     })
@@ -83,6 +84,7 @@ async function seedMovies() {
       backdropUrl: m.backdropUrl,
       director: m.director,
       actors: m.actors,
+      country: m.country,
       genres,
       state: MovieState.PUBLISHED,
     });

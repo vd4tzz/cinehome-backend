@@ -46,19 +46,9 @@ export class MovieController {
     return this.movieService.updateMovieImages(movieId, updateMovieImagesRequest);
   }
 
-  @Patch(":movieId/status")
-  async updateMovieStatus(@Param("movieId", ParseIntPipe) movieId: number) {
-    return await this.movieService.updateMovieStatusToPublished(movieId);
-  }
-
   @Get()
   async getMovies(@Query() movieQuery: MovieQuery) {
     return this.movieService.getMovies(movieQuery);
-  }
-
-  @Delete(":movieId")
-  async deleteMovieById(@Param("movieId", ParseIntPipe) movieId: number) {
-    return this.movieService.deleteMovieById(movieId);
   }
 
   @Get("upcoming")
@@ -69,6 +59,21 @@ export class MovieController {
   @Get("showing")
   async getShowingMovies(@Query() pageQuery: PageQuery) {
     return this.movieService.getShowingMovies(pageQuery);
+  }
+
+  @Delete(":movieId")
+  async deleteMovieById(@Param("movieId", ParseIntPipe) movieId: number) {
+    return this.movieService.deleteMovieById(movieId);
+  }
+
+  @Get(":movieId")
+  async getMovie(@Param("movieId", ParseIntPipe) movieId: number) {
+    return this.movieService.getMovie(movieId);
+  }
+
+  @Patch(":movieId/status")
+  async updateMovieStatus(@Param("movieId", ParseIntPipe) movieId: number) {
+    return await this.movieService.updateMovieStatusToPublished(movieId);
   }
 
   @Get(":movieId/showtimes")

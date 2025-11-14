@@ -21,6 +21,9 @@ export class CreateMovieRequest {
   // @IsNotEmpty()
   // backdropUrl: string;
 
+
+  country: string;
+
   @IsNumber()
   duration: number;
 

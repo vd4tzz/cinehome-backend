@@ -21,6 +21,7 @@ async function fetchNowPlayingMovies() {
   );
   const data = await res.json();
 
+
   const movies = await Promise.all(
     data.results.map(async (film: any) => {
       // Lấy credits (đạo diễn + diễn viên)
@@ -54,6 +55,7 @@ async function fetchNowPlayingMovies() {
           : null,
         director: directorObj ? directorObj.name : "",
         actors: topActors,
+        country: detailData.origin_country.join(","),
         genreIds: film.genre_ids,
       };
     })
@@ -83,6 +85,7 @@ async function seedMovies() {
       backdropUrl: m.backdropUrl,
       director: m.director,
       actors: m.actors,
+      country: m.country,
       genres,
       state: MovieState.PUBLISHED,
     });

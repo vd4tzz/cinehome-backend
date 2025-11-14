@@ -23,8 +23,18 @@ export class MovieService {
       const movieRepository = manager.getRepository(Movie);
       const genreRepository = manager.getRepository(Genre);
 
-      const { vietnameseTitle, originalTitle, releaseDate, overview, duration, ageRating, director, actors, genreIds } =
-        createMovieRequest;
+      const {
+        vietnameseTitle,
+        originalTitle,
+        releaseDate,
+        overview,
+        duration,
+        ageRating,
+        director,
+        actors,
+        genreIds,
+        country,
+      } = createMovieRequest;
 
       // const now = new Date();
       // const movieReleaseDate = new Date(releaseDate);
@@ -45,6 +55,7 @@ export class MovieService {
         ageRating: ageRating,
         director: director,
         actors: actors,
+        country: country,
         genres: genres,
       });
 
@@ -65,6 +76,7 @@ export class MovieService {
         ageRating: newMovie.ageRating,
         director: newMovie.director,
         actors: newMovie.actors,
+        country: newMovie.country,
         genres: newMovie.genres.map((genre) => ({
           id: genre.id,
           name: genre.name,
@@ -125,6 +137,7 @@ export class MovieService {
       ageRating: movie.ageRating,
       director: movie.director,
       actors: movie.actors,
+      country: movie.country,
       genres: movie.genres.map((genre) => ({
         id: genre.id,
         name: genre.name,
@@ -162,6 +175,7 @@ export class MovieService {
       ageRating: movie.ageRating,
       director: movie.director,
       actors: movie.actors,
+      country: movie.country,
       genres: movie.genres.map((genre) => ({
         id: genre.id,
         name: genre.name,
@@ -202,6 +216,7 @@ export class MovieService {
       ageRating: movie.ageRating,
       director: movie.director,
       actors: movie.actors,
+      country: movie.country,
       genres: movie.genres.map((genre) => ({
         id: genre.id,
         name: genre.name,
@@ -209,6 +224,39 @@ export class MovieService {
     }));
 
     return new Page(dtos, movieQuery, total);
+  }
+
+  async getMovie(movieId: number) {
+    console.log("service here");
+    const movieRepository = this.dataSource.getRepository(Movie);
+
+    const movie = await movieRepository.findOne({
+      where: { id: movieId },
+      relations: { genres: true },
+    });
+    if (!movie) {
+      throw new NotFoundException();
+    }
+
+    return {
+      id: movie.id,
+      vietnameseTitle: movie.vietnameseTitle,
+      originalTitle: movie.originalTitle,
+      releaseDate: movie.releaseDate,
+      state: movie.state,
+      posterUrl: movie.posterUrl,
+      backdropUrl: movie.backdropUrl,
+      overview: movie.overview,
+      duration: movie.duration,
+      ageRating: movie.ageRating,
+      director: movie.director,
+      actors: movie.actors,
+      country: movie.country,
+      genres: movie.genres.map((genre) => ({
+        id: genre.id,
+        name: genre.name,
+      })),
+    };
   }
 
   async deleteMovieById(movieId: number) {
@@ -261,6 +309,7 @@ export class MovieService {
       ageRating: movie.ageRating,
       director: movie.director,
       actors: movie.actors,
+      country: movie.country,
       genres: movie.genres.map((genre) => ({
         id: genre.id,
         name: genre.name,
@@ -367,6 +416,7 @@ export class MovieService {
       ageRating: movie.ageRating,
       director: movie.director,
       actors: movie.actors,
+      country: movie.country,
       genres: movie.genres ? movie.genres.map((g) => ({ id: g.id, name: g.name })) : [],
     }));
 

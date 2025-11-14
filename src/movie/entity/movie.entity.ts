@@ -40,6 +40,9 @@ export class Movie {
   director: string;
 
   @Column({ nullable: true })
+  country: string;
+
+  @Column({ nullable: true })
   state: MovieState;
 
   @Column({
