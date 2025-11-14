@@ -17,10 +17,14 @@ import { MovieService } from "./movie.service";
 import { UpdateMovieImagesRequest } from "./dto/UpdateMovieImagesRequest";
 import { MovieQuery } from "./dto/query/MovieQuery";
 import { PageQuery } from "../common/pagination/page-query";
+import { ShowtimeService } from "../cinema/showtime.service";
 
 @Controller("api/movies")
 export class MovieController {
-  constructor(private movieService: MovieService) {}
+  constructor(
+    private movieService: MovieService,
+    private showtimeService: ShowtimeService,
+  ) {}
 
   @Post()
   @UseInterceptors(FileInterceptor("img"))
@@ -65,5 +69,10 @@ export class MovieController {
   @Get("showing")
   async getShowingMovies(@Query() pageQuery: PageQuery) {
     return this.movieService.getShowingMovies(pageQuery);
+  }
+
+  @Get(":movieId/showtimes")
+  async getMovieShowtimes(@Param("movieId", ParseIntPipe) movieId: number, @Query() pageQuery: PageQuery) {
+    return this.showtimeService.getAvailableShowtimeOfMovie(movieId, pageQuery);
   }
 }

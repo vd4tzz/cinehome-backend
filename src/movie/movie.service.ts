@@ -291,8 +291,9 @@ export class MovieService {
       // .andWhere("showtime.startTime >= :now", { now })
       .andWhere(
         new Brackets((qb) => {
-          qb.where("showtime.startTime >= :now", { now })
-            .orWhere("movie.releaseDate >= :lastMonth", { lastMonth: lastMonth, });
+          qb.where("showtime.startTime >= :now", { now }).orWhere("movie.releaseDate >= :lastMonth", {
+            lastMonth: lastMonth,
+          });
         }),
       )
       .select("movie.id")
@@ -315,8 +316,9 @@ export class MovieService {
       .leftJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
       .andWhere(
         new Brackets((qb) => {
-          qb.where("showtime.startTime >= :now", { now })
-            .orWhere("movie.releaseDate >= :lastMonth", { lastMonth: lastMonth, });
+          qb.where("showtime.startTime >= :now", { now }).orWhere("movie.releaseDate >= :lastMonth", {
+            lastMonth: lastMonth,
+          });
         }),
       )
       .select("movie.id", "id")
@@ -351,9 +353,7 @@ export class MovieService {
       {} as Record<string, Movie>,
     );
 
-    const sortedShowingMovies: Movie[] = showingMovieIds
-      .map((movieId) => movieMap[movieId])
-      .filter(Boolean);
+    const sortedShowingMovies: Movie[] = showingMovieIds.map((movieId) => movieMap[movieId]).filter(Boolean);
 
     const dtos = sortedShowingMovies.map((movie) => ({
       id: movie.id,

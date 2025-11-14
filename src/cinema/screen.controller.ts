@@ -29,7 +29,7 @@ export class ScreenController {
 
   @Get(":screenId/showtimes")
   async getShowtimes(@Param("screenId", ParseIntPipe) screenId: number, @Query() showtimeQuery: ShowtimeQuery) {
-    return this.showtimeService.getShowtimes(screenId, showtimeQuery);
+    return this.showtimeService.getShowtimesOfScreen(screenId, showtimeQuery);
   }
 
   @ApiResponse({ type: CreateSeatMapResponse, status: 201 })

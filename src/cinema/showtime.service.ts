@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { DataSource } from "typeorm";
+import { Brackets, DataSource } from "typeorm";
 import { Showtime, ShowtimeState } from "./entity/showtime.entity";
 import { CreateShowtimeRequest } from "./dto/create-showtime-request";
 import { Movie } from "../movie/entity/movie.entity";
@@ -11,6 +11,7 @@ import { ShowtimeCancelledEvent } from "./event/showtime-cancelled.event";
 import { CancelShowtimeResponse } from "./dto/CancelShowtimeResponse";
 import { ShowtimeQuery } from "../movie/dto/query/showtime-query";
 import { Page } from "../common/pagination/page";
+import { PageQuery } from "../common/pagination/page-query";
 
 @Injectable()
 export class ShowtimeService {
@@ -101,7 +102,7 @@ export class ShowtimeService {
     } as CancelShowtimeResponse;
   }
 
-  async getShowtimes(screenId: number, showtimeQuery: ShowtimeQuery) {
+  async getShowtimesOfScreen(screenId: number, showtimeQuery: ShowtimeQuery) {
     const { page, size, startTimeFrom, startTimeTo, state } = showtimeQuery;
 
     const qb = this.dataSource.getRepository(Showtime).createQueryBuilder("showtime");
@@ -138,5 +139,41 @@ export class ShowtimeService {
     }));
 
     return new Page(dtos, showtimeQuery, total);
+  }
+
+  async getAvailableShowtimeOfMovie(movieId: number, queryParams: PageQuery) {
+    const movieRepository = this.dataSource.getRepository(Movie);
+    const showtimeRepository = this.dataSource.getRepository(Showtime);
+
+    const { page, size } = queryParams;
+
+    const movie = await movieRepository.findOneBy({ id: movieId });
+    if (!movie) {
+      throw new NotFoundException();
+    }
+
+    const now = new Date();
+
+    const query = showtimeRepository
+      .createQueryBuilder("showtime")
+      .where("showtime.movie_id = :movieId", { movieId: movieId })
+      .andWhere("showtime.endTime > :now", { now: now })
+      .limit(size)
+      .offset(page * size);
+
+    const [showtimes, total] = await query.getManyAndCount();
+
+    const dtos = showtimes.map((showtime) => ({
+      id: showtime.id,
+      movieId: showtime.movieId,
+      screenId: showtime.screenId,
+      startTime: showtime.startTime.toISOString(),
+      endTime: showtime.endTime.toISOString(),
+      state: showtime.state,
+      description: showtime.description,
+      basePrice: showtime.basePrice,
+    }));
+
+    return new Page(dtos, queryParams, total);
   }
 }
