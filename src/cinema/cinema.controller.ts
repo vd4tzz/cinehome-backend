@@ -51,6 +51,11 @@ export class CinemaController {
     return this.cinemaService.createCinema(createCinemaRequest);
   }
 
+  @Get("provinces")
+  async getCinemaProvinces() {
+    return this.cinemaService.getCinemaProvinces();
+  }
+
   @ApiOkResponse({ type: UpdateCinemaResponse })
   @Put(":cinemaId")
   @Roles(RoleName.SUPER_ADMIN)

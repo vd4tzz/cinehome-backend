@@ -24,6 +24,7 @@ export interface ShowtimeItem {
 export interface CinemaNode {
   cinemaId: number;
   cinemaName: string;
+  cinemaProvince: string;
   times: ShowtimeItem[];
 }
 
@@ -200,6 +201,7 @@ export class ShowtimeService {
       const screenName = row.screen.name;
       const format = row.format.code;
       const showtimeId = row.id;
+      const province = row.screen.cinema.address.province;
 
       if (!scheduleMap.has(date)) {
         scheduleMap.set(date, {
@@ -213,6 +215,7 @@ export class ShowtimeService {
         dateNode.cinemas.set(cinemaId, {
           cinemaId: cinemaId,
           cinemaName: cinemaName,
+          cinemaProvince: province,
           times: [],
         });
       }

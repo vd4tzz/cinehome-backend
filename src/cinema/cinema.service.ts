@@ -113,4 +113,19 @@ export class CinemaService {
       throw new NotFoundException();
     }
   }
+
+  async getCinemaProvinces() {
+    const cinemaRepository = this.dataSource.getRepository(Cinema);
+
+    const provinceRecords = await cinemaRepository
+      .createQueryBuilder("cinema")
+      .distinct(true)
+      .select(["cinema.province"])
+      .getRawMany<Record<string, string>>();
+
+    const provinces = provinceRecords.map((province) => province.province);
+    return {
+      provinces,
+    };
+  }
 }
