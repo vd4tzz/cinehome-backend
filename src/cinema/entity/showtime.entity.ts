@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { Movie } from "../../movie/entity/movie.entity";
 import { Screen } from "./screen.entity";
+import { Format } from "./format.entity";
 
 export enum ShowtimeState {
   ACTIVE = "ACTIVE",
@@ -25,6 +26,10 @@ export class Showtime {
 
   @RelationId((showtime: Showtime) => showtime.movie)
   movieId: number;
+
+  @ManyToOne(() => Format)
+  @JoinColumn({ name: "format_id" })
+  format: Format;
 
   @Column({ name: "start_time", type: "timestamptz" })
   startTime: Date;

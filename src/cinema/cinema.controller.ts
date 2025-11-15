@@ -37,7 +37,7 @@ import { UpdateScreenResponse } from "./dto/update-screen-response";
 @ApiBearerAuth("access-token")
 @Controller("api/cinemas")
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(JwtAuthGuard, RolesGuard)
+// @UseGuards(JwtAuthGuard, RolesGuard)
 export class CinemaController {
   constructor(
     private cinemaService: CinemaService,

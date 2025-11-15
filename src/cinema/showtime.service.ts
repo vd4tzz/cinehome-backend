@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { Brackets, DataSource } from "typeorm";
+import { DataSource } from "typeorm";
 import { Showtime, ShowtimeState } from "./entity/showtime.entity";
 import { CreateShowtimeRequest } from "./dto/create-showtime-request";
 import { Movie } from "../movie/entity/movie.entity";
@@ -12,6 +12,25 @@ import { CancelShowtimeResponse } from "./dto/CancelShowtimeResponse";
 import { ShowtimeQuery } from "../movie/dto/query/showtime-query";
 import { Page } from "../common/pagination/page";
 import { PageQuery } from "../common/pagination/page-query";
+import { Format } from "./entity/format.entity";
+
+export interface ShowtimeItem {
+  showtimeId: number;
+  time: string; // HH:mm
+  format: string;
+  screenName: string;
+}
+
+export interface CinemaNode {
+  cinemaId: number;
+  cinemaName: string;
+  times: ShowtimeItem[];
+}
+
+export interface DateNode {
+  date: string; // YYYY-MM-DD
+  cinemas: Map<number, CinemaNode>;
+}
 
 @Injectable()
 export class ShowtimeService {
@@ -24,13 +43,17 @@ export class ShowtimeService {
     const showtimeRepository = this.dataSource.getRepository(Showtime);
     const movieRepository = this.dataSource.getRepository(Movie);
     const screenRepository = this.dataSource.getRepository(Screen);
+    const formatRepository = this.dataSource.getRepository(Format);
 
-    const { movieId, basePrice } = createShowtimeRequest;
+    const { movieId, basePrice, formatId } = createShowtimeRequest;
 
-    const movie = await movieRepository.findOneBy({ id: movieId });
-    const screen = await screenRepository.findOneBy({ id: screenId });
+    const [movie, screen, format] = await Promise.all([
+      movieRepository.findOneBy({ id: movieId }),
+      screenRepository.findOneBy({ id: screenId }),
+      formatRepository.findOneBy({ id: formatId }),
+    ]);
 
-    if (!movie || !screen) {
+    if (!movie || !screen || !format) {
       throw new NotFoundException();
     }
 
@@ -55,6 +78,7 @@ export class ShowtimeService {
     const showtime = new Showtime({
       screen: screen,
       movie: movie,
+      format: format,
       startTime: startTime,
       endTime: endTime,
       state: ShowtimeState.ACTIVE,
@@ -156,24 +180,55 @@ export class ShowtimeService {
 
     const query = showtimeRepository
       .createQueryBuilder("showtime")
+      .innerJoinAndSelect("showtime.format", "format")
+      .innerJoinAndSelect("showtime.screen", "screen")
+      .innerJoinAndSelect("screen.cinema", "cinema")
       .where("showtime.movie_id = :movieId", { movieId: movieId })
       .andWhere("showtime.endTime > :now", { now: now })
       .limit(size)
       .offset(page * size);
 
-    const [showtimes, total] = await query.getManyAndCount();
+    const showtimes = await query.getMany();
 
-    const dtos = showtimes.map((showtime) => ({
-      id: showtime.id,
-      movieId: showtime.movieId,
-      screenId: showtime.screenId,
-      startTime: showtime.startTime.toISOString(),
-      endTime: showtime.endTime.toISOString(),
-      state: showtime.state,
-      description: showtime.description,
-      basePrice: showtime.basePrice,
+    const scheduleMap = new Map<string, DateNode>();
+
+    for (const row of showtimes) {
+      const date = row.startTime.toISOString().slice(0, 10);
+      const time = row.startTime.toISOString().slice(11, 16);
+      const cinemaName = row.screen.cinema.name;
+      const cinemaId = row.screen.cinema.id;
+      const screenName = row.screen.name;
+      const format = row.format.code;
+      const showtimeId = row.id;
+
+      if (!scheduleMap.has(date)) {
+        scheduleMap.set(date, {
+          date: date,
+          cinemas: new Map<number, CinemaNode>(),
+        });
+      }
+
+      const dateNode = scheduleMap.get(date)!;
+      if (!dateNode.cinemas.has(cinemaId)) {
+        dateNode.cinemas.set(cinemaId, {
+          cinemaId: cinemaId,
+          cinemaName: cinemaName,
+          times: [],
+        });
+      }
+
+      const cinemaNode = dateNode.cinemas.get(cinemaId)!;
+      cinemaNode.times.push({
+        showtimeId: showtimeId,
+        time: time,
+        format: format,
+        screenName: screenName,
+      });
+    }
+
+    return [...scheduleMap.values()].map((dateNode) => ({
+      date: dateNode.date,
+      cinemas: [...dateNode.cinemas.values()],
     }));
-
-    return new Page(dtos, queryParams, total);
   }
 }

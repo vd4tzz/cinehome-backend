@@ -9,4 +9,7 @@ export class CreateShowtimeRequest {
 
   @ApiProperty()
   basePrice: string;
+
+  @ApiProperty()
+  formatId: number;
 }
