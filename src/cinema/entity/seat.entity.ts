@@ -14,7 +14,7 @@ export class Seat {
   @Column()
   row: string;
 
-  @Column()
+  @Column({ nullable: true })
   label: string;
 
   @Column({ name: "column_order" })

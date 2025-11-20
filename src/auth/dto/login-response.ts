@@ -9,6 +9,9 @@ export class LoginResponse {
   email: string;
 
   @ApiProperty()
+  cinemaId?: number;
+
+  @ApiProperty()
   accessToken: string;
 
   @ApiProperty()

@@ -70,10 +70,10 @@ export class ShowtimeService {
     const overlap = await showtimeRepository
       .createQueryBuilder("s")
       .where("s.screen_id = :screenId", { screenId })
-      .andWhere("(s.start_time < :endTime AND s.end_time > :startTime)", { startTime, endTime })
+      .andWhere("(s.start_time <= :endTime AND s.end_time >= :startTime)", { startTime, endTime })
       .getOne();
     if (overlap) {
-      throw new BadRequestException();
+      throw new BadRequestException("cannot create showtime because of overlap");
     }
 
     const showtime = new Showtime({
@@ -91,9 +91,11 @@ export class ShowtimeService {
     return {
       id: showtime.id,
       movieId: showtime.movie.id,
+      movieVietnameseTitle: showtime.movie.vietnameseTitle,
       screenId: showtime.screen.id,
       startTime: showtime.startTime.toISOString(),
       endTime: showtime.endTime.toISOString(),
+      state: showtime.state,
       description: showtime.description,
       basePrice: showtime.basePrice,
     } as CreateShowtimeResponse;
@@ -101,7 +103,10 @@ export class ShowtimeService {
 
   async cancelShowtime(showtimeId: number, cancelShowtimeRequest: CancelShowtimeRequest) {
     const showtimeRepository = this.dataSource.getRepository(Showtime);
-    const showtime = await showtimeRepository.findOneBy({ id: showtimeId });
+    const showtime = await showtimeRepository.findOne({
+      where: { id: showtimeId },
+      relations: { movie: true },
+    });
     if (!showtime) {
       throw new NotFoundException();
     }
@@ -111,7 +116,7 @@ export class ShowtimeService {
     }
 
     showtime.state = ShowtimeState.CANCELED;
-    showtime.description = cancelShowtimeRequest.description;
+    showtime.description = cancelShowtimeRequest?.description;
     await showtimeRepository.save(showtime);
 
     this.eventEmitter2.emit("showtime.cancelled", { showtimeId: showtimeId } as ShowtimeCancelledEvent);
@@ -119,11 +124,13 @@ export class ShowtimeService {
     return {
       id: showtime.id,
       movieId: showtime.movieId,
+      movieVietnameseTitle: showtime.movie.vietnameseTitle,
       screenId: showtime.screenId,
       startTime: showtime.startTime.toISOString(),
       endTime: showtime.endTime.toISOString(),
       description: showtime.description,
       basePrice: showtime.basePrice,
+      state: showtime.state,
     } as CancelShowtimeResponse;
   }
 
@@ -132,6 +139,7 @@ export class ShowtimeService {
 
     const qb = this.dataSource.getRepository(Showtime).createQueryBuilder("showtime");
 
+    qb.innerJoinAndSelect("showtime.movie", "movie");
     qb.andWhere("showtime.screen_id = :screenId", { screenId });
 
     if (startTimeFrom) {
@@ -155,6 +163,7 @@ export class ShowtimeService {
     const dtos = showtimes.map((showtime) => ({
       id: showtime.id,
       movieId: showtime.movieId,
+      movieVietnameseTitle: showtime.movie.vietnameseTitle,
       screenId: showtime.screenId,
       startTime: showtime.startTime.toISOString(),
       endTime: showtime.endTime.toISOString(),

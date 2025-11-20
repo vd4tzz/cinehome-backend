@@ -53,10 +53,12 @@ export class SeatService implements OnApplicationBootstrap {
         } as Seat;
       });
 
-      const previousSeatMap = await seatRepository.findBy({ screen: { id: screenId } });
-      if (previousSeatMap.length !== 0) {
-        await seatRepository.delete(previousSeatMap);
-      }
+      // const previousSeatMap = await seatRepository.findBy({ screen: { id: screenId } });
+      // if (previousSeatMap.length !== 0) {
+      //   await seatRepository.delete(previousSeatMap);
+      // }
+
+      await seatRepository.delete({ screen: { id: screenId } });
 
       await seatRepository.save(seats);
 
@@ -65,7 +67,7 @@ export class SeatService implements OnApplicationBootstrap {
         row: seat.row,
         label: seat.label,
         columnOrder: seat.columnOrder,
-        seatType: seat.type.code,
+        seatType: seat.type?.code,
       }));
 
       return new CreateSeatMapResponse({
@@ -88,7 +90,7 @@ export class SeatService implements OnApplicationBootstrap {
       row: seat.row,
       label: seat.label,
       columnOrder: seat.columnOrder,
-      seatType: seat.type.code,
+      seatType: seat.type?.code,
     }));
 
     return new GetSeatMapResponse({
@@ -103,6 +105,6 @@ export class SeatService implements OnApplicationBootstrap {
       return this.COUPLE_SEAT_TYPE;
     }
 
-    throw new BadRequestException();
+    return null;
   }
 }

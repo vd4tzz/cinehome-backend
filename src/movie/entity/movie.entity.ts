@@ -1,4 +1,13 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Genre } from "./genre.entity";
 import { Showtime } from "../../cinema/entity/showtime.entity";
 
@@ -72,7 +81,26 @@ export class Movie {
   @OneToMany(() => Showtime, (showtime) => showtime.movie)
   showtimes: Showtime[];
 
+  @Column()
+  searchTitle: string;
+
   constructor(partial: Partial<Movie>) {
     Object.assign(this, partial);
   }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  setSearchTitle() {
+    this.searchTitle = removeAccents(this.vietnameseTitle);
+  }
+}
+
+export function removeAccents(str: string): string {
+  if (!str) {
+    return "";
+  }
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }

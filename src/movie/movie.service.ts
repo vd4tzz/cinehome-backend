@@ -197,6 +197,7 @@ export class MovieService {
       where: [
         { isDeleted: false, vietnameseTitle: ILike(`%${title ?? ""}%`) },
         { isDeleted: false, originalTitle: ILike(`%${title ?? ""}%`) },
+        { isDeleted: false, searchTitle: ILike(`%${title ?? ""}%`) },
       ],
       relations: {
         genres: true,
@@ -227,7 +228,6 @@ export class MovieService {
   }
 
   async getMovie(movieId: number) {
-    console.log("service here");
     const movieRepository = this.dataSource.getRepository(Movie);
 
     const movie = await movieRepository.findOne({

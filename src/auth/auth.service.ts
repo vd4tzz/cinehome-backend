@@ -215,6 +215,7 @@ export class AuthService {
     return new LoginResponse({
       userId: user.id,
       email: user.email,
+      cinemaId: user.admin?.cinemaId,
       accessToken: this.signAccessToken(jwtPayload),
       accessTokenExpIn: this.JWT_ACCESS_EXP,
       refreshToken: this.signRefreshToken(jwtPayload),
