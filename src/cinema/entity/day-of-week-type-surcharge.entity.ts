@@ -1,22 +1,22 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Cinema } from "./cinema.entity";
-import { DayType } from "./day-type.entity";
+import { DayOfWeekType } from "./day-of-week-type.entity";
 
-@Entity("")
-export class DayTypeSurcharge {
+@Entity("day_of_week_type_surcharges")
+export class DayOfWeekTypeSurcharge {
   @PrimaryColumn({ name: "cinema_id" })
   cinemaId: number;
 
-  @PrimaryColumn({ name: "day_type_id" })
+  @PrimaryColumn({ name: "day_of_week_type_id" })
   dayTypeId: number;
 
   @ManyToOne(() => Cinema, { onDelete: "CASCADE" })
   @JoinColumn({ name: "cinema_id" })
   cinema: Cinema;
 
-  @ManyToOne(() => DayType, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "day_type_id" })
-  dayType: DayType;
+  @ManyToOne(() => DayOfWeekType, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "day_of_week_type_id" })
+  dayOfWeekType: DayOfWeekType;
 
   @Column({ type: "numeric" })
   surcharge: string;

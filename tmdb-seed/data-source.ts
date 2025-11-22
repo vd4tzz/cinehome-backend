@@ -10,9 +10,9 @@ import { Cinema } from "../src/cinema/entity/cinema.entity";
 import { Seat } from "../src/cinema/entity/seat.entity";
 import { Format } from "../src/cinema/entity/format.entity";
 import { TimeSlot } from "../src/cinema/entity/time-slot.entity";
-import { DayType } from "../src/cinema/entity/day-type.entity";
+import { DayOfWeekType } from "../src/cinema/entity/day-of-week-type.entity";
 import { SeatType } from "../src/cinema/entity/seat-type.entity";
-import { DayTypeSurcharge } from "../src/cinema/entity/day-type-surcharge.entity";
+import { DayOfWeekTypeSurcharge } from "../src/cinema/entity/day-of-week-type-surcharge.entity";
 import { TimeSlotSurcharge } from "../src/cinema/entity/time-slot-surcharge.entity";
 import { SeatTypeSurcharge } from "../src/cinema/entity/seat-type-surcharge.entity";
 import { Audience } from "../src/cinema/entity/audience.entity";
@@ -39,9 +39,9 @@ export const AppDataSource = new DataSource({
     Seat,
     Format,
     TimeSlot,
-    DayType,
+    DayOfWeekType,
     SeatType,
-    DayTypeSurcharge,
+    DayOfWeekTypeSurcharge,
     TimeSlotSurcharge,
     SeatTypeSurcharge,
     Audience,

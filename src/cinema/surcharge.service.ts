@@ -3,7 +3,7 @@ import { DataSource, In } from "typeorm";
 import { PageQuery } from "../common/pagination/page-query";
 import { AudienceSurcharge } from "./entity/audience-surcharge.entity";
 import { GetAudienceSurchargeResponse } from "./dto/get-audience-surcharge-response";
-import { DayTypeSurcharge } from "./entity/day-type-surcharge.entity";
+import { DayOfWeekTypeSurcharge } from "./entity/day-of-week-type-surcharge.entity";
 import { FormatSurcharge } from "./entity/format-surcharge.entity";
 import { SeatTypeSurcharge } from "./entity/seat-type-surcharge.entity";
 import { TimeSlotSurcharge } from "./entity/time-slot-surcharge.entity";
@@ -96,18 +96,18 @@ export class SurchargeService {
   }
 
   async getDayTypeSurcharge(cinemaId: number): Promise<GetDayTypeSurchargeResponse> {
-    const dayTypeSurchargeRepository = this.dataSource.getRepository(DayTypeSurcharge);
+    const dayTypeSurchargeRepository = this.dataSource.getRepository(DayOfWeekTypeSurcharge);
     const dayTypeSurcharges = await dayTypeSurchargeRepository.find({
       where: { cinemaId: cinemaId },
       relations: {
-        dayType: true,
+        dayOfWeekType: true,
       },
     });
 
     const dtos = dayTypeSurcharges.map((surcharge) => ({
       cinemaId: surcharge.cinemaId,
       dayTypeId: surcharge.dayTypeId,
-      dayTypeCode: surcharge.dayType.code,
+      dayTypeCode: surcharge.dayOfWeekType.code,
       surcharge: surcharge.surcharge,
     }));
 
@@ -118,7 +118,7 @@ export class SurchargeService {
 
   async updateDayTypeSurcharge(cinemaId: number, updateDayTypeSurchargeRequest: UpdateDayTypeSurchargeRequest) {
     await this.dataSource.transaction(async (manager) => {
-      const dayTypeSurchargeRepository = manager.getRepository(DayTypeSurcharge);
+      const dayTypeSurchargeRepository = manager.getRepository(DayOfWeekTypeSurcharge);
       const { dayTypeSurcharges } = updateDayTypeSurchargeRequest;
 
       // ensure all belong to same cinema
@@ -151,7 +151,7 @@ export class SurchargeService {
 
       // iterate through all surcharge DTOs, find the corresponding entity in existingMap by dayTypeId,
       // update its surcharge value, and collect all updated entities
-      const updatedEntities: DayTypeSurcharge[] = [];
+      const updatedEntities: DayOfWeekTypeSurcharge[] = [];
       for (const dto of dayTypeSurcharges) {
         const entity = existingMap.get(dto.dayTypeId);
         if (!entity) {

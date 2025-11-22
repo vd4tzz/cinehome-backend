@@ -20,7 +20,7 @@ export class Seat {
   @Column({ name: "column_order" })
   columnOrder: number;
 
-  @ManyToOne(() => SeatType, { onDelete: "CASCADE" })
+  @ManyToOne(() => SeatType, (seatType) => seatType.seats, { onDelete: "CASCADE" })
   @JoinColumn({ name: "seat_type_id" })
   type: SeatType;
 }

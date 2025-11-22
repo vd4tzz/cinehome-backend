@@ -13,6 +13,7 @@ import { ShowtimeQuery } from "../movie/dto/query/showtime-query";
 import { Page } from "../common/pagination/page";
 import { PageQuery } from "../common/pagination/page-query";
 import { Format } from "./entity/format.entity";
+import { format as formatDateTime } from "date-fns-tz";
 
 export interface ShowtimeItem {
   showtimeId: number;
@@ -179,7 +180,7 @@ export class ShowtimeService {
     const movieRepository = this.dataSource.getRepository(Movie);
     const showtimeRepository = this.dataSource.getRepository(Showtime);
 
-    const { page, size } = queryParams;
+    // const { page, size } = queryParams;
 
     const movie = await movieRepository.findOneBy({ id: movieId });
     if (!movie) {
@@ -194,17 +195,17 @@ export class ShowtimeService {
       .innerJoinAndSelect("showtime.screen", "screen")
       .innerJoinAndSelect("screen.cinema", "cinema")
       .where("showtime.movie_id = :movieId", { movieId: movieId })
-      .andWhere("showtime.endTime > :now", { now: now })
-      .limit(size)
-      .offset(page * size);
+      .andWhere("showtime.endTime > :now", { now: now });
+    // .limit(size)
+    // .offset(page * size);
 
     const showtimes = await query.getMany();
 
     const scheduleMap = new Map<string, DateNode>();
 
     for (const row of showtimes) {
-      const date = row.startTime.toISOString().slice(0, 10);
-      const time = row.startTime.toISOString().slice(11, 16);
+      const date = formatDateTime(row.startTime, "yyyy-MM-dd", { timeZone: "Asia/Ho_Chi_Minh" });
+      const time = formatDateTime(row.startTime, "HH:mm", { timeZone: "Asia/Ho_Chi_Minh" });
       const cinemaName = row.screen.cinema.name;
       const cinemaId = row.screen.cinema.id;
       const screenName = row.screen.name;

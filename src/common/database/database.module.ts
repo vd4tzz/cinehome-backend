@@ -9,9 +9,9 @@ import { Screen } from "../../cinema/entity/screen.entity";
 import { Seat } from "../../cinema/entity/seat.entity";
 import { Format } from "../../cinema/entity/format.entity";
 import { TimeSlot } from "../../cinema/entity/time-slot.entity";
-import { DayType } from "../../cinema/entity/day-type.entity";
+import { DayOfWeekType } from "../../cinema/entity/day-of-week-type.entity";
 import { SeatType } from "../../cinema/entity/seat-type.entity";
-import { DayTypeSurcharge } from "../../cinema/entity/day-type-surcharge.entity";
+import { DayOfWeekTypeSurcharge } from "../../cinema/entity/day-of-week-type-surcharge.entity";
 import { TimeSlotSurcharge } from "../../cinema/entity/time-slot-surcharge.entity";
 import { SeatTypeSurcharge } from "../../cinema/entity/seat-type-surcharge.entity";
 import { Audience } from "../../cinema/entity/audience.entity";
@@ -21,6 +21,8 @@ import { UserAdmin } from "../../user/entity/user-admin.entity";
 import { Movie } from "../../movie/entity/movie.entity";
 import { Genre } from "../../movie/entity/genre.entity";
 import { Showtime } from "../../cinema/entity/showtime.entity";
+import { Booking } from "../../booking/entity/booking.entity";
+import { Ticket } from "../../booking/entity/ticket.entity";
 
 @Module({
   imports: [
@@ -45,9 +47,9 @@ import { Showtime } from "../../cinema/entity/showtime.entity";
           Seat,
           Format,
           TimeSlot,
-          DayType,
+          DayOfWeekType,
           SeatType,
-          DayTypeSurcharge,
+          DayOfWeekTypeSurcharge,
           TimeSlotSurcharge,
           SeatTypeSurcharge,
           Audience,
@@ -56,6 +58,8 @@ import { Showtime } from "../../cinema/entity/showtime.entity";
           Movie,
           Genre,
           Showtime,
+          Booking,
+          Ticket,
         ],
         synchronize: true,
         dropSchema: true, // xoa toan bo du lieu cu truoc khi sync

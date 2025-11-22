@@ -14,5 +14,6 @@ import { SeatService } from "./seat.service";
   imports: [CinemaHandlerModule],
   controllers: [CinemaController, ScreenController, SurchargeController, ShowtimeController],
   providers: [CinemaService, ScreenService, SurchargeService, ShowtimeService, SeatService],
+  exports: [SeatService],
 })
 export class CinemaModule {}

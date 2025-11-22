@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Seat } from "./seat.entity";
 
 export enum SeatTypeCode {
   SINGLE = "SINGLE",
@@ -15,4 +16,7 @@ export class SeatType {
 
   @Column({ nullable: true })
   description: string;
+
+  @OneToMany(() => Seat, (seat) => seat.type)
+  seats: Seat[];
 }

@@ -9,6 +9,7 @@ import { SeedModule } from "./common/database/seed/seed.module";
 import { CinemaModule } from "./cinema/cinema.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { MovieModule } from "./movie/movie.module";
+import { BookingModule } from "./booking/booking.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MovieModule } from "./movie/movie.module";
     AuthModule,
     CinemaModule,
     MovieModule,
+    BookingModule,
     DatabaseModule,
     MailModule,
   ],

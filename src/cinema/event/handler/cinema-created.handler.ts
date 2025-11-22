@@ -4,8 +4,8 @@ import { CinemaCreatedEvent } from "../cinema-created.event";
 import { DataSource } from "typeorm";
 import { AudienceSurcharge } from "../../entity/audience-surcharge.entity";
 import { Audience } from "../../entity/audience.entity";
-import { DayType } from "../../entity/day-type.entity";
-import { DayTypeSurcharge } from "../../entity/day-type-surcharge.entity";
+import { DayOfWeekType } from "../../entity/day-of-week-type.entity";
+import { DayOfWeekTypeSurcharge } from "../../entity/day-of-week-type-surcharge.entity";
 import { Format } from "../../entity/format.entity";
 import { FormatSurcharge } from "../../entity/format-surcharge.entity";
 import { TimeSlot } from "../../entity/time-slot.entity";
@@ -36,8 +36,8 @@ export class CinemaCreatedHandler {
       ] = [
         manager.getRepository(Audience),
         manager.getRepository(AudienceSurcharge),
-        manager.getRepository(DayType),
-        manager.getRepository(DayTypeSurcharge),
+        manager.getRepository(DayOfWeekType),
+        manager.getRepository(DayOfWeekTypeSurcharge),
         manager.getRepository(Format),
         manager.getRepository(FormatSurcharge),
         manager.getRepository(TimeSlot),

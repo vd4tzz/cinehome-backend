@@ -31,6 +31,9 @@ export class Showtime {
   @JoinColumn({ name: "format_id" })
   format: Format;
 
+  @RelationId((showtime: Showtime) => showtime.format)
+  formatId: number;
+
   @Column({ name: "start_time", type: "timestamptz" })
   startTime: Date;
 

@@ -1,17 +1,17 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-export enum DayTypeCode {
+export enum DayOfWeekTypeCode {
   WEEKDAY = "WEEKDAY",
   WEEKEND = "WEEKEND",
 }
 
-@Entity("day_types")
-export class DayType {
+@Entity("days_of_week_type")
+export class DayOfWeekType {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ unique: true })
-  code: DayTypeCode;
+  code: DayOfWeekTypeCode;
 
   @Column({ nullable: true })
   description: string;
