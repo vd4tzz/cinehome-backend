@@ -23,7 +23,7 @@ import { ResetPasswordRequest } from "./dto/reset-password-request";
 import { SendEmailVerificationRequest } from "./dto/send-email-verification-request";
 import { VerifyEmailRequest } from "./dto/verify-email-request";
 import { OAuth2Provider } from "../user/entity/user.entity";
-import { AuthUser } from "./auth.user";
+import { AuthUser } from "./auth-user";
 import { GoogleGuard } from "./google.guard";
 
 interface StateObject {
