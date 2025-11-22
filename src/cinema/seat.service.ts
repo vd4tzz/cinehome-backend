@@ -53,11 +53,6 @@ export class SeatService implements OnApplicationBootstrap {
         } as Seat;
       });
 
-      // const previousSeatMap = await seatRepository.findBy({ screen: { id: screenId } });
-      // if (previousSeatMap.length !== 0) {
-      //   await seatRepository.delete(previousSeatMap);
-      // }
-
       await seatRepository.delete({ screen: { id: screenId } });
 
       await seatRepository.save(seats);
