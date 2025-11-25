@@ -35,12 +35,13 @@ export class AuthService {
       
       const user = await this.users.create(email, passwordHash, emailVerificationToken);
 
-      // mock gửi mail log ra
-      // subject: verify your email
-      // link: /auth/verify-email?token=<emailVerificationToken>
-      // eslint-disable-next-line no-console
-
-      console.log('[Mock Email] Verify token for' , email, ':', emailVerificationToken);
+      // TODO: Implement real email service in production
+      // For now, verification tokens should NOT be logged in production
+      // Use proper email service (SendGrid, AWS SES, etc.)
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log('[DEV ONLY] Verify token for', email, ':', emailVerificationToken);
+      }
 
       //phát hành token lần đầu ( nhiều app vẫn cho login sau signup), verify sớm sẽ hạn chế tính năng
 

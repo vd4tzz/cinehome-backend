@@ -1,18 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
 
 /**
- * AuthGuard dạng "giả" cho DEV:
- * - Lấy userId từ header 'x-user-id'
- * - Nếu không có thì gán userId = '1' (coi như user mặc định)
- * Thực tế bạn sẽ thay bằng JWT/Passport sau.
+ * Real JWT AuthGuard using Passport
+ * Validates JWT tokens from Authorization header
+ * Uses JwtAccessStrategy for token validation
  */
 @Injectable()
-export class AuthGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
-    // header tên thường được chuẩn hóa lower-case sẵn
-    const id = req.headers['x-user-id'];
-    req.user = { id: id || '1' };
-    return true;
-  }
-}
+export class AuthGuard extends PassportAuthGuard('jwt') {}

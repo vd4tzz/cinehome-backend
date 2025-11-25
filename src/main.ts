@@ -22,8 +22,21 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document); // route: /docs
 
   console.log('API docs available at /docs');
-  // Các cấu hình khác của bạn...
-  app.enableCors();  
-  await app.listen(process.env.PORT || 3000);
+  
+  // CORS configuration - restrict to specific origins in production
+  const allowedOrigins = process.env.CORS_ORIGINS 
+    ? process.env.CORS_ORIGINS.split(',') 
+    : ['http://localhost:3000', 'http://localhost:5173']; // Default for dev
+  
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+  
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`🚀 Application is running on: http://localhost:${port}`);
 }
 bootstrap();

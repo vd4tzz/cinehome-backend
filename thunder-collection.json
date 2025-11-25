@@ -1,0 +1,311 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "CineHome API",
+  "collectionId": "cinehome-api-collection",
+  "dateExported": "2025-11-20",
+  "version": "1.0",
+  "folders": [
+    {
+      "id": "auth-folder",
+      "name": "1. Authentication",
+      "containerId": "",
+      "created": "2025-11-20",
+      "sortNum": 10000
+    },
+    {
+      "id": "booking-flow-folder",
+      "name": "2. Booking Flow",
+      "containerId": "",
+      "created": "2025-11-20",
+      "sortNum": 20000
+    },
+    {
+      "id": "edge-cases-folder",
+      "name": "3. Edge Cases",
+      "containerId": "",
+      "created": "2025-11-20",
+      "sortNum": 30000
+    }
+  ],
+  "requests": [
+    {
+      "id": "signup-request",
+      "name": "Signup",
+      "url": "http://localhost:3000/api/auth/signup",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePass123!\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "auth-folder"
+    },
+    {
+      "id": "login-request",
+      "name": "Login",
+      "url": "http://localhost:3000/api/auth/login",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePass123!\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "auth-folder"
+    },
+    {
+      "id": "refresh-request",
+      "name": "Refresh Token",
+      "url": "http://localhost:3000/api/auth/refresh",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "auth-folder"
+    },
+    {
+      "id": "whoami-request",
+      "name": "Get Me",
+      "url": "http://localhost:3000/api/me",
+      "method": "GET",
+      "sortNum": 40000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{accessToken}}"
+        }
+      ],
+      "tests": [],
+      "containerId": "auth-folder"
+    },
+    {
+      "id": "create-hold-request",
+      "name": "1. Create Hold",
+      "url": "http://localhost:3000/api/holds",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{accessToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"showId\": \"44444444-4444-4444-4444-444444444444\",\n  \"seatIds\": [\n    \"55555555-5555-5555-5555-555555555551\",\n    \"55555555-5555-5555-5555-555555555552\"\n  ],\n  \"idempotencyKey\": \"hold_{{$timestamp}}\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "booking-flow-folder"
+    },
+    {
+      "id": "create-booking-request",
+      "name": "2. Create Booking",
+      "url": "http://localhost:3000/api/bookings",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{accessToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"holdId\": \"{{holdId}}\",\n  \"idempotencyKey\": \"booking_{{$timestamp}}\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "booking-flow-folder"
+    },
+    {
+      "id": "initiate-payment-request",
+      "name": "3. Initiate Payment",
+      "url": "http://localhost:3000/api/payments/initiate",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{accessToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"idempotencyKey\": \"payment_{{$timestamp}}\",\n  \"provider\": \"mock\",\n  \"returnUrl\": \"http://localhost:3000/booking/success\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "booking-flow-folder"
+    },
+    {
+      "id": "confirm-payment-request",
+      "name": "4. Confirm Payment (Webhook)",
+      "url": "http://localhost:3000/api/payments/webhook/mock",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"paymentId\": \"{{paymentId}}\",\n  \"status\": \"SUCCESS\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "booking-flow-folder"
+    },
+    {
+      "id": "release-hold-request",
+      "name": "5. Release Hold",
+      "url": "http://localhost:3000/api/holds/{{holdId}}",
+      "method": "DELETE",
+      "sortNum": 50000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{accessToken}}"
+        }
+      ],
+      "tests": [],
+      "containerId": "booking-flow-folder"
+    },
+    {
+      "id": "weak-password-request",
+      "name": "Weak Password (Should Fail)",
+      "url": "http://localhost:3000/api/auth/signup",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"weak@test.com\",\n  \"password\": \"123456\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "edge-cases-folder"
+    },
+    {
+      "id": "double-booking-request",
+      "name": "Double Booking (Race Condition)",
+      "url": "http://localhost:3000/api/holds",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{accessToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"showId\": \"44444444-4444-4444-4444-444444444444\",\n  \"seatIds\": [\"55555555-5555-5555-5555-555555555551\"],\n  \"idempotencyKey\": \"race_test_{{$timestamp}}\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "edge-cases-folder"
+    },
+    {
+      "id": "idempotency-test-request",
+      "name": "Idempotency Test (Same Key)",
+      "url": "http://localhost:3000/api/holds",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2025-11-20",
+      "modified": "2025-11-20",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{accessToken}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"showId\": \"44444444-4444-4444-4444-444444444444\",\n  \"seatIds\": [\"55555555-5555-5555-5555-555555555552\"],\n  \"idempotencyKey\": \"same_key_for_idempotency_test\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "containerId": "edge-cases-folder"
+    }
+  ],
+  "settings": {
+    "options": {
+      "baseUrl": "http://localhost:3000"
+    }
+  }
+}

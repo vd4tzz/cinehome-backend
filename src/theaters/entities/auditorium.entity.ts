@@ -9,7 +9,7 @@ export class Auditorium {
   @ManyToOne(() => Theater, { eager: true })
   theater: Theater;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   name: string; // e.g., Room 1
 
   @Column({ type: 'int', default: 100 })

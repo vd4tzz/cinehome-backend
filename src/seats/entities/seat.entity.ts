@@ -14,7 +14,7 @@ export class Seat {
 
   @Column() rowLabel: string;
   @Column() number: number;
-  @Column({ default: 'NORMAL' }) type: string;
+  @Column({ type: 'varchar', length: 20, default: 'NORMAL' }) type: string;
 
   @ManyToOne(() => Auditorium, { nullable: true })
   auditorium: Auditorium | null;
