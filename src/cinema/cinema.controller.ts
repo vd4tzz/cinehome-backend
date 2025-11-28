@@ -93,15 +93,15 @@ export class CinemaController {
     return this.screenService.createScreen(cinemaId, createScreenRequest);
   }
 
-  @Put(":cinemaId/screens/:screenId")
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async updateScreen(
-    @Param("cinemaId") cinemaId: number,
-    @Param("screenId") screenId: number,
-    @Body() updateScreenRequest: UpdateScreenRequest,
-  ): Promise<UpdateScreenResponse> {
-    return this.screenService.updateScreen(cinemaId, screenId, updateScreenRequest);
-  }
+  // @Put(":cinemaId/screens/:screenId")
+  // @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
+  // async updateScreen(
+  //   @Param("cinemaId") cinemaId: number,
+  //   @Param("screenId") screenId: number,
+  //   @Body() updateScreenRequest: UpdateScreenRequest,
+  // ): Promise<UpdateScreenResponse> {
+  //   return this.screenService.updateScreen(cinemaId, screenId, updateScreenRequest);
+  // }
 
   @Get(":cinemaId/screens/:screenId")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)

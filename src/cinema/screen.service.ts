@@ -51,31 +51,29 @@ export class ScreenService {
     };
   }
 
-  async updateScreen(
-    cinemaId: number,
-    screenId: number,
-    updateScreenRequest: UpdateScreenRequest,
-  ): Promise<UpdateScreenResponse> {
+  async updateScreen(screenId: number, updateScreenRequest: UpdateScreenRequest): Promise<UpdateScreenResponse> {
     const screenRepository = this.dataSource.getRepository(Screen);
 
     const screen = await screenRepository.findOne({
       where: {
         id: screenId,
-        cinema: { id: cinemaId },
       },
-      relations: ["cinema"],
+      relations: {
+        cinema: true,
+      },
     });
 
     if (!screen) throw new NotFoundException();
 
-    const nameExisted = await screenRepository.exists({
+    const isNameExisted = await screenRepository.exists({
       where: {
         name: updateScreenRequest.name,
-        cinema: { id: cinemaId },
+        cinema: { id: screen.cinemaId },
       },
     });
-    if (nameExisted) {
-      throw new BadRequestException();
+
+    if (isNameExisted) {
+      throw new BadRequestException("Name existed");
     }
 
     screen.name = updateScreenRequest.name;
@@ -113,6 +111,7 @@ export class ScreenService {
       .getRepository(Screen)
       .createQueryBuilder("screen")
       .where("screen.cinema = :cinemaId", { cinemaId })
+      .orderBy("id")
       .skip(page * size)
       .take(size);
 
