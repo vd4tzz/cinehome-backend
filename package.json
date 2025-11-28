@@ -55,7 +55,8 @@
     "socket.io": "^4.8.1",
     "streamifier": "^0.1.1",
     "typeorm": "^0.3.27",
-    "typeorm-extension": "^3.7.1"
+    "typeorm-extension": "^3.7.1",
+    "vnpay": "^2.4.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
