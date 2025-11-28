@@ -10,6 +10,7 @@ import { CinemaModule } from "./cinema/cinema.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { MovieModule } from "./movie/movie.module";
 import { BookingModule } from "./booking/booking.module";
+import { PaymentModule } from "./payment/payment.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BookingModule } from "./booking/booking.module";
     CinemaModule,
     MovieModule,
     BookingModule,
+    PaymentModule,
     DatabaseModule,
     MailModule,
   ],

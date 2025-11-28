@@ -1,8 +1,12 @@
+/* eslint-disable */
+
 import "reflect-metadata";
 import { In } from "typeorm";
 import { Movie, MovieState } from "../src/movie/entity/movie.entity";
 import AppDataSource from "./data-source";
 import { Genre } from "../src/movie/entity/genre.entity";
+import path from "path";
+import fs from "fs/promises";
 
 const TMDB_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwMzIyMmRmZDZmM2M5NTdkOGE2YWZjNDMxYmI3MjBjZSIsIm5iZiI6MTc1OTEzMDkxOC4wODA5OTk5LCJzdWIiOiI2OGRhMzUyNjA2ZGM4MDdmNThlMWM5Y2MiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vmBAmHK0Iq1MCkZ_OUE7Tojsqr3MIV9FifnlTrs04FY";
 
@@ -64,12 +68,45 @@ async function fetchNowPlayingMovies() {
 }
 
 
+const MOVIE_FILE_PATH = path.resolve(__dirname, "upcoming.json");
+
+async function getMoviesForSeeding(fetchNowPlayingMovies: () => Promise<any[]>) {
+  const today = new Date().toISOString().split("T")[0];
+
+  // Thử đọc file
+  try {
+    const content = await fs.readFile(MOVIE_FILE_PATH, "utf-8");
+    const fileData = JSON.parse(content);
+
+    if (fileData.date === today && Array.isArray(fileData.movies)) {
+      console.log("📂 Loading movies from file...");
+      return fileData.movies;
+    }
+  } catch (err) {
+    // File chưa tồn tại hoặc lỗi parse, bỏ qua
+  }
+
+  // Nếu không có file hoặc ngày khác hôm nay, fetch API
+  console.log("🌐 Fetching movies from TMDb...");
+  const movies = await fetchNowPlayingMovies();
+
+  // Ghi file kèm ngày hôm nay
+  await fs.writeFile(
+    MOVIE_FILE_PATH,
+    JSON.stringify({ date: today, movies }, null, 2),
+    "utf-8"
+  );
+  console.log(`✅ Movies saved to file (${MOVIE_FILE_PATH})`);
+
+  return movies;
+}
+
 async function seedMovies() {
   await AppDataSource.initialize();
   const movieRepository = AppDataSource.getRepository(Movie);
   const genreRepository = AppDataSource.getRepository(Genre);
 
-  const movies = await fetchNowPlayingMovies();
+  const movies = await getMoviesForSeeding(fetchNowPlayingMovies);
 
   for (const m of movies) {
     const genres = await genreRepository.findBy({ id: In(m.genreIds) });

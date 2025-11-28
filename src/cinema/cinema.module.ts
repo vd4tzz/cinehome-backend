@@ -9,9 +9,10 @@ import { SurchargeService } from "./surcharge.service";
 import { ShowtimeController } from "./showtime.controller";
 import { ShowtimeService } from "./showtime.service";
 import { SeatService } from "./seat.service";
+import { PriceModule } from "../price/price.module";
 
 @Module({
-  imports: [CinemaHandlerModule],
+  imports: [CinemaHandlerModule, PriceModule],
   controllers: [CinemaController, ScreenController, SurchargeController, ShowtimeController],
   providers: [CinemaService, ScreenService, SurchargeService, ShowtimeService, SeatService],
   exports: [SeatService],
