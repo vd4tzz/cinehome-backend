@@ -1,5 +1,5 @@
 import {
-  Column,
+  Column, DeleteDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -42,8 +42,11 @@ export class Screen {
   })
   formats: Format[];
 
-  @OneToMany(() => Seat, (seat) => seat.screen)
+  @OneToMany(() => Seat, (seat) => seat.screen, { cascade: ["soft-remove"] })
   seats: Seat[];
+
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
 
   constructor(partial: Partial<Screen>) {
     Object.assign(this, partial);

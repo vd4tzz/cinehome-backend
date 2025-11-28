@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Screen } from "./screen.entity";
 import { SeatType } from "./seat-type.entity";
 
@@ -23,4 +23,7 @@ export class Seat {
   @ManyToOne(() => SeatType, (seatType) => seatType.seats, { onDelete: "CASCADE" })
   @JoinColumn({ name: "seat_type_id" })
   type: SeatType;
+
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
 }

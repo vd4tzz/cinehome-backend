@@ -71,8 +71,7 @@ export class BookingService {
           qb.where("booking.state != :canceledState", { canceledState: BookingState.CANCELED })
             .andWhere(new Brackets((qb) => {
               qb.where("booking.state != :createdState", { createdState: BookingState.CREATED })
-                .orWhere("booking.expiredAt > :now", { now: new Date() },
-              );
+                .orWhere("booking.expiredAt > :now", { now: new Date() });
             }),
           );
         }),

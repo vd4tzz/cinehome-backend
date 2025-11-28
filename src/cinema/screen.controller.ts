@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
 import { ShowtimeService } from "./showtime.service";
 import { CreateShowtimeRequest } from "./dto/create-showtime-request";
@@ -8,6 +8,7 @@ import { SeatService } from "./seat.service";
 import { CreateSeatMapResponse } from "./dto/create-seat-map-response";
 import { GetSeatMapResponse } from "./dto/get-seat-map-response";
 import { CreateShowtimeResponse } from "./dto/CreateShowtimeResponse";
+import { ScreenService } from "./screen.service";
 
 @ApiBearerAuth("access-token")
 @Controller("api/screens")
@@ -16,7 +17,13 @@ export class ScreenController {
   constructor(
     private showtimeService: ShowtimeService,
     private seatService: SeatService,
+    private screenService: ScreenService,
   ) {}
+
+  @Delete(":screenId")
+  async deleteScreen(@Param("screenId", ParseIntPipe) screenId: number) {
+    await this.screenService.deleteScreen(0, screenId);
+  }
 
   @ApiResponse({ type: CreateShowtimeResponse, status: 201 })
   @Post(":screenId/showtimes")

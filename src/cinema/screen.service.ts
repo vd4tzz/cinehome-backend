@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, MoreThan } from "typeorm";
 import { Cinema } from "./entity/cinema.entity";
 import { Screen } from "./entity/screen.entity";
 import { GetScreenResponse } from "./dto/get-screen-response";
@@ -9,6 +9,8 @@ import { UpdateScreenResponse } from "./dto/update-screen-response";
 import { PageQuery } from "../common/pagination/page-query";
 import { Page } from "../common/pagination/page";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Seat } from "./entity/seat.entity";
+import { Showtime } from "./entity/showtime.entity";
 
 @Injectable()
 export class ScreenService {
@@ -131,14 +133,34 @@ export class ScreenService {
 
   async deleteScreen(cinemaId: number, screenId: number): Promise<void> {
     const screenRepository = this.dataSource.getRepository(Screen);
-    const deletedResult = await screenRepository.delete({
-      id: screenId,
-      cinema: {
-        id: cinemaId,
-      },
+    const screen = await screenRepository.findOne({
+      where: { id: screenId },
     });
-    if (deletedResult.affected === 0) {
+
+    if (!screen) {
       throw new NotFoundException();
     }
+
+    const isShowtimeInFutureExisted = await this.dataSource.getRepository(Showtime).exists({
+      where: {
+        screen: { id: screenId },
+        startTime: MoreThan(new Date()),
+      },
+    });
+
+    if (isShowtimeInFutureExisted) {
+      throw new BadRequestException("exist showtime in future");
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      // Performance: Sử dụng softDelete thay vì cascade softRemove.
+      // - Cơ chế: Bắn thẳng lệnh SQL UPDATE ... WHERE screenId = ? xuống DB.
+      // - Lợi ích: Xử lý hàng loạt (Batch) trong 1 request, không Hydrate object lên Application layer.
+      await manager.getRepository(Seat).softDelete({
+        screen: { id: screenId },
+      });
+
+      await manager.softRemove(screen);
+    });
   }
 }
