@@ -34,7 +34,7 @@ export class PriceService {
 
     const [dayOfWeekSurcharge, formatSurcharge, timeSlotSurcharge] = await Promise.all([
       this.getDayOfWeekTypeSurcharge(cinemaId, startTime),
-      this.getFormatSurcharge(formatId, cinemaId),
+      this.getFormatSurcharge(cinemaId, formatId),
       this.getTimeSlotSurcharge(cinemaId, startTime),
     ]);
 
@@ -100,6 +100,8 @@ export class PriceService {
   }
 
   async getFormatSurcharge(cinemaId: number, formatId: number) {
+    console.log(cinemaId);
+    console.log(formatId);
     const formatSurcharge = await this.dataSource
       .getRepository(FormatSurcharge)
       .createQueryBuilder("surcharge")

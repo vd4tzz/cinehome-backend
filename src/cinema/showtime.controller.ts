@@ -1,5 +1,5 @@
 import { ShowtimeService } from "./showtime.service";
-import { Body, Controller, Get, Param, ParseIntPipe, Patch } from "@nestjs/common";
+import { Body, Controller, Param, ParseIntPipe, Patch } from "@nestjs/common";
 import { CancelShowtimeRequest } from "./dto/CancelShowtimeRequest";
 import { ApiResponse } from "@nestjs/swagger";
 import { CancelShowtimeResponse } from "./dto/CancelShowtimeResponse";
@@ -19,10 +19,5 @@ export class ShowtimeController {
     @Body() cancelShowtimeRequest: CancelShowtimeRequest,
   ) {
     return this.showtimeService.cancelShowtime(showtimeId, cancelShowtimeRequest);
-  }
-
-  @Get(":showtimeId/seats")
-  async getSeats(@Param("showtimeId", ParseIntPipe) showtimeId: number) {
-    return this.priceService.getSeatsWithPriceForShowtime(showtimeId);
   }
 }

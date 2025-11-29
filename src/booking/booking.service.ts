@@ -8,7 +8,7 @@ import { Seat } from "../cinema/entity/seat.entity";
 import { PriceService } from "../price/price.service";
 import Big from "big.js";
 import { ConfigService } from "@nestjs/config";
-import { OnEvent } from "@nestjs/event-emitter";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { PaymentSuccessEvent } from "../payment/payment-success.event";
 
 @Injectable()
@@ -19,6 +19,7 @@ export class BookingService {
     private dataSource: DataSource,
     private priceService: PriceService,
     private configService: ConfigService,
+    private emitter: EventEmitter2,
   ) {
     this.RESERVED_BOOKING_TIME = configService.get<number>("RESERVED_BOOKING_TIME")!;
   }
@@ -132,6 +133,11 @@ export class BookingService {
     await this.dataSource.transaction(async (manager) => {
       await manager.save(booking);
       await manager.save(tickets);
+    });
+
+    this.emitter.emit("booking.success", {
+      showtimeId: showtimeId,
+      seatIds: seatIds,
     });
 
     return {
