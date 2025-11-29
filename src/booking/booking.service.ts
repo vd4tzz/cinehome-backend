@@ -1,5 +1,5 @@
 import { Brackets, DataSource } from "typeorm";
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { Ticket } from "./entity/ticket.entity";
 import { Booking, BookingState } from "./entity/booking.entity";
 import { Showtime } from "../cinema/entity/showtime.entity";
@@ -10,6 +10,7 @@ import Big from "big.js";
 import { ConfigService } from "@nestjs/config";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { PaymentSuccessEvent } from "../payment/payment-success.event";
+import { SchedulerRegistry } from "@nestjs/schedule";
 
 @Injectable()
 export class BookingService {
@@ -20,6 +21,7 @@ export class BookingService {
     private priceService: PriceService,
     private configService: ConfigService,
     private emitter: EventEmitter2,
+    private schedulerRegistry: SchedulerRegistry,
   ) {
     this.RESERVED_BOOKING_TIME = configService.get<number>("RESERVED_BOOKING_TIME")!;
   }
@@ -67,16 +69,7 @@ export class BookingService {
     const cnt = await ticketRepository
       .createQueryBuilder("ticket")
       .innerJoin("ticket.booking", "booking")
-      .where(
-        new Brackets((qb) => {
-          qb.where("booking.state != :canceledState", { canceledState: BookingState.CANCELED })
-            .andWhere(new Brackets((qb) => {
-              qb.where("booking.state != :createdState", { createdState: BookingState.CREATED })
-                .orWhere("booking.expiredAt > :now", { now: new Date() });
-            }),
-          );
-        }),
-      )
+      .where("booking.state != :canceledState", { canceledState: BookingState.CANCELED })
       .andWhere("booking.showtime = :showtimeId", { showtimeId: showtimeId })
       .andWhere("ticket.seat IN (:...seatIds)", { seatIds: seatIds })
       .getCount();
@@ -135,6 +128,12 @@ export class BookingService {
       await manager.save(tickets);
     });
 
+    const timeout = setTimeout(() => {
+      this.emitter.emit("booking.expired", { bookingId: booking.id, showtimeId: showtimeId, seatIds: seatIds });
+    }, this.RESERVED_BOOKING_TIME * 1000);
+
+    this.schedulerRegistry.addTimeout(String(booking.id), timeout);
+
     this.emitter.emit("booking.success", {
       showtimeId: showtimeId,
       seatIds: seatIds,
@@ -158,5 +157,23 @@ export class BookingService {
 
     booking.state = BookingState.PAID;
     await bookingRepository.save(booking);
+
+    this.schedulerRegistry.deleteTimeout(String(bookingId));
+  }
+
+  @OnEvent("booking.expired")
+  async handleBookingExpired(event: { bookingId: number }) {
+    const bookingRepository = this.dataSource.getRepository(Booking);
+
+    const { bookingId } = event;
+    const booking = await bookingRepository.findOneBy({ id: bookingId });
+    if (!booking) {
+      throw new InternalServerErrorException("ko co booking");
+    }
+
+    if (booking.state === BookingState.CREATED) {
+      booking.state = BookingState.CANCELED;
+      await bookingRepository.save(booking);
+    }
   }
 }

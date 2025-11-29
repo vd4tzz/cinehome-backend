@@ -11,11 +11,14 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { MovieModule } from "./movie/movie.module";
 import { BookingModule } from "./booking/booking.module";
 import { PaymentModule } from "./payment/payment.module";
+import { RedisModule } from "./common/redis/redis.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     SeedModule,
     AuthModule,
     CinemaModule,
@@ -24,6 +27,7 @@ import { PaymentModule } from "./payment/payment.module";
     PaymentModule,
     DatabaseModule,
     MailModule,
+    // RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

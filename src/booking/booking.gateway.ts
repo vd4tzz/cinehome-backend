@@ -11,11 +11,13 @@ import {
 import { Logger, ParseIntPipe } from "@nestjs/common";
 import { Socket, Server } from "socket.io";
 import { ClientContext } from "./client-context";
-import { DataSource } from "typeorm";
+import { DataSource, Not } from "typeorm";
 import { Showtime } from "../cinema/entity/showtime.entity";
 import { SeatService } from "../cinema/seat.service";
 import { PriceService } from "../price/price.service";
 import { OnEvent } from "@nestjs/event-emitter";
+import { Ticket } from "./entity/ticket.entity";
+import { BookingState } from "./entity/booking.entity";
 
 @WebSocketGateway()
 export class BookingGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -50,6 +52,8 @@ export class BookingGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @MessageBody("showtimeId", ParseIntPipe) showtimeId: number,
   ) {
     const showtimeRepository = this.dataSource.getRepository(Showtime);
+    const ticketRepository = this.dataSource.getRepository(Ticket);
+
     const showtime = await showtimeRepository.findOneBy({ id: showtimeId });
     if (!showtime) {
       return {
@@ -79,7 +83,16 @@ export class BookingGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     try {
       const seatMap = await this.priceService.getSeatsWithPriceForShowtime(showtimeId);
-      return { seatMap };
+      const tickets = await ticketRepository.find({
+        where: {
+          booking: {
+            showtime: { id: showtimeId },
+            state: Not(BookingState.CANCELED),
+          },
+        },
+      });
+      const seatIds = tickets.map((t) => t.seatId);
+      return { seatMap, seatIds };
     } catch (err) {
       console.log(err);
       return { hello: "error" };
@@ -91,5 +104,11 @@ export class BookingGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     const { showtimeId, seatIds } = event;
 
     this.server.to(String(showtimeId)).emit("seatReserved", seatIds);
+  }
+
+  @OnEvent("booking.expired")
+  handleBookingExpired(event: { bookingId: number; seatIds: number[]; showtimeId: number }) {
+    const { seatIds, showtimeId } = event;
+    this.server.to(String(showtimeId)).emit("seatReleased", seatIds);
   }
 }
