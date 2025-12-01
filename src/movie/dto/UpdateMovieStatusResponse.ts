@@ -1,3 +1,3 @@
-import { CreateMovieResponse } from "./CreateMovieResponse";
+import { MovieResponse } from "./movie-response";
 
-export class UpdateMovieStatusResponse extends CreateMovieResponse {}
+export class UpdateMovieStatusResponse extends MovieResponse {}

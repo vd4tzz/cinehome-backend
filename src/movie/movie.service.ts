@@ -1,12 +1,12 @@
 import { Brackets, DataSource, ILike, In, MoreThan } from "typeorm";
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { CreateMovieRequest } from "./dto/CreateMovieRequest";
+import { CreateMovieRequest } from "./dto/create-movie-request";
 import { Movie, MovieState } from "./entity/movie.entity";
 import { Genre } from "./entity/genre.entity";
-import { CreateMovieResponse } from "./dto/CreateMovieResponse";
-import { UpdateMovieImagesRequest } from "./dto/UpdateMovieImagesRequest";
+import { MovieResponse } from "./dto/movie-response";
+import { UpdateMovieImagesRequest } from "./dto/update-movie-images-request";
 import { StorageService } from "../common/storage/storage.service";
-import { MovieQuery } from "./dto/query/MovieQuery";
+import { MovieQuery } from "./dto/query/movie-query";
 import { Page } from "../common/pagination/page";
 import { UpdateMovieStatusResponse } from "./dto/UpdateMovieStatusResponse";
 import { PageQuery } from "../common/pagination/page-query";
@@ -18,7 +18,7 @@ export class MovieService {
     private storageService: StorageService,
   ) {}
 
-  async createMovie(createMovieRequest: CreateMovieRequest) {
+  async createMovie(createMovieRequest: CreateMovieRequest): Promise<MovieResponse> {
     return this.dataSource.transaction(async (manager) => {
       const movieRepository = manager.getRepository(Movie);
       const genreRepository = manager.getRepository(Genre);
@@ -81,11 +81,11 @@ export class MovieService {
           id: genre.id,
           name: genre.name,
         })),
-      } as CreateMovieResponse;
+      };
     });
   }
 
-  async updateMovieImages(movieId: number, updateMovieImagesRequest: UpdateMovieImagesRequest) {
+  async updateMovieImages(movieId: number, updateMovieImagesRequest: UpdateMovieImagesRequest): Promise<MovieResponse> {
     const poster = updateMovieImagesRequest.poster?.[0];
     const backdrop = updateMovieImagesRequest.backdrop?.[0];
 
@@ -142,7 +142,7 @@ export class MovieService {
         id: genre.id,
         name: genre.name,
       })),
-    } as UpdateMovieImagesRequest;
+    };
   }
 
   async updateMovieStatusToPublished(movieId: number) {
@@ -183,7 +183,7 @@ export class MovieService {
     } as UpdateMovieStatusResponse;
   }
 
-  async getMovies(movieQuery: MovieQuery) {
+  async getMovies(movieQuery: MovieQuery): Promise<Page<MovieResponse>> {
     const movieRepository = this.dataSource.getRepository(Movie);
 
     const { page, size, title } = movieQuery;
@@ -227,7 +227,7 @@ export class MovieService {
     return new Page(dtos, movieQuery, total);
   }
 
-  async getMovie(movieId: number) {
+  async getMovie(movieId: number): Promise<MovieResponse> {
     const movieRepository = this.dataSource.getRepository(Movie);
 
     const movie = await movieRepository.findOne({
@@ -259,7 +259,7 @@ export class MovieService {
     };
   }
 
-  async deleteMovieById(movieId: number) {
+  async deleteMovieById(movieId: number): Promise<void> {
     const movieRepository = this.dataSource.getRepository(Movie);
 
     const movie = await movieRepository.findOneBy({
@@ -276,7 +276,7 @@ export class MovieService {
     await movieRepository.save(movie);
   }
 
-  async getUpComingMovies(pageQuery: PageQuery) {
+  async getUpComingMovies(pageQuery: PageQuery): Promise<Page<MovieResponse>> {
     const movieRepository = this.dataSource.getRepository(Movie);
 
     const { page, size } = pageQuery;
@@ -296,7 +296,7 @@ export class MovieService {
       take: size,
     });
 
-    const dtos = movies.map((movie) => ({
+    const dtos: MovieResponse[] = movies.map((movie) => ({
       id: movie.id,
       vietnameseTitle: movie.vietnameseTitle,
       originalTitle: movie.originalTitle,
@@ -319,7 +319,7 @@ export class MovieService {
     return new Page(dtos, pageQuery, total);
   }
 
-  async getShowingMovies(pageQuery: PageQuery) {
+  async getShowingMovies(pageQuery: PageQuery): Promise<Page<MovieResponse>> {
     const { page, size } = pageQuery;
 
     const movieRepository = this.dataSource.getRepository(Movie);
@@ -337,7 +337,6 @@ export class MovieService {
       .where("movie.releaseDate <= :today", { today })
       .andWhere("movie.isDeleted = :isDeleted", { isDeleted: false })
       .leftJoin("movie.showtimes", "showtime", "showtime.movie_id = movie.id")
-      // .andWhere("showtime.startTime >= :now", { now })
       .andWhere(
         new Brackets((qb) => {
           qb.where("showtime.startTime >= :now", { now }).orWhere("movie.releaseDate >= :lastMonth", {
@@ -409,6 +408,7 @@ export class MovieService {
       vietnameseTitle: movie.vietnameseTitle,
       originalTitle: movie.originalTitle,
       releaseDate: movie.releaseDate,
+      state: movie.state,
       posterUrl: movie.posterUrl,
       backdropUrl: movie.backdropUrl,
       overview: movie.overview,

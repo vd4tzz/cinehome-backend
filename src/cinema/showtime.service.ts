@@ -4,14 +4,12 @@ import { Showtime, ShowtimeState } from "./entity/showtime.entity";
 import { CreateShowtimeRequest } from "./dto/create-showtime-request";
 import { Movie } from "../movie/entity/movie.entity";
 import { Screen } from "./entity/screen.entity";
-import { CreateShowtimeResponse } from "./dto/CreateShowtimeResponse";
+import { ShowtimeResponse } from "./dto/showtime-response";
 import { CancelShowtimeRequest } from "./dto/CancelShowtimeRequest";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ShowtimeCancelledEvent } from "./event/showtime-cancelled.event";
-import { CancelShowtimeResponse } from "./dto/CancelShowtimeResponse";
 import { ShowtimeQuery } from "../movie/dto/query/showtime-query";
 import { Page } from "../common/pagination/page";
-import { PageQuery } from "../common/pagination/page-query";
 import { Format } from "./entity/format.entity";
 import { format as formatDateTime } from "date-fns-tz";
 
@@ -41,7 +39,7 @@ export class ShowtimeService {
     private eventEmitter2: EventEmitter2,
   ) {}
 
-  async createShowtime(screenId: number, createShowtimeRequest: CreateShowtimeRequest) {
+  async createShowtime(screenId: number, createShowtimeRequest: CreateShowtimeRequest): Promise<ShowtimeResponse> {
     const showtimeRepository = this.dataSource.getRepository(Showtime);
     const movieRepository = this.dataSource.getRepository(Movie);
     const screenRepository = this.dataSource.getRepository(Screen);
@@ -99,10 +97,10 @@ export class ShowtimeService {
       state: showtime.state,
       description: showtime.description,
       basePrice: showtime.basePrice,
-    } as CreateShowtimeResponse;
+    };
   }
 
-  async cancelShowtime(showtimeId: number, cancelShowtimeRequest: CancelShowtimeRequest) {
+  async cancelShowtime(showtimeId: number, cancelShowtimeRequest: CancelShowtimeRequest): Promise<ShowtimeResponse> {
     const showtimeRepository = this.dataSource.getRepository(Showtime);
     const showtime = await showtimeRepository.findOne({
       where: { id: showtimeId },
@@ -132,7 +130,7 @@ export class ShowtimeService {
       description: showtime.description,
       basePrice: showtime.basePrice,
       state: showtime.state,
-    } as CancelShowtimeResponse;
+    };
   }
 
   async getShowtimesOfScreen(screenId: number, showtimeQuery: ShowtimeQuery) {
@@ -161,7 +159,7 @@ export class ShowtimeService {
 
     const [showtimes, total] = await qb.getManyAndCount();
 
-    const dtos = showtimes.map((showtime) => ({
+    const dtos: ShowtimeResponse[] = showtimes.map((showtime) => ({
       id: showtime.id,
       movieId: showtime.movieId,
       movieVietnameseTitle: showtime.movie.vietnameseTitle,
@@ -176,11 +174,9 @@ export class ShowtimeService {
     return new Page(dtos, showtimeQuery, total);
   }
 
-  async getAvailableShowtimeOfMovie(movieId: number, queryParams: PageQuery) {
+  async getAvailableShowtimeOfMovie(movieId: number) {
     const movieRepository = this.dataSource.getRepository(Movie);
     const showtimeRepository = this.dataSource.getRepository(Showtime);
-
-    // const { page, size } = queryParams;
 
     const movie = await movieRepository.findOneBy({ id: movieId });
     if (!movie) {

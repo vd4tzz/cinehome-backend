@@ -83,14 +83,7 @@ export class BookingGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     try {
       const seatMap = await this.priceService.getSeatsWithPriceForShowtime(showtimeId);
-      /*
-      id: seat.id,
-      row: seat.row,
-      label: seat.label,
-      columnOrder: seat.columnOrder,
-      seatType: seat.type?.code,
-      price: finalPriceMap.get(seat.type?.code),
-      * */
+
       const tickets = await ticketRepository.find({
         where: {
           booking: {

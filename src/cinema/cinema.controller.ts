@@ -33,6 +33,7 @@ import { CreateScreenResponse } from "./dto/create-screen-response";
 import { ScreenService } from "./screen.service";
 import { UpdateScreenRequest } from "./dto/update-screen-request";
 import { UpdateScreenResponse } from "./dto/update-screen-response";
+import { GetScreenResponse } from "./dto/get-screen-response";
 
 @ApiBearerAuth("access-token")
 @Controller("api/cinemas")
@@ -86,6 +87,7 @@ export class CinemaController {
 
   @Post(":cinemaId/screens")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
+  @ApiResponse({ status: HttpStatus.CREATED, type: CreateScreenResponse })
   async createScreen(
     @Param("cinemaId") cinemaId: number,
     @Body() createScreenRequest: CreateScreenRequest,
@@ -93,34 +95,10 @@ export class CinemaController {
     return this.screenService.createScreen(cinemaId, createScreenRequest);
   }
 
-  // @Put(":cinemaId/screens/:screenId")
-  // @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  // async updateScreen(
-  //   @Param("cinemaId") cinemaId: number,
-  //   @Param("screenId") screenId: number,
-  //   @Body() updateScreenRequest: UpdateScreenRequest,
-  // ): Promise<UpdateScreenResponse> {
-  //   return this.screenService.updateScreen(cinemaId, screenId, updateScreenRequest);
-  // }
-
-  @Get(":cinemaId/screens/:screenId")
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async getScreenById(@Param("screenId") screenId: number) {
-    return this.screenService.getScreenById(screenId);
-  }
-
   @Get(":cinemaId/screens")
   @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async getScreens(@Param("cinemaId") cinemaId: number, @Query() pageParam: PageQuery) {
-    return this.screenService.getScreens(cinemaId, pageParam);
-  }
-
-  @Delete(":cinemaId/screens/:screenId")
-  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
-  async deleteScreen(
-    @Param("cinemaId", ParseIntPipe) cinemaId: number,
-    @Param("screenId", ParseIntPipe) screenId: number,
-  ): Promise<void> {
-    return this.screenService.deleteScreen(cinemaId, screenId);
+  @ApiPaginatedResponse(GetScreenResponse)
+  async getScreens(@Param("cinemaId") cinemaId: number, @Query() pageQuery: PageQuery) {
+    return this.screenService.getScreens(cinemaId, pageQuery);
   }
 }

@@ -1,4 +1,4 @@
-import { Brackets, DataSource } from "typeorm";
+import { DataSource } from "typeorm";
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { Ticket } from "./entity/ticket.entity";
 import { Booking, BookingState } from "./entity/booking.entity";
@@ -63,9 +63,11 @@ export class BookingService {
       throw new BadRequestException();
     }
 
-    // Kiểm tra ticket có seat_id IN [...seatIds] sao cho booking có state != CANCELED
-    // tức là lấy ra các ticket mà booking đang có state CREATED (đang được hold) hoặc PAID (đã thanh toán)
-    // nếu số lượng ticket > 0, seatId trong seatIDs không thể được đặt
+    /*
+     * Kiểm tra ticket có seat_id IN [...seatIds] sao cho booking có state != CANCELED
+     * tức là lấy ra các ticket mà booking đang có state CREATED (đang được hold) hoặc PAID (đã thanh toán)
+     * nếu số lượng ticket > 0, seatId trong seatIDs không thể được đặt
+     */
     const cnt = await ticketRepository
       .createQueryBuilder("ticket")
       .innerJoin("ticket.booking", "booking")
@@ -148,17 +150,33 @@ export class BookingService {
   @OnEvent("payment.success")
   async handlePaymentSuccess(event: PaymentSuccessEvent) {
     const bookingRepository = this.dataSource.getRepository(Booking);
+    const ticketRepository = this.dataSource.getRepository(Ticket);
 
     const bookingId = event.bookingId;
-    const booking = await bookingRepository.findOneBy({ id: bookingId });
+    const booking = await bookingRepository.findOne({
+      where: { id: bookingId },
+      relations: {
+        showtime: true,
+      },
+    });
     if (!booking) {
       return;
     }
+
+    const tickets = await ticketRepository.find({
+      where: {
+        booking: { id: bookingId },
+      },
+    });
+
+    const seatIds = tickets.map((ticket) => ticket.seatId);
 
     booking.state = BookingState.PAID;
     await bookingRepository.save(booking);
 
     this.schedulerRegistry.deleteTimeout(String(bookingId));
+
+    this.emitter.emit("booking.success", { showtimeId: booking.showtime.id, seatIds: seatIds });
   }
 
   @OnEvent("booking.expired")

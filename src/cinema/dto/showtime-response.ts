@@ -1,11 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { ShowtimeState } from "../entity/showtime.entity";
 
-export class CreateShowtimeResponse {
+export class ShowtimeResponse {
   @ApiProperty()
   id: number;
 
   @ApiProperty()
   movieId: number;
+
+  @ApiProperty()
+  movieVietnameseTitle: string;
 
   @ApiProperty()
   screenId: number;
@@ -21,4 +25,7 @@ export class CreateShowtimeResponse {
 
   @ApiProperty()
   basePrice: string;
+
+  @ApiProperty()
+  state: ShowtimeState;
 }

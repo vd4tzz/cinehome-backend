@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from "@nestjs/common";
-import { ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiResponse } from "@nestjs/swagger";
 import { ShowtimeService } from "./showtime.service";
 import { CreateShowtimeRequest } from "./dto/create-showtime-request";
 import { ShowtimeQuery } from "../movie/dto/query/showtime-query";
@@ -7,9 +7,14 @@ import { CreateSeatMapRequest } from "./dto/create-seat-map-request";
 import { SeatService } from "./seat.service";
 import { CreateSeatMapResponse } from "./dto/create-seat-map-response";
 import { GetSeatMapResponse } from "./dto/get-seat-map-response";
-import { CreateShowtimeResponse } from "./dto/CreateShowtimeResponse";
+import { ShowtimeResponse } from "./dto/showtime-response";
 import { ScreenService } from "./screen.service";
 import { UpdateScreenRequest } from "./dto/update-screen-request";
+import { Roles } from "../auth/roles.decorator";
+import { RoleName } from "../user/entity/role.entity";
+import { GetScreenResponse } from "./dto/get-screen-response";
+import { UpdateScreenResponse } from "./dto/update-screen-response";
+import { ApiPaginatedResponse } from "../common/pagination/ApiPaginatedResponse";
 
 @ApiBearerAuth("access-token")
 @Controller("api/screens")
@@ -21,17 +26,25 @@ export class ScreenController {
     private screenService: ScreenService,
   ) {}
 
+  @Get(":screenId")
+  @Roles(RoleName.SUPER_ADMIN, RoleName.ADMIN)
+  @ApiOkResponse({ type: GetScreenResponse })
+  async getScreenById(@Param("screenId") screenId: number) {
+    return this.screenService.getScreenById(screenId);
+  }
+
   @Put(":screenId")
+  @ApiOkResponse({ type: UpdateScreenResponse })
   async updateScreen(@Param("screenId", ParseIntPipe) screenId: number, @Body() request: UpdateScreenRequest) {
     return await this.screenService.updateScreen(screenId, request);
   }
 
   @Delete(":screenId")
   async deleteScreen(@Param("screenId", ParseIntPipe) screenId: number) {
-    await this.screenService.deleteScreen(0, screenId);
+    await this.screenService.deleteScreen(screenId);
   }
 
-  @ApiResponse({ type: CreateShowtimeResponse, status: 201 })
+  @ApiResponse({ type: ShowtimeResponse, status: 201 })
   @Post(":screenId/showtimes")
   async createShowtime(
     @Param("screenId", ParseIntPipe) screenId: number,
@@ -41,6 +54,7 @@ export class ScreenController {
   }
 
   @Get(":screenId/showtimes")
+  @ApiPaginatedResponse(ShowtimeResponse)
   async getShowtimes(@Param("screenId", ParseIntPipe) screenId: number, @Query() showtimeQuery: ShowtimeQuery) {
     return this.showtimeService.getShowtimesOfScreen(screenId, showtimeQuery);
   }

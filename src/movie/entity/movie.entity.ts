@@ -25,7 +25,7 @@ export class Movie {
   vietnameseTitle: string;
 
   @Column({ name: "original_title", nullable: true })
-  originalTitle?: string;
+  originalTitle: string;
 
   @Column({ type: "date", name: "release_date" })
   releaseDate: string;
@@ -37,7 +37,7 @@ export class Movie {
   posterUrl: string;
 
   @Column({ name: "backdrop_url", nullable: true })
-  backdropUrl?: string;
+  backdropUrl: string;
 
   @Column()
   duration: number;

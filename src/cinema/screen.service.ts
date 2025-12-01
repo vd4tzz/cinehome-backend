@@ -17,7 +17,7 @@ export class ScreenService {
   constructor(private dataSource: DataSource) {}
 
   async createScreen(cinemaId: number, createScreenRequest: CreateScreenRequest): Promise<CreateScreenResponse> {
-    /**
+    /*
      * To create a Screen, the name with the associated cinemaId must not yet exist.
      */
 
@@ -126,7 +126,7 @@ export class ScreenService {
     return new Page(dtos, pageParam, total);
   }
 
-  async deleteScreen(cinemaId: number, screenId: number): Promise<void> {
+  async deleteScreen(screenId: number): Promise<void> {
     const screenRepository = this.dataSource.getRepository(Screen);
     const screen = await screenRepository.findOne({
       where: { id: screenId },

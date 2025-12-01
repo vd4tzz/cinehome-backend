@@ -14,7 +14,7 @@ export class PageQuery {
   @Transform(({ value }) => (value !== undefined ? Number(value) : 10))
   size: number = PageQuery.DEFAULT_SIZE_NUMBER;
 
-  @ApiPropertyOptional({ type: String })
+  // @ApiPropertyOptional({ type: String })
   @Transform(({ value }) => {
     if (Array.isArray(value)) {
       return value.map((v) => String(v));
@@ -26,7 +26,7 @@ export class PageQuery {
   })
   private sortBy: string[];
 
-  @ApiPropertyOptional({ type: String })
+  // @ApiPropertyOptional({ type: String })
   @Transform(({ value }) => {
     if (Array.isArray(value)) {
       return value.map((v) => String(v));
