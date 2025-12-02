@@ -36,6 +36,7 @@ import { Ticket } from "../../booking/entity/ticket.entity";
         username: configService.get("DATABASE_USERNAME"),
         password: configService.get("DATABASE_PASSWORD"),
         database: configService.get("DATABASE_DB"),
+        ssl: configService.get("DATABASE_SSL") === "true",
         // entities: [__dirname + "/../**/*.entity{.ts,.js}"],
         entities: [
           User,
