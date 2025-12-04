@@ -123,14 +123,14 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(GoogleGuard)
   async googleOAuth2Callback(@Req() req: Request, @Res() response: Response) {
-    let successRedirectUrl: string;
-    let failRedirectUrl: string;
+    let successRedirectUrl: URL;
+    let failRedirectUrl: URL;
     try {
       const stateParam = req.query.state as string;
       const stateObj = JSON.parse(decodeURIComponent(stateParam)) as StateObject;
 
-      successRedirectUrl = new URL(stateObj.successUrl).toString();
-      failRedirectUrl = new URL(stateObj.failUrl).toString();
+      successRedirectUrl = new URL(stateObj.successUrl);
+      failRedirectUrl = new URL(stateObj.failUrl);
     } catch {
       response.status(400).send("LOI");
       return;
@@ -141,12 +141,12 @@ export class AuthController {
       const email = (req.user as AuthUser).email;
       const loginResponse = await this.authService.handleOauth2Callback(email, OAuth2Provider.GOOGLE);
       this.setRefreshJwtCookie(response, loginResponse.refreshToken, loginResponse.refreshTokenExpIn);
-    } catch {
-      // ConflictAuthenticationMethodException
+    } catch (err) {
       isOAuthSuccess = false;
+      failRedirectUrl.searchParams.set("errMsg", err.message);
     }
 
-    return response.redirect(isOAuthSuccess ? successRedirectUrl : failRedirectUrl);
+    return response.redirect(isOAuthSuccess ? successRedirectUrl.toString() : failRedirectUrl.toString());
   }
 
   @Get("refresh")

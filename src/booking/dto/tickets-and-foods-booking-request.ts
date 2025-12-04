@@ -1,9 +1,28 @@
-import { IsInt, Min, IsArray, ArrayNotEmpty, ArrayUnique } from "class-validator";
+import { IsInt, Min, IsArray, ArrayNotEmpty, ArrayUnique, ValidateNested, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { PaymentMethod } from "../../payment/payment-method";
 
-export class BookingTicketsAndFoodsRequest {
+export class FoodItem {
+  @ApiProperty()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  id: number;
+
+  @ApiProperty({
+    description: "Số lượng món ăn",
+    example: 2,
+    minimum: 1,
+    type: Number,
+  })
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  quantity: number;
+}
+
+export class TicketsAndFoodsBookingRequest {
   @ApiProperty({
     description: "ID của suất chiếu",
     example: 123,
@@ -25,6 +44,13 @@ export class BookingTicketsAndFoodsRequest {
   @IsInt({ each: true, message: "Mỗi seatId phải là số nguyên" })
   @Type(() => Number)
   seatIds: number[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FoodItem)
+  foodItems: FoodItem[] = [];
 
   @ApiProperty()
   paymentMethod: PaymentMethod;

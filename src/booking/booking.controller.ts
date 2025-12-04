@@ -3,7 +3,7 @@ import { BookingService } from "./booking.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { AuthUser } from "../auth/auth-user";
-import { BookingTicketsAndFoodsRequest } from "./dto/booking-tickets-and-foods-request";
+import { TicketsAndFoodsBookingRequest } from "./dto/tickets-and-foods-booking-request";
 import { PaymentService } from "../payment/payment.service";
 
 @UseGuards(JwtAuthGuard)
@@ -17,10 +17,15 @@ export class BookingController {
   @Post("tickets")
   async bookingTicketsAndFoods(
     @CurrentUser() user: AuthUser,
-    @Body() request: BookingTicketsAndFoodsRequest,
+    @Body() request: TicketsAndFoodsBookingRequest,
     @Ip() ip: string,
   ) {
-    const booking = await this.bookingService.bookingTickets(user.userId, request.showtimeId, request.seatIds);
+    const booking = await this.bookingService.bookingTickets(
+      user.userId,
+      request.showtimeId,
+      request.seatIds,
+      request.foodItems,
+    );
 
     const paymentUrl = await this.paymentService.createPaymentUrl(request.paymentMethod, {
       bookingId: booking.bookingId,

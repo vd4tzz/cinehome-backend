@@ -29,6 +29,14 @@ export const AppDataSource = new DataSource({
   password: "1", // Thay bằng pass của bạn
   database: "cinehome", // Thay bằng tên DB của bạn
 
+  // type: "postgres", // Hoặc 'mysql', 'sqlite', v.v.
+  // host: "ep-floral-recipe-a16aqi06-pooler.ap-southeast-1.aws.neon.tech",
+  // port: 5432,
+  // username: "neondb_owner",
+  // password: "npg_SJ2MtaCA1mFR",
+  // database: "cinehome",
+  // ssl: true,
+
   entities: [
     User,
     UserAdmin,

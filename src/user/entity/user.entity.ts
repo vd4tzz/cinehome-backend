@@ -12,6 +12,15 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ name: "full_name", type: "varchar", length: 255, nullable: true })
+  fullName: string;
+
+  @Column({ name: "date_of_birth", type: "date", nullable: true })
+  dateOfBirth: Date;
+
+  @Column({ name: "phone_number", type: "varchar", length: 20, nullable: true })
+  phoneNumber: string;
+
   @Column({ type: "varchar", length: 255, unique: true })
   email: string;
 

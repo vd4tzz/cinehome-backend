@@ -11,6 +11,8 @@ import { ConfigService } from "@nestjs/config";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { PaymentSuccessEvent } from "../payment/payment-success.event";
 import { SchedulerRegistry } from "@nestjs/schedule";
+import { Food } from "./entity/food.entity";
+import { FoodBookingDetail } from "./entity/food-booking.entity";
 
 @Injectable()
 export class BookingService {
@@ -26,7 +28,12 @@ export class BookingService {
     this.RESERVED_BOOKING_TIME = configService.get<number>("RESERVED_BOOKING_TIME")!;
   }
 
-  async bookingTickets(userId: number, showtimeId: number, seatIds: number[]) {
+  async bookingTickets(
+    userId: number,
+    showtimeId: number,
+    seatIds: number[],
+    foodItems: { id: number; quantity: number }[],
+  ) {
     const userRepository = this.dataSource.getRepository(User);
     const showtimeRepository = this.dataSource.getRepository(Showtime);
     const ticketRepository = this.dataSource.getRepository(Ticket);
@@ -123,11 +130,36 @@ export class BookingService {
       }),
     );
 
+    const foodRepository = this.dataSource.getRepository(Food);
+
+    const foodIds = foodItems.map((food) => food.id);
+    let foods: Food[] = [];
+    if (foodIds.length !== 0) {
+      foods = await foodRepository
+        .createQueryBuilder("food")
+        .where("food.id IN (:...foodIds)", { foodIds: foodIds })
+        .getMany();
+    }
+
+    if (foods.length != foodItems.length) {
+      throw new BadRequestException();
+    }
+
+    const foodBookingDetails = foods.map((food) => {
+      const quantity = foodItems.find((foodItem) => food.id === foodItem.id)?.quantity;
+
+      let amount = new Big(0);
+      amount = amount.plus(food.price).mul(quantity!);
+      totalAmount.plus(amount);
+      return new FoodBookingDetail({ food, booking, quantity });
+    });
+
     booking.totalAmount = totalAmount.valueOf();
 
     await this.dataSource.transaction(async (manager) => {
       await manager.save(booking);
       await manager.save(tickets);
+      await manager.save(foodBookingDetails);
     });
 
     const timeout = setTimeout(() => {

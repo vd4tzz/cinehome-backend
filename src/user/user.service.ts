@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { PageQuery } from "../common/pagination/page-query";
 import { User } from "./entity/user.entity";
 import { Page } from "../common/pagination/page";
+import { UpdateUserInfoRequest } from "./dto/UpdateUserInfoRequest";
 
 @Injectable()
 export class UserService {
@@ -42,5 +43,48 @@ export class UserService {
     }));
 
     return new Page(dtos, pageParam, total);
+  }
+
+  async getUserInfo(userId: number) {
+    const user = await this.dataSource.getRepository(User).findOneBy({ id: userId });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return {
+      id: user.id,
+      fullName: user.fullName || "",
+      dateOfBirth: user.dateOfBirth?.toISOString() || "",
+      email: user.email,
+      phoneNumber: user.phoneNumber || "",
+    };
+  }
+
+  async updateUserInfo(userId: number, updateUserInfoRequest: UpdateUserInfoRequest) {
+    const userRepository = this.dataSource.getRepository(User);
+
+    const user = await userRepository.findOneBy({
+      id: userId,
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    const { fullName, dateOfBirth, phoneNumber } = updateUserInfoRequest;
+    user.fullName = fullName;
+    user.phoneNumber = phoneNumber;
+    user.dateOfBirth = new Date(dateOfBirth);
+
+    await userRepository.save(user);
+
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      dateOfBirth: user.dateOfBirth.toISOString(),
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+    };
   }
 }
