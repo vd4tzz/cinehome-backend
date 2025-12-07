@@ -159,6 +159,10 @@ export class PriceService {
     return DayOfWeekTypeCode.WEEKDAY;
   }
 
+  /*
+   * formatDateToTimeString(date: Date) phụ thuộc vào local timezone
+   * khi deploy cần set timezone UTC +7 để khớp với logic
+   */
   private formatDateToTimeString(date: Date): string {
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");

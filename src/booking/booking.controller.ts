@@ -1,10 +1,11 @@
-import { Body, Controller, Ip, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Ip, Post, Query, UseGuards } from "@nestjs/common";
 import { BookingService } from "./booking.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { AuthUser } from "../auth/auth-user";
 import { TicketsAndFoodsBookingRequest } from "./dto/tickets-and-foods-booking-request";
 import { PaymentService } from "../payment/payment.service";
+import { PageQuery } from "../common/pagination/page-query";
 
 @UseGuards(JwtAuthGuard)
 @Controller("api/booking")
@@ -37,5 +38,10 @@ export class BookingController {
     return {
       paymentUrl,
     };
+  }
+
+  @Get()
+  async getOverviewBookingHistory(@CurrentUser() user: AuthUser, @Query() pageQuery: PageQuery) {
+    return this.bookingService.getOverviewBookingHistory(user.userId, pageQuery);
   }
 }

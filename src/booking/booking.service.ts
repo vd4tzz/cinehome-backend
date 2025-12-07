@@ -12,7 +12,9 @@ import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { PaymentSuccessEvent } from "../payment/payment-success.event";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { Food } from "./entity/food.entity";
-import { FoodBookingDetail } from "./entity/food-booking.entity";
+import { FoodBookingDetail } from "./entity/food-booking-detail.entity";
+import { PageQuery } from "../common/pagination/page-query";
+import { Page } from "../common/pagination/page";
 
 @Injectable()
 export class BookingService {
@@ -225,5 +227,35 @@ export class BookingService {
       booking.state = BookingState.CANCELED;
       await bookingRepository.save(booking);
     }
+  }
+
+  async getOverviewBookingHistory(userId: number, pageQuery: PageQuery) {
+    const { page, size } = pageQuery;
+
+    const bookingRepository = this.dataSource.getRepository(Booking);
+
+    const [bookings, total] = await bookingRepository.findAndCount({
+      where: {
+        user: { id: userId },
+        state: BookingState.PAID,
+      },
+      relations: {
+        tickets: {
+          seat: true,
+        },
+        foodBookingDetails: true,
+      },
+      skip: page * size,
+      take: size,
+    });
+
+    const dtos = bookings.map((booking) => ({
+      id: booking.id,
+      createdAt: booking.createdAt.toISOString(),
+      numberOfTicket: booking.tickets.length,
+      numberOfFoods: booking.foodBookingDetails.length,
+    }));
+
+    return new Page(dtos, pageQuery, total);
   }
 }

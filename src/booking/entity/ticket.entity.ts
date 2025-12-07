@@ -14,7 +14,7 @@ export class Ticket {
   @RelationId((ticket: Ticket) => ticket.seat)
   seatId: number;
 
-  @ManyToOne(() => Booking)
+  @ManyToOne(() => Booking, (booking) => booking.tickets)
   booking: Booking;
 
   @Column({ type: "numeric" })

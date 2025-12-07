@@ -24,7 +24,7 @@ import { Showtime } from "../../cinema/entity/showtime.entity";
 import { Booking } from "../../booking/entity/booking.entity";
 import { Ticket } from "../../booking/entity/ticket.entity";
 import { Food } from "../../booking/entity/food.entity";
-import { FoodBookingDetail } from "../../booking/entity/food-booking.entity";
+import { FoodBookingDetail } from "../../booking/entity/food-booking-detail.entity";
 
 @Module({
   imports: [
