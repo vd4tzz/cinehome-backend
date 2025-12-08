@@ -21,6 +21,7 @@ import { ShowtimeService } from "../cinema/showtime.service";
 import { ApiBody, ApiConsumes, ApiOkResponse } from "@nestjs/swagger";
 import { MovieResponse } from "./dto/movie-response";
 import { ApiPaginatedResponse } from "../common/pagination/ApiPaginatedResponse";
+import { UpdateMovieInfoRequest } from "./dto/update-movie-info-request";
 
 @Controller("api/movies")
 export class MovieController {
@@ -34,6 +35,11 @@ export class MovieController {
   @ApiOkResponse({ type: MovieResponse })
   async createMovie(@Body() createMovieRequest: CreateMovieRequest) {
     return this.movieService.createMovie(createMovieRequest);
+  }
+
+  @Patch(":movieId")
+  async updateMovieInfo(@Param("movieId", ParseIntPipe) movieId: number, @Body() request: UpdateMovieInfoRequest) {
+    return this.movieService.updateMovieInfo(movieId, request);
   }
 
   @Patch(":movieId/images")

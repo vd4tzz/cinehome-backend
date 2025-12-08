@@ -10,6 +10,7 @@ import { MovieQuery } from "./dto/query/movie-query";
 import { Page } from "../common/pagination/page";
 import { UpdateMovieStatusResponse } from "./dto/UpdateMovieStatusResponse";
 import { PageQuery } from "../common/pagination/page-query";
+import { UpdateMovieInfoRequest } from "./dto/update-movie-info-request";
 
 @Injectable()
 export class MovieService {
@@ -83,6 +84,70 @@ export class MovieService {
         })),
       };
     });
+  }
+
+  async updateMovieInfo(movieId: number, request: UpdateMovieInfoRequest) {
+    const movieRepository = this.dataSource.getRepository(Movie);
+    const genreRepository = this.dataSource.getRepository(Genre);
+
+    const movie = await movieRepository.findOneBy({ id: movieId });
+    if (!movie) {
+      throw new NotFoundException();
+    }
+
+    const {
+      vietnameseTitle,
+      originalTitle,
+      releaseDate,
+      overview,
+      duration,
+      ageRating,
+      director,
+      actors,
+      genreIds,
+      country,
+    } = request;
+
+    const genres = await genreRepository.findBy({
+      id: In(genreIds),
+    });
+
+    if (genres.length !== genreIds.length) {
+      throw new BadRequestException();
+    }
+
+    movie.vietnameseTitle = vietnameseTitle;
+    movie.originalTitle = originalTitle || "";
+    movie.releaseDate = releaseDate;
+    movie.overview = overview;
+    movie.director = director;
+    movie.duration = duration;
+    movie.ageRating = ageRating;
+    movie.country = country;
+    movie.actors = actors;
+    movie.genres = genres;
+
+    await movieRepository.save(movie);
+
+    return {
+      id: movie.id,
+      vietnameseTitle: movie.vietnameseTitle,
+      originalTitle: movie.originalTitle,
+      releaseDate: movie.releaseDate,
+      state: movie.state,
+      posterUrl: movie.posterUrl,
+      backdropUrl: movie.backdropUrl,
+      overview: movie.overview,
+      duration: movie.duration,
+      ageRating: movie.ageRating,
+      director: movie.director,
+      actors: movie.actors,
+      country: movie.country,
+      genres: movie.genres.map((genre) => ({
+        id: genre.id,
+        name: genre.name,
+      })),
+    };
   }
 
   async updateMovieImages(movieId: number, updateMovieImagesRequest: UpdateMovieImagesRequest): Promise<MovieResponse> {
