@@ -90,6 +90,7 @@ export class AuthService {
   // Todo signupAdmin
 
   async sendEmailVerification(sendEmailVerificationRequest: SendEmailVerificationRequest): Promise<SendEmailResponse> {
+    console.log("GUI EMAIL");
     return await this.dataSource.transaction(async (manager) => {
       const userRepository = manager.getRepository(User);
       const tokenRepository = manager.getRepository(Token);

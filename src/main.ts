@@ -11,7 +11,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: "http://localhost:5173", // Cho phép React/Vue/... gọi đến
+    origin: "http://localhost:5173",
     credentials: true, // Cho phép gửi cookie/token qua
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   });
