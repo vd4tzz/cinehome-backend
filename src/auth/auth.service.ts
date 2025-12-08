@@ -220,6 +220,7 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       cinemaId: user.admin?.cinemaId,
+      roles: user.roles.map((role) => role.name),
       accessToken: this.signAccessToken(jwtPayload),
       accessTokenExpIn: this.JWT_ACCESS_EXP,
       refreshToken: this.signRefreshToken(jwtPayload),

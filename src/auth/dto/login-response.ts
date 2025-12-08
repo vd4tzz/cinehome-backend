@@ -12,6 +12,9 @@ export class LoginResponse {
   cinemaId?: number;
 
   @ApiProperty()
+  roles: string[];
+
+  @ApiProperty()
   accessToken: string;
 
   @ApiProperty()

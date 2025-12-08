@@ -11,7 +11,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://cinehome-frontend-six.vercel.app"],
     credentials: true, // Cho phép gửi cookie/token qua
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   });
@@ -44,7 +44,7 @@ async function bootstrap() {
         name: "Authorization",
         description: "Enter JWT token",
       },
-      "access-token", // key để reference sau này
+      "access-token",
     )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
