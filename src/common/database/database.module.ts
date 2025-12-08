@@ -23,7 +23,7 @@ import { Genre } from "../../movie/entity/genre.entity";
 import { Showtime } from "../../cinema/entity/showtime.entity";
 import { Booking } from "../../booking/entity/booking.entity";
 import { Ticket } from "../../booking/entity/ticket.entity";
-import { Food } from "../../booking/entity/food.entity";
+import { Food } from "../../food/entity/food.entity";
 import { FoodBookingDetail } from "../../booking/entity/food-booking-detail.entity";
 
 @Module({

@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Food } from "./food.entity";
+import { Food } from "../../food/entity/food.entity";
 import { Booking } from "./booking.entity";
 
 @Entity()

@@ -11,7 +11,7 @@ import { ConfigService } from "@nestjs/config";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 import { PaymentSuccessEvent } from "../payment/payment-success.event";
 import { SchedulerRegistry } from "@nestjs/schedule";
-import { Food } from "./entity/food.entity";
+import { Food } from "../food/entity/food.entity";
 import { FoodBookingDetail } from "./entity/food-booking-detail.entity";
 import { PageQuery } from "../common/pagination/page-query";
 import { Page } from "../common/pagination/page";
