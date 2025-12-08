@@ -122,6 +122,8 @@ export class AuthService {
       const verificationLink = `${url}?userId=${user.id}&token=${rawToken}`;
       await this.mailService.sendVerification(user.email, verificationLink, this.VERIFIED_TOKEN_EXP / 60);
 
+      console.log("KET THUC GUI EMAIL");
+
       return new SendEmailResponse({
         message: "email send successfully",
         email: user.email,
