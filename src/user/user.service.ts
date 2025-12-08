@@ -58,7 +58,7 @@ export class UserService {
     return {
       id: user.id,
       fullName: user.fullName || "",
-      dateOfBirth: user.dateOfBirth?.toISOString() || "",
+      dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString() : "",
       email: user.email,
       phoneNumber: user.phoneNumber || "",
     };
